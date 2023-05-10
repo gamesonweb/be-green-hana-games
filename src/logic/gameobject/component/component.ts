@@ -24,6 +24,9 @@ enum ComponentType {
     Render = 1,
     Animation = 2,
     MonsterMovement = 3,
+    Combat = 4,
+    MonsterCombat = 5,
+    Hitpoint = 6,
 }
 
 export default Component;

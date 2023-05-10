@@ -10,6 +10,7 @@ export default class MonsterMovementComponent extends MovementComponent {
     private _pathIndex: number = 0;
 
     public moveTo(position: Vector2) {
+        console.log("Move to", position);
         if (this.parent.position.equals(position)) {
             return;
         }
@@ -24,6 +25,7 @@ export default class MonsterMovementComponent extends MovementComponent {
         }
 
         this._path = path;
+        this._pathIndex = 0;
     }
 
     private clearPath() {
@@ -33,6 +35,10 @@ export default class MonsterMovementComponent extends MovementComponent {
     }
 
     public update(): void {
+        if (!this.parent.alive) {
+            return;
+        }
+        
         if (this._path.length === 0) {
             return;
         }

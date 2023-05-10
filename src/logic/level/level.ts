@@ -1,4 +1,4 @@
-import { Vector2 } from "@babylonjs/core";
+import { Ray, Vector2 } from "@babylonjs/core";
 import GameObjectManager from "../gameobject/manager";
 import TileMap, { TileState } from "./tilemap";
 

@@ -22,8 +22,11 @@ export default class RenderComponent extends Component {
                 animation.animation.blendingSpeed = 0.2;
                 });
             });
+
+            // apply scale
+            this._mesh.scaling = new Vector3(-config.scale, config.scale, -config.scale);
             
-            const animationComponent = this.parent.getComponent(AnimationComponent);
+            const animationComponent = this.parent.findComponent(AnimationComponent);
             if (animationComponent) {
                 animationComponent.setGroups(result.animationGroups);
             }
@@ -32,9 +35,14 @@ export default class RenderComponent extends Component {
 
     public destroy(): void {
         super.destroy();
-        this._mesh.dispose();
-        this._mesh = null;
-        this._handle.dispose();
+        if (this._mesh) {
+            this._mesh.dispose();
+            this._mesh = null;
+        }
+        if (this._handle) {
+            this._handle.dispose();
+            this._handle = null;
+        }
     }
     
     public get type(): ComponentType {
@@ -44,7 +52,16 @@ export default class RenderComponent extends Component {
         if (this._mesh) {
             this._mesh.position.x = this.parent.position.x;
             this._mesh.position.z = this.parent.position.y;
-            this._mesh.rotation = new Vector3(0, -this.parent.direction, 0);
+            const fromRotation = this._mesh.rotation;
+            const toRotation = new Vector3(0, -this.parent.direction, 0);
+            const deltaRotation = toRotation.subtract(fromRotation);
+            if (deltaRotation.y > Math.PI) {
+                deltaRotation.y -= Math.PI * 2;
+            }
+            if (deltaRotation.y < -Math.PI) {
+                deltaRotation.y += Math.PI * 2;
+            }
+            this._mesh.rotation = fromRotation.add(deltaRotation.scale(0.2));
         }
     }
 }

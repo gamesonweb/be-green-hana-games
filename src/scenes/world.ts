@@ -1,4 +1,4 @@
-import { FlyCamera, HemisphericLight, Mesh, MeshBuilder, Ray, SceneLoader, StandardMaterial, Vector2, Vector3 } from "@babylonjs/core";
+import { FlyCamera, HemisphericLight, Mesh, MeshBuilder, Ray, SceneLoader, Space, StandardMaterial, Vector2, Vector3 } from "@babylonjs/core";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import Character from "../logic/gameobject/character";
 import { GameObjectType } from "../logic/gameobject/gameObject";
@@ -10,6 +10,8 @@ import TerrainComponent from "../management/component/terrain";
 import Scene from "./scene";
 import Monster from "../logic/gameobject/monster";
 import MonsterMovementComponent from "../logic/gameobject/component/monsterMovement";
+import SpaceScene from "./space";
+import { Dialogue } from "../space/ui/Dialogue";
 
 export default class WorldScene extends Scene {
     private static readonly CAMERA_SPEED: number = 15;
@@ -21,6 +23,9 @@ export default class WorldScene extends Scene {
 
     private _level: Level;
     private _logicTime: number = 0;
+    private _initialized: boolean = false;
+
+    private _dialogue: Dialogue;
 
     constructor(engine: Engine) {
         super(engine);
@@ -43,14 +48,57 @@ export default class WorldScene extends Scene {
                     type: GameObjectType.Character,
                     config: 1,
                     id: 1,
-                    position: WorldScene.WORLD_SIZE.scale(0.5),
+                    position: new Vector2(50, 50),
                     direction: 0
                 },
                 {
                     type: GameObjectType.Monster,
                     config: 1,
-                    id: 2,
-                    position: WorldScene.WORLD_SIZE.scale(0.6),
+                    id: -1,
+                    position: new Vector2(60, 60),
+                    direction: 0
+                },
+                {
+                    type: GameObjectType.Monster,
+                    config: 1,
+                    id: -1,
+                    position: new Vector2(40, 40),
+                    direction: 0
+                },
+                {
+                    type: GameObjectType.Monster,
+                    config: 1,
+                    id: -1,
+                    position: new Vector2(35, 25),
+                    direction: 0
+                },
+                // top slime group
+                {
+                    type: GameObjectType.Monster,
+                    config: 1,
+                    id: -1,
+                    position: new Vector2(35, 75),
+                    direction: 0
+                },
+                {
+                    type: GameObjectType.Monster,
+                    config: 1,
+                    id: -1,
+                    position: new Vector2(33, 73),
+                    direction: 0
+                },
+                {
+                    type: GameObjectType.Monster,
+                    config: 1,
+                    id: -1,
+                    position: new Vector2(37, 75),
+                    direction: 0
+                },
+                {
+                    type: GameObjectType.Monster,
+                    config: 1,
+                    id: -1,
+                    position: new Vector2(35, 77),
                     direction: 0
                 }
             ]
@@ -58,18 +106,17 @@ export default class WorldScene extends Scene {
 
         const character = this._level.gameObjectManager.getObject(1) as Character;
 
-        this.addComponent(new PlayerInput(character));
+        this.addComponent(new PlayerInput(this, character));
         this.addComponent(new PlayerCamera(this, character, WorldScene.CAMERA_OFFSET, WorldScene.CAMERA_SPEED));
 
         new HemisphericLight("light", new Vector3(0, 1, 0), this).intensity = 1.4;
 
         await this.createTerrain();
+        this._createDialogue();
 
         // this.debugLayer.show();
 
-        const monster = this._level.gameObjectManager.getObject(2) as Monster;
-
-        monster.getComponent(MonsterMovementComponent).moveTo(new Vector2(60, 30));
+        this._initialized = true;
     }
 
     private async createTerrain() : Promise<void> {
@@ -83,16 +130,44 @@ export default class WorldScene extends Scene {
     }
 
     private updateLogic() {
+        if (!this._initialized) {
+            return;
+        }
+
         const delta = this.getEngine().getDeltaTime() / 1000;
         this._logicTime += delta;
         while (this._logicTime > Time.TICK_DELTA_TIME) {
             this._level.update();
             this._logicTime -= Time.TICK_DELTA_TIME;
         }
+
+        if (this.level.gameObjectManager.getObject(1) === undefined) {
+            this._initialized = false;
+            this.switchToSpace();
+        }
     }
 
     public update() {
         this.updateLogic();
         super.update();
+    }
+
+    private _createDialogue() {
+        this._dialogue = new Dialogue();
+        this._dialogue.addText(
+          "Hmm... Cette planète est étrange. Je devrais aller voir ce qu'il se passe.",
+          5000
+        );
+        this._dialogue.addText(
+          "Avancer: Z | Reculer: S | Gauche: Q | Droite: D | Attaquer : Cliquer sur l'ennemi",
+          30000
+        );
+    }
+
+    private switchToSpace() {
+        const engine = this.getEngine();
+        const scene = new SpaceScene(engine);
+        this.dispose();
+        scene.init();
     }
 }

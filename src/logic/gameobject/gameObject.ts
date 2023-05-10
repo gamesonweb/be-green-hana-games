@@ -2,6 +2,8 @@ import { Vector2 } from "@babylonjs/core/Maths/math.vector";
 import Config from "../config/config";
 import Level from "../level/level";
 import Component, { ComponentType } from "./component/component";
+import GameObjectManager from "./manager";
+import HitpointComponent from "./component/hitpoint";
 
 export default abstract class GameObject {
     private readonly _level: Level;
@@ -37,6 +39,10 @@ export default abstract class GameObject {
         return this._level;
     }
 
+    public get gameObjectManager(): GameObjectManager {
+        return this._level.gameObjectManager;
+    }
+
     public get config(): Config {
         return this._config;
     }
@@ -55,6 +61,22 @@ export default abstract class GameObject {
 
     public set direction(direction: number) {
         // do nothing
+    }
+    
+    public get team(): number {
+        const hitpointComponent = this.findComponent(HitpointComponent);
+        if (hitpointComponent) {
+            return hitpointComponent.team;
+        }
+        return -1;
+    }
+
+    public get alive(): boolean {
+        const hitpointComponent = this.findComponent(HitpointComponent);
+        if (hitpointComponent) {
+            return hitpointComponent.alive;
+        }
+        return false;
     }
 
     public getComponent<T extends Component>(s: new (parent: GameObject) => T): T {
@@ -107,4 +129,5 @@ export default abstract class GameObject {
 export enum GameObjectType {
     Character = 0,
     Monster = 1,
+    Projectile = 2,
 }

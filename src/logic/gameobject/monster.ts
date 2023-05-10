@@ -1,6 +1,8 @@
 import MonsterConfig from "../config/gameobject/monster";
 import Level from "../level/level";
 import AnimationComponent from "./component/animation";
+import HitpointComponent from "./component/hitpoint";
+import MonsterCombatComponent from "./component/monsterCombat";
 import MonsterMovementComponent from "./component/monsterMovement";
 import RenderComponent from "./component/render";
 import GameObject, { GameObjectType } from "./gameObject";
@@ -12,9 +14,11 @@ export default class Monster extends GameObject {
         super(config, level);
         this._direction = 0;
 
+        this.addComponent(new HitpointComponent(this, config.hitpoint));
         this.addComponent(new MonsterMovementComponent(this, config.movement));
+        this.addComponent(new MonsterCombatComponent(this, config.combat));
         this.addComponent(new RenderComponent(this, config.render));
-        this.addComponent(new AnimationComponent(this));
+        this.addComponent(new AnimationComponent(this, config.animation));
     }
 
     public get direction(): number {

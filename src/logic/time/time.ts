@@ -17,4 +17,12 @@ export default class Time {
     public get timestamp(): number {
         return this._startTimestamp + Math.floor(this._tickNumber / Time.TICKS_PER_SECOND);
     }
+
+    public static getTicks(seconds: number): number {
+        return Math.floor(seconds * Time.TICKS_PER_SECOND);
+    }
+
+    public static getSeconds(ticks: number): number {
+        return ticks / Time.TICKS_PER_SECOND;
+    }
 }

@@ -28,6 +28,8 @@ export default class GameObjectManager {
     public addObject(object: GameObject): void {
         if (object.id == -1) {
             object.id = this._nextId++;
+        } else {
+            this._nextId = Math.max(this._nextId, object.id + 1);
         }
         if (this._objects.has(object.id)) {
             throw new Error(`Object with id ${object.id} already exists.`);

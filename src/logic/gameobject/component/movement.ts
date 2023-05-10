@@ -24,6 +24,10 @@ class MovementComponent extends Component {
     }
 
     public update(): void {
+        if (!this.parent.alive) {
+            return;
+        }
+        
         const level = this._parent.level;
         if (level.isPassableTile(this._parent.position) === false) {
             console.warn("Character is not on passable tile");
@@ -93,9 +97,10 @@ class MovementComponent extends Component {
         if (velocity.lengthSquared() > 1) {
             velocity = velocity.clone().normalize();
         }
-
-        let direction = Math.atan2(velocity.y, velocity.x);
-        this.parent.direction = direction + Math.PI / 2;
+        if (velocity.lengthSquared() > 0) {
+            let direction = Math.atan2(velocity.y, velocity.x);
+            this.parent.direction = direction + Math.PI / 2;
+        }
     }
 }
 
