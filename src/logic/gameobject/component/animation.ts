@@ -2,6 +2,7 @@ import { AnimationGroup } from "@babylonjs/core";
 import GameObject from "../gameObject";
 import Component, { ComponentType } from "./component";
 import MovementComponent from "./movement";
+import MonsterMovementComponent from "./monsterMovement";
 
 export default class AnimationComponent extends Component {
     private _groups: { [name: string]: AnimationGroup } = {};
@@ -10,10 +11,10 @@ export default class AnimationComponent extends Component {
     constructor(parent: GameObject) {
         super(parent);
 
-        const movementComponent = this.parent.getComponent(MovementComponent);
+        const movementComponent = this.parent.findComponent(MovementComponent) ?? this.parent.findComponent(MonsterMovementComponent);
         if (movementComponent) {
             movementComponent.onMove = (rate) => {
-                if (rate < 0.2) {
+                if (rate < 0.1) {
                     this.play("idle");
                 } else {
                     this.play("run", rate);

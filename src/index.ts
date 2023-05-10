@@ -30,7 +30,10 @@ async function init() {
   const scene = new SpaceScene(engine);
   scene.init().then(() => {
     engine.runRenderLoop(() => {
-      scene.update();
+      const currentScene = engine.scenes[0];
+      if (currentScene) {
+        currentScene.update();
+      }
     });
   });
 }

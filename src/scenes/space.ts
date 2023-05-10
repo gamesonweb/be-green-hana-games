@@ -13,6 +13,7 @@ import { Engine } from "@babylonjs/core/Engines/engine";
 import Scene from "./scene";
 import { PlanetManager } from "../space/PlanetManager";
 import { Spaceship } from "../space/Spaceship";
+import WorldScene from "./world";
 
 export default class SpaceScene extends Scene {
   private _camera: UniversalCamera;
@@ -37,6 +38,10 @@ export default class SpaceScene extends Scene {
     await this._createSpaceship();
 
     // this.debugLayer.show();
+
+    setTimeout(() => {
+      this._switchToWorldScene();
+    }, 2500);
   }
 
   private _createCamera(): void {
@@ -84,7 +89,14 @@ export default class SpaceScene extends Scene {
     super.update();
   }
 
-  private onSpaceShipCollision() {
-    console.log("collision");
+  private onSpaceShipCollision(planet) {
+    this._switchToWorldScene();
+  }
+
+  private _switchToWorldScene() {
+    // switch to the world scene
+    const engine = this.getEngine();
+    this.dispose();
+    new WorldScene(engine).init();
   }
 }
