@@ -84,7 +84,7 @@ export default class SpaceScene extends Scene {
       this._camera
     );
     await ship.spawnAsync(this._planets);
-    ship.subCollision(this.onSpaceShipCollision);
+    ship.subCollision((ship) => this.onSpaceShipCollision(ship));
   }
 
   private _createDialogue() {
@@ -114,13 +114,17 @@ export default class SpaceScene extends Scene {
   }
 
   private onSpaceShipCollision(planet) {
+    if (this.isDisposed) {
+      return;
+    }
     this._switchToWorldScene();
   }
 
   private _switchToWorldScene() {
     // switch to the world scene
     const engine = this.getEngine();
-    this.dispose();
-    new WorldScene(engine).init();
+    new WorldScene(engine).init().then(() => {
+      this.dispose();
+    });
   }
 }
