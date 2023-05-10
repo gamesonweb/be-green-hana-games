@@ -14,11 +14,13 @@ import Scene from "./scene";
 import { PlanetManager } from "../space/PlanetManager";
 import { Spaceship } from "../space/Spaceship";
 import WorldScene from "./world";
+import { Dialogue } from "../space/ui/Dialogue";
 
 export default class SpaceScene extends Scene {
   private _camera: UniversalCamera;
   private _sun: HemisphericLight;
   private _planets: PlanetManager;
+  private _dialogue: Dialogue;
 
   constructor(engine: Engine) {
     super(engine);
@@ -36,12 +38,13 @@ export default class SpaceScene extends Scene {
     this._createSkybox();
     this._createPlanets();
     await this._createSpaceship();
+    this._createDialogue();
 
     // this.debugLayer.show();
 
-    setTimeout(() => {
-      this._switchToWorldScene();
-    }, 2500);
+    // setTimeout(() => {
+    //   this._switchToWorldScene();
+    // }, 2500);
   }
 
   private _createCamera(): void {
@@ -81,11 +84,32 @@ export default class SpaceScene extends Scene {
       this._camera
     );
     await ship.spawnAsync(this._planets);
-    ship.subCollision(this.onSpaceShipCollision.bind(this));
+    ship.subCollision(this.onSpaceShipCollision);
+  }
+
+  private _createDialogue() {
+    this._dialogue = new Dialogue();
+    this._dialogue.addText(
+      "Bienvenue dans Nakama ! Nous sommes heureux de vous accueillir dans ce jeu spatial épique (1/4)",
+      10000
+    );
+    this._dialogue.addText(
+      "Avant de commencer, voici les commandes de votre vaisseau spatial : Z pour monter, S pour descendre, Q pour tourner à gauche et D pour tourner à droite (2/4)",
+      10000
+    );
+    this._dialogue.addText(
+      "Espace pour accélérer, et Shift pour ralentir. Assurez-vous de les maîtriser avant de partir à l'aventure. (3/4)",
+      10000
+    );
+    this._dialogue.addText(
+      "Votre mission est de naviguer dans l'espace et de trouver la planète la plus proche. Utilisez la touche E pour orienter votre vaisseau vers elle. Une fois que vous l'avez trouvée, atterrissez sur sa surface pour explorer ses merveilles. (4/4)",
+      10000
+    );
   }
 
   public update() {
     this._planets.update(this.getEngine().getDeltaTime());
+    this._dialogue.update(this.getEngine().getDeltaTime());
     super.update();
   }
 

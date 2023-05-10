@@ -68,8 +68,8 @@ export class Spaceship {
     distance: number;
   };
 
-  private _spaceshipCollisionObservable: Observable<Spaceship> =
-    new Observable<Spaceship>();
+  private _spaceshipCollisionObservable: Observable<Planet> =
+    new Observable<Planet>();
 
   constructor(
     rootUrl: string,
@@ -391,7 +391,7 @@ export class Spaceship {
     this._lockSpeed = this._speed;
     this._lockMovement = true;
     console.log("fake stop on planet " + this._planetData.planet.getName());
-    this._spaceshipCollisionObservable.notifyObservers(this);
+    this._spaceshipCollisionObservable.notifyObservers(this._planetData.planet);
   }
 
   private _computeSpeedKm() {
@@ -439,8 +439,12 @@ export class Spaceship {
     if (this._lockMovement) speed = this._lockSpeed;
     this._dashboard.setAllEngText(Utils.clamp(0, this._maxSpeed, -speed) * 100);
     this._dashboard.setSpeedText(this._speedKm);
-    this._dashboard.setPlanetText(this._planetData?.planet.getName() ?? "Inconnu");
-    this._dashboard.setDistanceText(this._planetData?.distance * this._scaleSpeed ?? 0);
+    this._dashboard.setPlanetText(
+      this._planetData?.planet.getName() ?? "Inconnu"
+    );
+    this._dashboard.setDistanceText(
+      this._planetData?.distance * this._scaleSpeed ?? 0
+    );
     this._dashboard.updateTime();
     this._dashboard.updateFPSText();
   }
@@ -453,7 +457,7 @@ export class Spaceship {
     this._parentMesh.lookAt(this._planetData.planet.getMesh().position);
   }
 
-  public subCollision(callback: (spaceship: Spaceship) => void) {
+  public subCollision(callback: (spaceship: Planet) => void) {
     this._spaceshipCollisionObservable.add(callback);
   }
 }
