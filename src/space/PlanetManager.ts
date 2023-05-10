@@ -117,16 +117,10 @@ export class PlanetManager {
     let distance = Number.MAX_VALUE;
     let planet = null;
     this._planets.forEach((p) => {
-      let planetMesh = p.getMesh();
-      if (planetMesh) {
-        let distanceToPlanet = Vector3.Distance(
-          planetMesh.position,
-          mesh.position
-        );
-        if (distanceToPlanet < distance) {
-          distance = distanceToPlanet;
-          planet = p;
-        }
+      let d = Vector3.Distance(mesh.position, p.getMesh().position) - p.getRadius();
+      if (d < distance) {
+        distance = d;
+        planet = p;
       }
     });
     return { planet: planet, distance: distance };

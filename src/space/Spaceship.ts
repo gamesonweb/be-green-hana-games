@@ -49,8 +49,6 @@ export class Spaceship {
   private _speedCooldown = 0;
   private _speedRefresh = 0.1;
 
-  private _lastScrollWheel = 0;
-
   private _rootUrl: string;
   private _sceneFilename: string;
   private _scaleFactor: number = 0.1;
@@ -87,13 +85,13 @@ export class Spaceship {
     this._speedKm = 0;
     this._velocity = new Vector3(0, 0, 0);
     this._maxSpeed = 5 * this._scaleFactor;
-    this._acceleration = (5 * this._scaleFactor) / this._scaleSpeed;
-    this._deceleration = (0.001 * this._scaleFactor) / this._scaleSpeed;
+    this._acceleration = (35 * this._scaleFactor) / this._scaleSpeed;
+    this._deceleration = (1 * this._scaleFactor) / this._scaleSpeed;
     this._rotationSpeedHori = 0;
     this._rotationSpeedVer = 0;
     this._maxRotationSpeed = 0.05;
-    this._rotationAcceleration = 0.001;
-    this._rotationDeceleration = 0.0005;
+    this._rotationAcceleration = 0.05;
+    this._rotationDeceleration = 0.005;
     this._isGoingUp = false;
     this._isGoingDown = false;
     this._isGoingLeft = false;
@@ -120,7 +118,6 @@ export class Spaceship {
     this._applyShader();
     this._setupCamera();
     this._setupKeyboardInput();
-    this._setupScrollWheelInput();
     this._setupShake();
     this._setupEffect();
     this._setupDashboard();
@@ -232,6 +229,14 @@ export class Spaceship {
             case "s":
               this._isGoingDown = true;
               break;
+            case " ":
+              this._isGoingForward = true;
+              break;
+            case "Shift":
+              this._isGoingBackward = true;
+              break;
+            case "e":
+              this.reorientToPlanet();
           }
           break;
         case 2:
@@ -248,31 +253,13 @@ export class Spaceship {
             case "s":
               this._isGoingDown = false;
               break;
+            case " ":
+              this._isGoingForward = false;
+              break;
+            case "Shift":
+              this._isGoingBackward = false;
           }
           break;
-      }
-    });
-  }
-
-  private _setupScrollWheelInput() {
-    const canvas = this._scene.getEngine().getRenderingCanvas();
-    canvas.addEventListener("wheel", (event) => {
-      if (event.timeStamp - this._lastScrollWheel > 100) {
-        this._lastScrollWheel = event.timeStamp;
-        if (event.deltaY > 0) {
-          this._isGoingBackward = true;
-          setTimeout(() => {
-            this._isGoingBackward = false;
-          }, 100);
-        } else {
-          this._isGoingForward = true;
-          setTimeout(() => {
-            this._isGoingForward = false;
-          }, 100);
-        }
-      }
-      if (event.button === 1) {
-        this._speed = 0;
       }
     });
   }
@@ -281,11 +268,12 @@ export class Spaceship {
     this._updateDashboard();
     this._shakeCamera();
     if (this._lockMovement) return;
+    var deltaTime = this._scene.getEngine().getDeltaTime() / 1000.0;
 
     let isPressed = false;
-    // Forward and backward
+    // Forward and backward not based on fps
     if (this._isGoingBackward) {
-      this._speed += this._acceleration;
+      this._speed += this._acceleration * deltaTime;
       if (this._speed >= 0) {
         this._speed = 0;
       } else if (this._speed > this._maxSpeed) {
@@ -293,7 +281,7 @@ export class Spaceship {
       }
     }
     if (this._isGoingForward) {
-      this._speed -= this._acceleration;
+      this._speed -= this._acceleration * deltaTime;
       if (this._speed < -this._maxSpeed) {
         this._speed = -this._maxSpeed;
       }
@@ -301,14 +289,14 @@ export class Spaceship {
     // Left and right
     if (this._isGoingRight) {
       isPressed = true;
-      this._rotationSpeedHori += this._rotationAcceleration;
+      this._rotationSpeedHori += this._rotationAcceleration * deltaTime;
       if (this._rotationSpeedHori > this._maxRotationSpeed) {
         this._rotationSpeedHori = this._maxRotationSpeed;
       }
     }
     if (this._isGoingLeft) {
       isPressed = true;
-      this._rotationSpeedHori -= this._rotationAcceleration;
+      this._rotationSpeedHori -= this._rotationAcceleration * deltaTime;
       if (this._rotationSpeedHori < -this._maxRotationSpeed) {
         this._rotationSpeedHori = -this._maxRotationSpeed;
       }
@@ -316,14 +304,14 @@ export class Spaceship {
     // Up and down
     if (this._isGoingUp) {
       isPressed = true;
-      this._rotationSpeedVer += this._rotationAcceleration;
+      this._rotationSpeedVer += this._rotationAcceleration * deltaTime;
       if (this._rotationSpeedVer > this._maxRotationSpeed) {
         this._rotationSpeedVer = this._maxRotationSpeed;
       }
     }
     if (this._isGoingDown) {
       isPressed = true;
-      this._rotationSpeedVer -= this._rotationAcceleration;
+      this._rotationSpeedVer -= this._rotationAcceleration * deltaTime;
       if (this._rotationSpeedVer < -this._maxRotationSpeed) {
         this._rotationSpeedVer = -this._maxRotationSpeed;
       }
@@ -332,38 +320,38 @@ export class Spaceship {
     if (!isPressed) {
       // Horizontal deceleration (left and right)
       if (this._rotationSpeedHori > 0) {
-        this._rotationSpeedHori -= this._rotationDeceleration;
+        this._rotationSpeedHori -= this._rotationDeceleration * deltaTime;
         if (this._rotationSpeedHori < 0) {
           this._rotationSpeedHori = 0;
         }
       }
       if (this._rotationSpeedHori < 0) {
-        this._rotationSpeedHori += this._rotationDeceleration;
+        this._rotationSpeedHori += this._rotationDeceleration * deltaTime;
         if (this._rotationSpeedHori > 0) {
           this._rotationSpeedHori = 0;
         }
       }
       // Vertical deceleration (up and down)
       if (this._rotationSpeedVer > 0) {
-        this._rotationSpeedVer -= this._rotationDeceleration;
+        this._rotationSpeedVer -= this._rotationDeceleration * deltaTime;
         if (this._rotationSpeedVer < 0) {
           this._rotationSpeedVer = 0;
         }
       }
       if (this._rotationSpeedVer < 0) {
-        this._rotationSpeedVer += this._rotationDeceleration;
+        this._rotationSpeedVer += this._rotationDeceleration * deltaTime;
         if (this._rotationSpeedVer > 0) {
           this._rotationSpeedVer = 0;
         }
       }
       // Speed deceleration
       if (this._speed > 0) {
-        this._speed -= this._deceleration;
+        this._speed -= this._deceleration * deltaTime;
         if (this._speed < 0) {
           this._speed = 0;
         }
       } else if (this._speed < 0) {
-        this._speed += this._deceleration;
+        this._speed += this._deceleration * deltaTime;
         if (this._speed > 0) {
           this._speed = 0;
         }
@@ -451,8 +439,18 @@ export class Spaceship {
     if (this._lockMovement) speed = this._lockSpeed;
     this._dashboard.setAllEngText(Utils.clamp(0, this._maxSpeed, -speed) * 100);
     this._dashboard.setSpeedText(this._speedKm);
+    this._dashboard.setPlanetText(this._planetData?.planet.getName() ?? "Inconnu");
+    this._dashboard.setDistanceText(this._planetData?.distance * this._scaleSpeed ?? 0);
     this._dashboard.updateTime();
     this._dashboard.updateFPSText();
+  }
+
+  public reorientToPlanet() {
+    if (!this._planetData) return;
+    if (this._lockMovement) return;
+    this._rotationSpeedHori = 0;
+    this._rotationSpeedVer = 0;
+    this._parentMesh.lookAt(this._planetData.planet.getMesh().position);
   }
 
   public subCollision(callback: (spaceship: Spaceship) => void) {

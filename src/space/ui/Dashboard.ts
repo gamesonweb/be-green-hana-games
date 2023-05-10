@@ -3,10 +3,10 @@ import {
   Mesh,
   MeshBuilder,
   Scene,
+  StandardMaterial,
   Vector3,
 } from "@babylonjs/core";
 import * as GUI from "@babylonjs/gui";
-import { ToonMaterial } from '../materials/ToonMaterial';
 
 export class Dashboard {
   private _scene: Scene;
@@ -25,6 +25,7 @@ export class Dashboard {
   private _timeText: GUI.TextBlock;
   private _distanceText: GUI.TextBlock;
   private _fpsText: GUI.TextBlock;
+  private _planetText: GUI.TextBlock;
 
   constructor(scene: Scene, spaceship: AbstractMesh) {
     this._scene = scene;
@@ -54,12 +55,18 @@ export class Dashboard {
       false
     );
     this._uiTexture.background = "transparent";
-    this._uiTexture.parseFromURLAsync("assets/space/ui/FullDashboard.json").then(() => {
-      let material = ToonMaterial.createMaterial(this._uiTexture);
+    this._uiTexture
+      .parseFromURLAsync("assets/space/ui/FullDashboard.json")
+      .then(() => {
+        // let material = ToonMaterial.createMaterial(this._uiTexture);
 
-      this._screenMesh.material = material;
-      this._grabElement();
-    });
+        // this._screenMesh.material = material;
+        //Standard mat
+        let material = new StandardMaterial("mat", this._scene);
+        material.diffuseTexture = this._uiTexture;
+        material.backFaceCulling = false;
+        this._grabElement();
+      });
   }
   private _grabElement() {
     this._speedText = this._uiTexture.getControlByName(
@@ -78,6 +85,9 @@ export class Dashboard {
       "DISTANCE"
     ) as GUI.TextBlock;
     this._fpsText = this._uiTexture.getControlByName("FPS") as GUI.TextBlock;
+    this._planetText = this._uiTexture.getControlByName(
+      "PLANET"
+    ) as GUI.TextBlock;
   }
 
   public setSpeedText(speed: number) {
@@ -138,12 +148,17 @@ export class Dashboard {
 
   public setDistanceText(distance: number) {
     if (!this._distanceText) return;
-    this._distanceText.text = distance.toFixed(0) + "km";
+    this._distanceText.text = distance.toFixed(0) + "km restant";
   }
 
   public updateFPSText() {
     if (!this._fpsText) return;
     let fps = this._scene.getEngine().getFps();
     this._fpsText.text = fps.toFixed(0) + "fps";
+  }
+
+  public setPlanetText(planet: string) {
+    if (!this._planetText) return;
+    this._planetText.text = planet;
   }
 }
