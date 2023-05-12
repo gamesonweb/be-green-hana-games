@@ -1,5 +1,5 @@
 # Rendu final mineure programmation de jeux 3D sur le Web
-Sébastien Aglaé & Mike Chiappe
+Sébastien Aglaé & Mike Chiappe & Meriem Saez
 
 ## Installation
 ```bash
