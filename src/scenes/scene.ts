@@ -16,6 +16,7 @@ export default abstract class Scene extends BScene {
     window.addEventListener("resize", () => {
       this.getEngine().resize();
     });
+    MeshProvider.activeScene = this;
   }
 
   public update() {

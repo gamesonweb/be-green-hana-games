@@ -22,6 +22,10 @@ export default class TileMap {
         return this._size;
     }
 
+    public get subSize(): Vector2 {
+        return this._subSize;
+    }
+
     public get resolution(): number {
         return this._resolution;
     }

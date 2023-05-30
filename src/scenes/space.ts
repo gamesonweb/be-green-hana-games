@@ -88,7 +88,7 @@ export default class SpaceScene extends Scene {
     // await this._createSpaceship();
     // this._createDialogue();
 
-    this.debugLayer.show();
+    // this.debugLayer.show();
 
     setTimeout(() => {
       this._switchToWorldScene();
@@ -173,6 +173,7 @@ export default class SpaceScene extends Scene {
   private _switchToWorldScene() {
     // switch to the world scene
     const engine = this.getEngine();
+    console.log("switching to world scene using engine", engine);
     new WorldScene(engine, ConfigTable.getScene(1)).init().then(() => {
       this.dispose();
     });

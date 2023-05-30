@@ -1,10 +1,11 @@
 import { Vector2 } from "@babylonjs/core";
-import { AStarFinder } from 'astar-typescript';
 import TileMap, { TileState } from "../level/tilemap";
+
+import {Grid,Astar} from "fast-astar";
 
 export default class PathFinder {
     private _tileMap: TileMap;
-    private _finder: AStarFinder;
+    private _finder: Astar;
 
     constructor(tileMap: TileMap) {
         this._tileMap = tileMap;
@@ -14,29 +15,23 @@ export default class PathFinder {
     public updateGrid(): void {
         const size = this._tileMap.size;
         const resolution = this._tileMap.resolution;
-        const grid = new Array(size.y * resolution);
+        const grid = new Grid({
+            col: size.x * resolution,
+            row: size.y * resolution
+        });
         for (let y = 0; y < size.y * resolution; y++) {
-            grid[y] = new Array(size.x * resolution);
             for (let x = 0; x < size.x * resolution; x++) {
                 const tile = this._tileMap.getSubTile(x, y);
                 const hasTerrain = (tile & TileState.Terrain) !== 0;
                 const hasObject = (tile & TileState.Object) !== 0;
 
-                if (hasTerrain && !hasObject) {
-                    grid[y][x] = 0;
-                } else {
-                    grid[y][x] = 1;
-                }
+                const state = hasTerrain && !hasObject ? 1 : 0;
+
+                grid.set([x, y], "", state);
             }
         }
 
-        this._finder = new AStarFinder({
-            grid: {
-                width: size.x * resolution,
-                height: size.y * resolution,
-                matrix: grid
-            }
-        });
+        this._finder = new Astar(grid);
     }
 
     public findPath(start: Vector2, end: Vector2): Vector2[] {
@@ -51,11 +46,18 @@ export default class PathFinder {
             Math.floor(end.y * this._tileMap.resolution)
         );
 
+        const startMS = Date.now();
+        let path = this._finder.search([subStart.x, subStart.y], [subEnd.x, subEnd.y]);
+        const endMS = Date.now();
+
+        console.log(`Pathfinding took ${endMS - startMS}ms`);
+
+        if (path.length >= 250) {
+            console.warn(`Pathfinding took too long! ${path.length} steps`);
+            path = path.slice(0, 250);
+        }
+
         const resolution = this._tileMap.resolution;
-        const path = this._finder.findPath(
-            subStart,
-            subEnd
-        );
 
         return path.map(p => new Vector2(p[0] / resolution, p[1] / resolution));
     }

@@ -1,20 +1,21 @@
-import { Camera, FlyCamera, Vector3 } from "@babylonjs/core";
+import { Camera, FlyCamera, FreeCamera, Vector3 } from "@babylonjs/core";
 import GameObject from "../../logic/gameobject/gameObject";
 import WorldScene from "../../scenes/world";
 import ISceneComponent from "./interface";
 
 export default class PlayerCamera implements ISceneComponent {
     private _scene: WorldScene;
-    private _camera: FlyCamera;
+    private _camera: FreeCamera;
     private _target: GameObject;
     private _offset: Vector3;
 
     private _speed: number;
 
-    constructor(scene: WorldScene, target: GameObject, offset: Vector3, speed: number = 10) {
+    constructor(scene: WorldScene, target: GameObject, camera: FreeCamera, offset: Vector3, speed: number = 10) {
         this._scene = scene;
-        this._camera = new FlyCamera("camera", Vector3.Zero(), scene);
+        this._camera = camera;
         this._camera.mode = Camera.PERSPECTIVE_CAMERA;
+        this._camera.parent = null;
 
         this._target = target;
         this._offset = offset;
@@ -29,12 +30,14 @@ export default class PlayerCamera implements ISceneComponent {
             const newPosition = Vector3.Lerp(currentPosition, targetPosition, this._speed * t);
 
             this._camera.position = newPosition;
-            this._camera.setTarget(target3D);
 
-            const rotation = this._camera.rotation;
-            rotation.y = 0;
-            rotation.z = 0;
-            this._camera.rotation = rotation;
+            // calculate the new x direction
+            const direction = target3D.subtract(newPosition);
+            direction.normalize();
+            const angle = Math.atan2(direction.y, direction.z);
+            this._camera.rotation = new Vector3(-angle, 0, 0);
+        } else {
+            console.warn('No target set for player camera');
         }
     }
 

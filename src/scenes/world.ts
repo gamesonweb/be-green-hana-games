@@ -1,4 +1,4 @@
-import { AbstractMesh, DirectionalLight, FlyCamera, HardwareScalingOptimization, HemisphericLight, Mesh, MeshBuilder, Ray, SceneLoader, SceneOptimization, SceneOptimizer, SceneOptimizerOptions, ShadowGenerator, Space, StandardMaterial, Vector2, Vector3 } from "@babylonjs/core";
+import { AbstractMesh, BloomEffect, DefaultRenderingPipeline, DirectionalLight, FlyCamera, FreeCamera, HardwareScalingOptimization, HemisphericLight, Mesh, MeshBuilder, PBRMaterial, Ray, SceneLoader, SceneOptimization, SceneOptimizer, SceneOptimizerOptions, ShadowGenerator, Space, StandardMaterial, Vector2, Vector3 } from "@babylonjs/core";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import Character from "../logic/gameobject/character";
 import { GameObjectType } from "../logic/gameobject/gameObject";
@@ -26,7 +26,6 @@ export default class WorldScene extends Scene {
 
     private _sun: DirectionalLight;
     private _shadowGenerator: ShadowGenerator;
-    private _optimizer: SceneOptimizer;
 
     constructor(engine: Engine, config: SceneConfig) {
         super(engine);
@@ -35,15 +34,6 @@ export default class WorldScene extends Scene {
         this.onDispose = () => {
             this._level.destroy();
         };
-
-        this._sun = new DirectionalLight("sun", new Vector3(-1, -2, -1), this);
-        this._shadowGenerator = new ShadowGenerator(1024, this._sun);
-        this._shadowGenerator.useExponentialShadowMap = true;
-
-        const options = new SceneOptimizerOptions();
-        options.addOptimization(new HardwareScalingOptimization(0, 1));
-
-        this._optimizer = new SceneOptimizer(this, options);
     }
 
     public get level(): Level {
@@ -73,16 +63,48 @@ export default class WorldScene extends Scene {
 
         this.debugLayer.show();
 
+        this._createDialogue();
+
+        this.activeCamera = this.cameras[0];
+        
+        this._sun = this.lights[0] as DirectionalLight;
+        this._sun.autoCalcShadowZBounds = true;
+
+        this._shadowGenerator = new ShadowGenerator(8192, this._sun, null, this.activeCamera);
+        this._shadowGenerator.useCloseExponentialShadowMap = true;
+        this._shadowGenerator.bias = 0.0001;
+        this._shadowGenerator.setDarkness(0.1);
+
+        for (const mesh of this.meshes) {
+            if (mesh.receiveShadows) {
+                this._shadowGenerator.addShadowCaster(mesh);
+                console.log('added shadow caster', mesh.name);
+            }
+        }
+
         const character = this._getCharacter();
         if (character !== null) {
             this.addComponent(new PlayerInput(this, character));
-            this.addComponent(new PlayerCamera(this, character, WorldScene.CAMERA_OFFSET, WorldScene.CAMERA_SPEED));
+            this.addComponent(new PlayerCamera(this, character, this.activeCamera as FreeCamera, WorldScene.CAMERA_OFFSET, WorldScene.CAMERA_SPEED));
         } else {
             console.warn("Could not find character");
         }
 
-        this._createDialogue();
+        var defaultPipeline = new DefaultRenderingPipeline("default", true, this, [this.activeCamera]);
+        defaultPipeline.bloomEnabled = true;
+        defaultPipeline.bloomThreshold = 0.05;
+        defaultPipeline.bloomWeight = 0.35;
+        defaultPipeline.bloomScale = 1;
+        defaultPipeline.bloomKernel = 32;
 
+        defaultPipeline.imageProcessingEnabled = true;
+        defaultPipeline.imageProcessing.contrast = 1.25;
+        defaultPipeline.imageProcessing.exposure = 1.20;
+        defaultPipeline.imageProcessing.toneMappingEnabled = false;
+        defaultPipeline.imageProcessing.vignetteEnabled = true;
+        defaultPipeline.imageProcessing.vignetteWeight = 2.5;
+        defaultPipeline.imageProcessing.vignetteStretch = 0.5;
+        
         this._initialized = true;
 
         console.log('scene initialized');
@@ -125,26 +147,19 @@ export default class WorldScene extends Scene {
         root.rotation = rotation;
         root.scaling = scaling;
 
-        root.computeWorldMatrix(true);
-        root.freezeWorldMatrix();
-
-        const subMeshes = root.getChildMeshes(false);
-        // Merge meshes
-        if (subMeshes.length > 1) {
-            const newModel = Mesh.MergeMeshes(subMeshes as Mesh[], true, true);
-            if (newModel !== null) {
-                this._onModelLoaded(newModel);
-                return;
+        for (const mesh of root.getChildMeshes()) {
+            mesh.receiveShadows = true;
+            // set roughness to 0.25
+            if (mesh.material instanceof PBRMaterial) {
+                mesh.material.roughness = 0.25;
             }
         }
 
-        this._onModelLoaded(root);
-    }
-
-    private _onModelLoaded(model: AbstractMesh) {
-        model.receiveShadows = true;
-        for (const mesh of model.getChildMeshes(false)) {
-            mesh.receiveShadows = true;
+        for (const child of root.getChildren()) {
+            child.computeWorldMatrix(true);
+            if (child instanceof Mesh) {
+                child.freezeWorldMatrix();
+            }
         }
     }
 

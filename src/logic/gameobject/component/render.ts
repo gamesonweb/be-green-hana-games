@@ -30,6 +30,14 @@ export default class RenderComponent extends Component {
             if (animationComponent) {
                 animationComponent.setGroups(result.animationGroups);
             }
+
+            const scene = this._mesh.getScene();
+            if (scene) {
+                scene.onBeforeRenderObservable.add(this.updateRender.bind(this));
+                this._mesh.position = new Vector3(this.parent.position.x, 0, this.parent.position.y);
+            } else {
+                console.error("No scene found for mesh");
+            }
         };
     }
 
@@ -49,9 +57,12 @@ export default class RenderComponent extends Component {
         return ComponentType.Render;
     }
     public update(): void {
+
+    }
+
+    public updateRender(): void {
         if (this._mesh) {
-            this._mesh.position.x = this.parent.position.x;
-            this._mesh.position.z = this.parent.position.y;
+            const obj3D = new Vector3(this.parent.position.x, 0, this.parent.position.y);
             const fromRotation = this._mesh.rotation;
             const toRotation = new Vector3(0, -this.parent.direction, 0);
             const deltaRotation = toRotation.subtract(fromRotation);
@@ -61,6 +72,8 @@ export default class RenderComponent extends Component {
             if (deltaRotation.y < -Math.PI) {
                 deltaRotation.y += Math.PI * 2;
             }
+
+            this._mesh.position = Vector3.Lerp(this._mesh.position, obj3D, 0.2);
             this._mesh.rotation = fromRotation.add(deltaRotation.scale(0.2));
         }
     }
