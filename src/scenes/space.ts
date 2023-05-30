@@ -3,6 +3,7 @@ import {
   AmmoJSPlugin,
   Color3,
   CubeTexture,
+  FreeCamera,
   HemisphericLight,
   MeshBuilder,
   SceneLoader,
@@ -19,9 +20,10 @@ import WorldScene from "./world";
 import { Dialogue } from "../space/ui/Dialogue";
 import ConfigTable from "../logic/config/table";
 import { PhysicsImpostor } from "@babylonjs/core/Physics/physicsImpostor";
+import { FirstPersonPlayer } from "./Player";
 
 export default class SpaceScene extends Scene {
-  private _camera: UniversalCamera;
+  private _camera: FreeCamera;
   private _sun: HemisphericLight;
   private _planets: PlanetManager;
   private _dialogue: Dialogue;
@@ -43,62 +45,88 @@ export default class SpaceScene extends Scene {
     this._createCamera();
     this._createLight();
     //load collider.glb, add mesh collider to scene
-    var spaceship = await SceneLoader.ImportMeshAsync(
+    var spaceStationCollider = await SceneLoader.ImportMeshAsync(
       "",
       "assets/space/obj/",
-      "all.glb",
+      "collider.glb",
       this
     );
+    spaceStationCollider.meshes[0].position = new Vector3(0, 0, 0);
     // get the second mesh in collider
-    var spaceStation = spaceship.meshes[0];
-    var colliders = spaceStation.getChildren()[0];
-    console.log(colliders);
-    var tmp = spaceStation.getChildren()[1];
-    console.log(tmp);
-    //get the first mesh of tmp (the collider)
-    var door = tmp.getChildren()[tmp.getChildren().length - 1];
-    console.log(door);
-    //foreach mesh in collider, add physicsImpostor
-    colliders.getChildMeshes().forEach((mesh) => {
-      console.log(mesh);
+    spaceStationCollider.meshes.forEach((mesh) => {
       mesh.physicsImpostor = new PhysicsImpostor(
         mesh,
         PhysicsImpostor.MeshImpostor,
         { mass: 0, restitution: 0 },
         this
       );
+      mesh.checkCollisions = true;
     });
+
+    var spaceStation = await SceneLoader.ImportMeshAsync(
+      "",
+      "assets/space/obj/",
+      "spaceship.glb",
+      this
+    );
+
+    // var colliders = spaceStation.getChildren()[0];
+    // console.log(colliders);
+    // var tmp = spaceStation.getChildren()[1];
+    // console.log(tmp);
+    //get the first mesh of tmp (the collider)
+    // var door = tmp.getChildren()[tmp.getChildren().length - 1];
+    // console.log(door);
+    //foreach mesh in collider, add physicsImpostor
+    // colliders.getChildMeshes().forEach((mesh) => {
+    //   console.log(mesh);
+    //   mesh.physicsImpostor = new PhysicsImpostor(
+    //     mesh,
+    //     PhysicsImpostor.MeshImpostor,
+    //     { mass: 0, restitution: 0 },
+    //     this
+    //   );
+    //   mesh.checkCollisions = true;
+    // });
 
     //spawn a sphere with physics ar 85 10 280
     var sphere = MeshBuilder.CreateSphere("sphere", { diameter: 2 }, this);
-    sphere.position = new Vector3(85, 10, 280);
+    sphere.position = new Vector3(65, 5, 51);
     sphere.physicsImpostor = new PhysicsImpostor(
       sphere,
       PhysicsImpostor.SphereImpostor,
       { mass: 1, restitution: 0 },
       this
     );
+    sphere.checkCollisions = true;
 
     // put the camera on top of the sphere and target it
-    this._camera.position = new Vector3(85, 210, 280);
-    this._camera.setTarget(sphere.position);
+    this._camera.position = new Vector3(65, 5, 51);
+    this._camera.setTarget(spaceStationCollider.meshes[0].position);
 
     // this._createSkybox();
     // this._createPlanets();
     // await this._createSpaceship();
     // this._createDialogue();
 
+    //Create a player that can move zsqd and rotate with mouse, and attach it to the camera. Also add a collider to it
+    const player = new FirstPersonPlayer(
+      this,
+      null,
+      new Vector3(65, 5, 51)
+    );
+
     this.debugLayer.show();
 
-    setTimeout(() => {
-      this._switchToWorldScene();
-    }, 2500);
+    // setTimeout(() => {
+    //   this._switchToWorldScene();
+    // }, 2500);
   }
 
- 
-
   private _createCamera(): void {
-    this._camera = new UniversalCamera("camera", new Vector3(0, 0, -10), this);
+    this._camera = new FreeCamera("camera", new Vector3(0, 0, -10), this);
+    //attach input
+    this._camera.attachControl();
     this._camera.maxZ = 100000;
   }
 
@@ -127,14 +155,14 @@ export default class SpaceScene extends Scene {
   }
 
   private async _createSpaceship() {
-    let ship = new Spaceship(
-      "assets/space/obj/",
-      "cockpit.glb",
-      this,
-      this._camera
-    );
-    await ship.spawnAsync(this._planets);
-    ship.subCollision((ship) => this.onSpaceShipCollision(ship));
+    // let ship = new Spaceship(
+    //   "assets/space/obj/",
+    //   "cockpit.glb",
+    //   this,
+    //   this._camera
+    // );
+    // await ship.spawnAsync(this._planets);
+    // ship.subCollision((ship) => this.onSpaceShipCollision(ship));
   }
 
   private _createDialogue() {
