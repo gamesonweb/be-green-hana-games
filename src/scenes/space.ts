@@ -1,9 +1,11 @@
 import {
-  CannonJSPlugin,
+  AbstractMesh,
+  AmmoJSPlugin,
   Color3,
   CubeTexture,
   HemisphericLight,
   MeshBuilder,
+  SceneLoader,
   StandardMaterial,
   Texture,
   UniversalCamera,
@@ -16,6 +18,7 @@ import { Spaceship } from "../space/Spaceship";
 import WorldScene from "./world";
 import { Dialogue } from "../space/ui/Dialogue";
 import ConfigTable from "../logic/config/table";
+import { PhysicsImpostor } from "@babylonjs/core/Physics/physicsImpostor";
 
 export default class SpaceScene extends Scene {
   private _camera: UniversalCamera;
@@ -31,22 +34,68 @@ export default class SpaceScene extends Scene {
   public async init(): Promise<void> {
     await super.init();
 
-    var physicsPlugin = new CannonJSPlugin();
-    this.enablePhysics(new Vector3(0, -9.81, 0), physicsPlugin);
+    //@ts-ignore
+    await Ammo();
+    // @ts-ignore
+    let plugin = new AmmoJSPlugin(undefined, Ammo);
+    this.enablePhysics(new Vector3(0, -9.81, 0), plugin);
 
     this._createCamera();
     this._createLight();
-    this._createSkybox();
-    this._createPlanets();
-    await this._createSpaceship();
-    this._createDialogue();
+    //load collider.glb, add mesh collider to scene
+    var spaceship = await SceneLoader.ImportMeshAsync(
+      "",
+      "assets/space/obj/",
+      "all.glb",
+      this
+    );
+    // get the second mesh in collider
+    var spaceStation = spaceship.meshes[0];
+    var colliders = spaceStation.getChildren()[0];
+    console.log(colliders);
+    var tmp = spaceStation.getChildren()[1];
+    console.log(tmp);
+    //get the first mesh of tmp (the collider)
+    var door = tmp.getChildren()[tmp.getChildren().length - 1];
+    console.log(door);
+    //foreach mesh in collider, add physicsImpostor
+    colliders.getChildMeshes().forEach((mesh) => {
+      console.log(mesh);
+      mesh.physicsImpostor = new PhysicsImpostor(
+        mesh,
+        PhysicsImpostor.MeshImpostor,
+        { mass: 0, restitution: 0 },
+        this
+      );
+    });
 
-    // this.debugLayer.show();
+    //spawn a sphere with physics ar 85 10 280
+    var sphere = MeshBuilder.CreateSphere("sphere", { diameter: 2 }, this);
+    sphere.position = new Vector3(85, 10, 280);
+    sphere.physicsImpostor = new PhysicsImpostor(
+      sphere,
+      PhysicsImpostor.SphereImpostor,
+      { mass: 1, restitution: 0 },
+      this
+    );
+
+    // put the camera on top of the sphere and target it
+    this._camera.position = new Vector3(85, 210, 280);
+    this._camera.setTarget(sphere.position);
+
+    // this._createSkybox();
+    // this._createPlanets();
+    // await this._createSpaceship();
+    // this._createDialogue();
+
+    this.debugLayer.show();
 
     setTimeout(() => {
       this._switchToWorldScene();
     }, 2500);
   }
+
+ 
 
   private _createCamera(): void {
     this._camera = new UniversalCamera("camera", new Vector3(0, 0, -10), this);
@@ -109,8 +158,8 @@ export default class SpaceScene extends Scene {
   }
 
   public update() {
-    this._planets.update(this.getEngine().getDeltaTime());
-    this._dialogue.update(this.getEngine().getDeltaTime());
+    // this._planets.update(this.getEngine().getDeltaTime());
+    // this._dialogue.update(this.getEngine().getDeltaTime());
     super.update();
   }
 
