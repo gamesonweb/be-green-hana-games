@@ -2,6 +2,7 @@ import * as configsJson from '../../assets/configs.json';
 import CharacterConfig from './gameobject/character';
 import MonsterConfig from './gameobject/monster';
 import ProjectileConfig from './gameobject/projectile';
+import SceneConfig from './scene';
 
 export default class ConfigTable {
     public static get characters(): CharacterConfig[] {
@@ -12,6 +13,9 @@ export default class ConfigTable {
     }
     public static get projectiles(): ProjectileConfig[] {
         return configsJson.projectiles;
+    }
+    public static get scenes(): SceneConfig[] {
+        return configsJson.scenes;
     }
 
     public static getCharacter(id: number): CharacterConfig {
@@ -24,5 +28,9 @@ export default class ConfigTable {
 
     public static getProjectile(id: number): ProjectileConfig {
         return configsJson.projectiles.find((projectile: ProjectileConfig) => projectile.id === id);
+    }
+
+    public static getScene(id: number): SceneConfig {
+        return configsJson.scenes.find((scene: SceneConfig) => scene.id === id);
     }
 }

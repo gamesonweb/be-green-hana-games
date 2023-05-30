@@ -19,6 +19,7 @@
     "@babylonjs/post-processes": "^5.8.2",
     "@babylonjs/procedural-textures": "^5.8.2",
     "@babylonjs/serializers": "^5.8.2",
+    "@types/pako": "^2.0.0",
     "copy-webpack-plugin": "^8.1.0",
     "handlebars": "^4.7.7",
     "handlebars-loader": "^1.7.1",
@@ -32,6 +33,7 @@
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
-    "astar-typescript": "^1.2.7"
+    "astar-typescript": "^1.2.7",
+    "pako": "^2.1.0"
   }
 }

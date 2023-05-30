@@ -1,4 +1,4 @@
-import { FlyCamera, HemisphericLight, Mesh, MeshBuilder, Ray, SceneLoader, Space, StandardMaterial, Vector2, Vector3 } from "@babylonjs/core";
+import { AbstractMesh, DirectionalLight, FlyCamera, HardwareScalingOptimization, HemisphericLight, Mesh, MeshBuilder, Ray, SceneLoader, SceneOptimization, SceneOptimizer, SceneOptimizerOptions, ShadowGenerator, Space, StandardMaterial, Vector2, Vector3 } from "@babylonjs/core";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import Character from "../logic/gameobject/character";
 import { GameObjectType } from "../logic/gameobject/gameObject";
@@ -6,20 +6,17 @@ import Level from "../logic/level/level";
 import Time from "../logic/time/time";
 import PlayerCamera from "../management/component/playerCamera";
 import PlayerInput from "../management/component/playerInput";
-import TerrainComponent from "../management/component/terrain";
 import Scene from "./scene";
-import Monster from "../logic/gameobject/monster";
-import MonsterMovementComponent from "../logic/gameobject/component/monsterMovement";
 import SpaceScene from "./space";
 import { Dialogue } from "../space/ui/Dialogue";
+import SceneConfig from "../logic/config/scene";
+import TilemapLoaderComponent from "../management/component/tilemapLoader";
 
 export default class WorldScene extends Scene {
     private static readonly CAMERA_SPEED: number = 15;
-    private static readonly CAMERA_OFFSET: Vector3 = new Vector3(0, 1500, -2000);
+    private static readonly CAMERA_OFFSET: Vector3 = new Vector3(0, 25 * 1.5, -20 * 1.5);
 
-    private static readonly WORLD_PRECISION: number = 4;
-    private static readonly WORLD_SIZE: Vector2 = new Vector2(100, 100);
-    private static readonly WORLD_CENTER_3D: Vector3 = new Vector3(WorldScene.WORLD_SIZE.x / 2, 0, WorldScene.WORLD_SIZE.y / 2);
+    private _config: SceneConfig;
 
     private _level: Level;
     private _logicTime: number = 0;
@@ -27,12 +24,26 @@ export default class WorldScene extends Scene {
 
     private _dialogue: Dialogue;
 
-    constructor(engine: Engine) {
+    private _sun: DirectionalLight;
+    private _shadowGenerator: ShadowGenerator;
+    private _optimizer: SceneOptimizer;
+
+    constructor(engine: Engine, config: SceneConfig) {
         super(engine);
-        this._level = new Level(WorldScene.WORLD_SIZE, WorldScene.WORLD_PRECISION);
+        this._level = new Level(new Vector2(Math.floor(config.width / config.precision), Math.floor(config.height / config.precision)), config.precision);
+        this._config = config;
         this.onDispose = () => {
             this._level.destroy();
         };
+
+        this._sun = new DirectionalLight("sun", new Vector3(-1, -2, -1), this);
+        this._shadowGenerator = new ShadowGenerator(1024, this._sun);
+        this._shadowGenerator.useExponentialShadowMap = true;
+
+        const options = new SceneOptimizerOptions();
+        options.addOptimization(new HardwareScalingOptimization(0, 1));
+
+        this._optimizer = new SceneOptimizer(this, options);
     }
 
     public get level(): Level {
@@ -41,92 +52,110 @@ export default class WorldScene extends Scene {
 
     public async init(): Promise<void> {
         await super.init();
+        await this.createTerrain();
+
+        const loadData = [];
+        for (const object of this._config.objects) {
+            console.log('loading object', object.name);
+
+            loadData.push({
+                id: object.id,
+                position: new Vector3(object.position.x, object.position.y, 0),
+                direction: Math.PI / 2 - object.direction,
+                type: object.type,
+                ...object.params
+            });
+        }
 
         this._level.load({
-            objects: [
-                {
-                    type: GameObjectType.Character,
-                    config: 1,
-                    id: 1,
-                    position: new Vector2(50, 50),
-                    direction: 0
-                },
-                {
-                    type: GameObjectType.Monster,
-                    config: 1,
-                    id: -1,
-                    position: new Vector2(60, 60),
-                    direction: 0
-                },
-                {
-                    type: GameObjectType.Monster,
-                    config: 1,
-                    id: -1,
-                    position: new Vector2(40, 40),
-                    direction: 0
-                },
-                {
-                    type: GameObjectType.Monster,
-                    config: 1,
-                    id: -1,
-                    position: new Vector2(35, 25),
-                    direction: 0
-                },
-                // top slime group
-                {
-                    type: GameObjectType.Monster,
-                    config: 1,
-                    id: -1,
-                    position: new Vector2(35, 75),
-                    direction: 0
-                },
-                {
-                    type: GameObjectType.Monster,
-                    config: 1,
-                    id: -1,
-                    position: new Vector2(33, 73),
-                    direction: 0
-                },
-                {
-                    type: GameObjectType.Monster,
-                    config: 1,
-                    id: -1,
-                    position: new Vector2(37, 75),
-                    direction: 0
-                },
-                {
-                    type: GameObjectType.Monster,
-                    config: 1,
-                    id: -1,
-                    position: new Vector2(35, 77),
-                    direction: 0
-                }
-            ]
+            objects: loadData
         });
 
-        const character = this._level.gameObjectManager.getObject(1) as Character;
+        this.debugLayer.show();
 
-        this.addComponent(new PlayerInput(this, character));
-        this.addComponent(new PlayerCamera(this, character, WorldScene.CAMERA_OFFSET, WorldScene.CAMERA_SPEED));
+        const character = this._getCharacter();
+        if (character !== null) {
+            this.addComponent(new PlayerInput(this, character));
+            this.addComponent(new PlayerCamera(this, character, WorldScene.CAMERA_OFFSET, WorldScene.CAMERA_SPEED));
+        } else {
+            console.warn("Could not find character");
+        }
 
-        new HemisphericLight("light", new Vector3(0, 1, 0), this).intensity = 1.4;
-
-        await this.createTerrain();
         this._createDialogue();
 
-        // this.debugLayer.show();
-
         this._initialized = true;
+
+        console.log('scene initialized');
     }
 
     private async createTerrain() : Promise<void> {
-        const terrain = await SceneLoader.ImportMeshAsync(null, "./assets/models/scenes/", "world.glb", this);
-        const ground = terrain.meshes[0] as Mesh;
+        const assetRootPath = "assets/scenes/" + this._config.name + "/models/";
+        const assetLoaderPromises = [];
 
-        ground.position = new Vector3(5, -5.25, 30).add(WorldScene.WORLD_CENTER_3D);
-        ground.scaling = new Vector3(-5, 5, 5);
+        for (const model of this._config.models) {
+            // convert unity coordinates to babylon coordinates
+            const position = new Vector3(model.position.x, model.position.y, model.position.z);
+            position.x *= -1;
+            position.z *= -1;
+            const rotation = new Vector3(model.rotation.x * Math.PI / 180, model.rotation.y * Math.PI / 180, model.rotation.z * Math.PI / 180);
+            const scaling = new Vector3(model.scale.x, model.scale.y, model.scale.z);
+            scaling.x *= -1; 
 
-        this.addComponent(new TerrainComponent(this, ground));
+            assetLoaderPromises.push(this.loadModelAsync(assetRootPath + model.path, position, rotation, scaling));
+        }
+
+        await Promise.all(assetLoaderPromises);
+
+        if (this._config.useBakedTilemap) {
+            const tilemapComponent = new TilemapLoaderComponent(this._config, this._level);
+            this.addComponent(tilemapComponent);
+            await tilemapComponent.loadAsync();
+        } else {
+            throw new Error("Non baked tilemap is not supported now");
+        }
+    }
+
+    private async loadModelAsync(path: string, position: Vector3, rotation: Vector3, scaling: Vector3): Promise<void> {
+        console.log("Loading model", path);
+        
+        const model = await SceneLoader.ImportMeshAsync("", path, null, this);
+        const root = model.meshes[0];
+
+        root.position = position;
+        root.rotation = rotation;
+        root.scaling = scaling;
+
+        root.computeWorldMatrix(true);
+        root.freezeWorldMatrix();
+
+        const subMeshes = root.getChildMeshes(false);
+        // Merge meshes
+        if (subMeshes.length > 1) {
+            const newModel = Mesh.MergeMeshes(subMeshes as Mesh[], true, true);
+            if (newModel !== null) {
+                this._onModelLoaded(newModel);
+                return;
+            }
+        }
+
+        this._onModelLoaded(root);
+    }
+
+    private _onModelLoaded(model: AbstractMesh) {
+        model.receiveShadows = true;
+        for (const mesh of model.getChildMeshes(false)) {
+            mesh.receiveShadows = true;
+        }
+    }
+
+    private _getCharacter(): Character {
+        const objects = this._level.gameObjectManager.objects;
+        for (const object of objects.values()) {
+            if (object.type === GameObjectType.Character) {
+                return object as Character;
+            }
+        }
+        return null;
     }
 
     private updateLogic() {
@@ -141,7 +170,7 @@ export default class WorldScene extends Scene {
             this._logicTime -= Time.TICK_DELTA_TIME;
         }
 
-        if (this.level.gameObjectManager.getObject(1) === undefined) {
+        if (this._getCharacter() === null) {
             this._initialized = false;
             this.switchToSpace();
         }

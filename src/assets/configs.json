@@ -17,7 +17,7 @@
                 "projectileLifetime": 1
             },
             "movement": {
-                "speed": 5,
+                "speed": 7.5,
                 "dashSpeed": 30,
                 "acceleration": 10,
                 "deceleration": 10,
@@ -52,7 +52,7 @@
             },
             "render": {
                 "model": "models/characters/shriley.glb",
-                "scale": 1
+                "scale": 2
             }
         }
     ],
@@ -77,9 +77,9 @@
                 "patrolRadius": 4
             },
             "movement": {
-                "speed": 2.5,
-                "dashSpeed": 30,
-                "acceleration": 10,
+                "speed": 5,
+                "dashSpeed": 45,
+                "acceleration": 15,
                 "deceleration": 10,
                 "dashDeceleration": 6
             },
@@ -112,7 +112,7 @@
             },
             "render": {
                 "model": "models/monsters/slime_flower.glb",
-                "scale": 0.9
+                "scale": 2
             }
         }
     ],
@@ -122,8 +122,115 @@
             "name": "Slime Ball",
             "render": {
                 "model": "models/projectiles/fireball.glb",
-                "scale": 0.4
+                "scale": 0.6
             }
+        }
+    ],
+    "scenes": [
+        {
+            "id": 1,
+            "name": "Map_Desert",
+            "width": 1445,
+            "height": 1490,
+            "precision": 5,
+            "useBakedTilemap": true,
+            "models": [
+                {
+                    "path": "Terrain_0_0-20230529_-_194720.glb",
+                    "position": {
+                        "x": -31.3000031,
+                        "y": 0.0,
+                        "z": -22.3000031
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "path": "scene.glb",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }
+            ],
+            "objects": [
+                {
+                    "id": 1,
+                    "name": "Monster.1",
+                    "position": {
+                        "x": 93.3999939,
+                        "y": 73.2999954
+                    },
+                    "direction": 0.0,
+                    "type": 1,
+                    "params": {
+                        "config": 1
+                    }
+                },
+                {
+                    "id": 2,
+                    "name": "Chest.1",
+                    "position": {
+                        "x": 117.28,
+                        "y": 128.76
+                    },
+                    "direction": 147.162918,
+                    "type": 3,
+                    "params": {
+                        "drops": []
+                    }
+                },
+                {
+                    "id": 3,
+                    "name": "Character.1",
+                    "position": {
+                        "x": 54.6,
+                        "y": 23.0
+                    },
+                    "direction": 0.0,
+                    "type": 0,
+                    "params": {
+                        "config": 1
+                    }
+                },
+                {
+                    "id": 4,
+                    "name": "Trigger.Quest_KillMonsterTutorial.1",
+                    "position": {
+                        "x": 93.0,
+                        "y": 54.409996
+                    },
+                    "direction": 0.0,
+                    "type": 4,
+                    "params": {
+                        "area": [
+                            43.0,
+                            46.409996,
+                            93.0,
+                            54.409996
+                        ]
+                    }
+                }
+            ]
         }
     ]
 }

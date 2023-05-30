@@ -19,7 +19,7 @@ export default class MeshProvider {
         console.log(`Loading ${this._queue.length} meshes...`);
 
         for (const handle of this._queue) {
-            SceneLoader.ImportMeshAsync(null, "assets/", handle.path).then((result) => {
+            SceneLoader.ImportMeshAsync(null, "assets/" + handle.path).then((result) => {
                 handle.result = result;
             });
         }

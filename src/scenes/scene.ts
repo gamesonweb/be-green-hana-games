@@ -36,4 +36,8 @@ export default abstract class Scene extends BScene {
   public addComponent(component: ISceneComponent) {
     this._sceneComponents.push(component);
   }
+
+  public getComponent<T extends ISceneComponent>(type: new (...args: any[]) => T): T {
+    return this._sceneComponents.find((component) => component instanceof type) as T;
+  }
 }

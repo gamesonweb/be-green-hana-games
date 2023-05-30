@@ -15,6 +15,7 @@ import { PlanetManager } from "../space/PlanetManager";
 import { Spaceship } from "../space/Spaceship";
 import WorldScene from "./world";
 import { Dialogue } from "../space/ui/Dialogue";
+import ConfigTable from "../logic/config/table";
 
 export default class SpaceScene extends Scene {
   private _camera: UniversalCamera;
@@ -42,9 +43,9 @@ export default class SpaceScene extends Scene {
 
     // this.debugLayer.show();
 
-    // setTimeout(() => {
-    //   this._switchToWorldScene();
-    // }, 2500);
+    setTimeout(() => {
+      this._switchToWorldScene();
+    }, 2500);
   }
 
   private _createCamera(): void {
@@ -123,7 +124,7 @@ export default class SpaceScene extends Scene {
   private _switchToWorldScene() {
     // switch to the world scene
     const engine = this.getEngine();
-    new WorldScene(engine).init().then(() => {
+    new WorldScene(engine, ConfigTable.getScene(1)).init().then(() => {
       this.dispose();
     });
   }

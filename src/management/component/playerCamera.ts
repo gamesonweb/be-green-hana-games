@@ -14,15 +14,7 @@ export default class PlayerCamera implements ISceneComponent {
     constructor(scene: WorldScene, target: GameObject, offset: Vector3, speed: number = 10) {
         this._scene = scene;
         this._camera = new FlyCamera("camera", Vector3.Zero(), scene);
-        this._camera.mode = Camera.ORTHOGRAPHIC_CAMERA;
-
-        const rect   = scene.getEngine().getRenderingCanvasClientRect();
-        const aspect = rect.height / rect.width; 
-        const radius = 20;
-        this._camera.orthoLeft   = -radius;
-        this._camera.orthoRight  =  radius;
-        this._camera.orthoBottom = -radius * aspect;
-        this._camera.orthoTop    =  radius * aspect;   
+        this._camera.mode = Camera.PERSPECTIVE_CAMERA;
 
         this._target = target;
         this._offset = offset;
