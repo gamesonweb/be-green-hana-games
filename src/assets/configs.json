@@ -70,11 +70,11 @@
                 "shootDamage": 40,
                 "shootRadius": 1,
                 "projectileId": 1,
-                "projectileSpeed": 15,
+                "projectileSpeed": 20,
                 "projectileLifetime": 1.5,
-                "alertInRadius": 7.5,
-                "alertOutRadius": 12,
-                "patrolRadius": 4
+                "alertInRadius": 15,
+                "alertOutRadius": 24,
+                "patrolRadius": 8
             },
             "movement": {
                 "speed": 5,
