@@ -7,25 +7,23 @@ import {TargetCamera} from "@babylonjs/core/Cameras/targetCamera";
 export default class PlayerCamera implements ISceneComponent {
     private _scene: WorldScene;
     private _camera: TargetCamera;
-    private _target: GameObject;
+    private _target: GameObject | null;
     private _offset: Vector3;
 
     private _speed: number;
 
     private _tracking: boolean;
 
-    constructor(scene: WorldScene, target: GameObject, camera: TargetCamera, offset: Vector3, speed: number = 10) {
+    constructor(scene: WorldScene, camera: TargetCamera, offset: Vector3, speed: number = 10) {
         this._scene = scene;
         this._camera = camera;
         this._camera.mode = Camera.PERSPECTIVE_CAMERA;
         this._camera.position = offset;
         this._camera.parent = null;
 
-        this._target = target;
+        this._target = null;
         this._offset = offset;
         this._speed = speed;
-
-        this.tracking = true;
     }
 
     public update(t: number): void {
@@ -70,6 +68,11 @@ export default class PlayerCamera implements ISceneComponent {
 
     public get camera(): TargetCamera {
         return this._camera;
+    }
+
+    public set target(target: GameObject) {
+        this._target = target;
+        this.tracking = true;
     }
 
     public destroy(): void {

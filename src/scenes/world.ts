@@ -71,30 +71,20 @@ export default class WorldScene extends Scene {
         await super.init();
         await this.createTerrain();
 
-        const loadData = [];
-        for (const object of this._config.objects) {
-            console.log('loading object', object.name);
-
-            loadData.push({
-                id: object.id,
-                position: new Vector3(object.position.x, object.position.y, 0),
-                direction: Math.PI / 2 - object.direction,
-                type: object.type,
-                ...object.params
-            });
-        }
-
-        this._level.load({
-            objects: loadData,
-            points: this._config.points,
-        });
-
         this.debugLayer.show();
 
         const cinematicCamera = this.cameras[0] as FreeCamera;
         const playerCamera = new TargetCamera("PlayerCamera", Vector3.Up(), this, true);
         this.activeCamera = playerCamera;
-        
+
+        this.addComponent(new PlayerCamera(this, this.activeCamera as TargetCamera, WorldScene.CAMERA_OFFSET, WorldScene.CAMERA_SPEED));
+        this.addComponent(new DialogComponent(this, this._level));
+        this.addComponent(new UIComponent(this, this._level))
+        this.addComponent(new CinematicComponent(this, cinematicCamera, this._level));
+        this.addComponent(new PlayerInput(this));
+
+        this.loadLevel();
+
         this._sun = this.lights[0] as DirectionalLight;
         this._sun.autoCalcShadowZBounds = true;
 
@@ -108,18 +98,6 @@ export default class WorldScene extends Scene {
                 this._shadowGenerator.addShadowCaster(mesh);
                 console.log('added shadow caster', mesh.name);
             }
-        }
-
-        this.addComponent(new DialogComponent(this, this._level));
-        this.addComponent(new UIComponent(this, this._level))
-
-        const character = this._getCharacter();
-        if (character !== null) {
-            this.addComponent(new PlayerCamera(this, character, this.activeCamera as TargetCamera, WorldScene.CAMERA_OFFSET, WorldScene.CAMERA_SPEED));
-            this.addComponent(new CinematicComponent(this, cinematicCamera, this._level));
-            this.addComponent(new PlayerInput(this, character));
-        } else {
-            console.warn("Could not find character");
         }
 
         const defaultPipeline = new DefaultRenderingPipeline("default", true, this, [this.activeCamera, cinematicCamera]);
@@ -149,6 +127,37 @@ export default class WorldScene extends Scene {
         await MeshProvider.instance.executeAsync();
 
         console.log('scene initialized');
+    }
+
+    private loadLevel() {
+        const loadData = [];
+        for (const object of this._config.objects) {
+            console.log('loading object', object.name);
+
+            loadData.push({
+                id: object.id,
+                position: new Vector3(object.position.x, object.position.y, 0),
+                direction: Math.PI / 2 - object.direction,
+                type: object.type,
+                ...object.params
+            });
+        }
+
+        this._level.load({
+            objects: loadData,
+            points: this._config.points,
+        });
+
+        const player = this._level.gameObjectManager.player;
+        const playerCamera = this.getComponent(PlayerCamera);
+        if (playerCamera !== null) {
+            playerCamera.target = player;
+        }
+
+        const playerInput = this.getComponent(PlayerInput);
+        if (playerInput !== null) {
+            playerInput.character = player;
+        }
     }
 
     private async createTerrain() : Promise<void> {
@@ -204,16 +213,6 @@ export default class WorldScene extends Scene {
         }
     }
 
-    private _getCharacter(): Character {
-        const objects = this._level.gameObjectManager.objects;
-        for (const object of objects.values()) {
-            if (object.type === GameObjectType.Character) {
-                return object as Character;
-            }
-        }
-        return null;
-    }
-
     private updateLogic() {
         if (!this._initialized) {
             return;
@@ -226,9 +225,10 @@ export default class WorldScene extends Scene {
             this._logicTime -= Time.TICK_DELTA_TIME;
         }
 
-        if (this._getCharacter() === null) {
+        const character = this._level.gameObjectManager.player;
+        if (character === null) {
             this._initialized = false;
-            this._reloadCurrentScene();
+            this.loadLevel();
         }
     }
 

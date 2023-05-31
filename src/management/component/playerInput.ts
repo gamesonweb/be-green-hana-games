@@ -18,9 +18,7 @@ export default class PlayerInput implements ISceneComponent {
 
     private _cinematicComponent: CinematicComponent;
 
-    constructor(scene: Scene, character: Character) {
-        this._character = character;
-        // handle click on canvas
+    constructor(scene: Scene) {
         scene.onPointerDown = (event, pickResult) => {
             if (pickResult.hit) {
                 const from = this._character.position;
@@ -42,8 +40,17 @@ export default class PlayerInput implements ISceneComponent {
         return this._character;
     }
 
+    public set character(character: Character) {
+        this._character = character;
+    }
+
     public update(): void {
-        if (this._cinematicComponent.playingCinematic) {
+        if (!this._character || !this._character.alive) {
+            return;
+        }
+
+        const playingCinematic = this._cinematicComponent.playingCinematic;
+        if (playingCinematic) {
             // set all inputs to 0
             InputManager.clear();
         }
@@ -59,7 +66,7 @@ export default class PlayerInput implements ISceneComponent {
             input.dash = input.dash || InputManager.isKeyDown("Shift", true);
         }
 
-        if (this._attackDirection !== null) {
+        if (this._attackDirection !== null && !playingCinematic) {
             const combatComponent = this._character.findComponent(CombatComponent);
             if (combatComponent && combatComponent.canAttack) {
                 combatComponent.attack(this._attackDirection);
