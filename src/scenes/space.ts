@@ -20,7 +20,9 @@ import WorldScene from "./world";
 import { Dialogue } from "../space/ui/Dialogue";
 import ConfigTable from "../logic/config/table";
 import { PhysicsImpostor } from "@babylonjs/core/Physics/physicsImpostor";
-import { FirstPersonPlayer } from "./Player";
+import { FirstPersonPlayer } from "../space/Player";
+import { SpaceStation } from '../space/SpaceStation';
+import * as TWEEN from "tween.js";
 
 export default class SpaceScene extends Scene {
   private _camera: FreeCamera;
@@ -44,32 +46,9 @@ export default class SpaceScene extends Scene {
 
     this._createCamera();
     this._createLight();
-    //load collider.glb, add mesh collider to scene
-    var spaceStationCollider = await SceneLoader.ImportMeshAsync(
-      "",
-      "assets/space/obj/",
-      "collider.glb",
-      this
-    );
-    spaceStationCollider.meshes[0].position = new Vector3(0, 0, 0);
-    // get the second mesh in collider
-    spaceStationCollider.meshes.forEach((mesh) => {
-      mesh.physicsImpostor = new PhysicsImpostor(
-        mesh,
-        PhysicsImpostor.MeshImpostor,
-        { mass: 0, restitution: 0 },
-        this
-      );
-      mesh.checkCollisions = true;
-    });
 
-    var spaceStation = await SceneLoader.ImportMeshAsync(
-      "",
-      "assets/space/obj/",
-      "spaceship.glb",
-      this
-    );
-
+    let space = new SpaceStation(this, new Vector3(0, 0, 0));
+    await space.init();
     // var colliders = spaceStation.getChildren()[0];
     // console.log(colliders);
     // var tmp = spaceStation.getChildren()[1];
@@ -102,19 +81,13 @@ export default class SpaceScene extends Scene {
 
     // put the camera on top of the sphere and target it
     this._camera.position = new Vector3(65, 5, 51);
-    this._camera.setTarget(spaceStationCollider.meshes[0].position);
-
+      this._camera.detachControl();
     // this._createSkybox();
     // this._createPlanets();
     // await this._createSpaceship();
     // this._createDialogue();
 
     //Create a player that can move zsqd and rotate with mouse, and attach it to the camera. Also add a collider to it
-    const player = new FirstPersonPlayer(
-      this,
-      null,
-      new Vector3(65, 5, 51)
-    );
 
     this.debugLayer.show();
 
@@ -126,7 +99,7 @@ export default class SpaceScene extends Scene {
   private _createCamera(): void {
     this._camera = new FreeCamera("camera", new Vector3(0, 0, -10), this);
     //attach input
-    this._camera.attachControl();
+    // this._camera.attachControl();
     this._camera.maxZ = 100000;
   }
 
@@ -188,6 +161,7 @@ export default class SpaceScene extends Scene {
   public update() {
     // this._planets.update(this.getEngine().getDeltaTime());
     // this._dialogue.update(this.getEngine().getDeltaTime());
+    TWEEN.update();
     super.update();
   }
 
