@@ -21,7 +21,6 @@ Nom: nakama
 - Sebastien AGLAE
 - Mike CHIAPPE
 
-
 ## Monde spatial
 ### Controles
 #### Joueur

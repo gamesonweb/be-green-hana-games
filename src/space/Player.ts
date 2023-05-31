@@ -30,6 +30,7 @@ export class FirstPersonPlayer {
     this._startPosition = startPosition;
 
     this.setupCamera();
+    this.setupPlayer();
 
     this.scene.onBeforeRenderObservable.add(() => {
       this._update();
@@ -150,8 +151,7 @@ export class FirstPersonPlayer {
 
   public dispawn() {
     this.scene.onKeyboardObservable.remove(this.inputObservable);
-    this._camera.dispose();
-    this.playerMesh.dispose();
+    this.playerMesh.position = this._startPosition;
     this._playerEnabled = false;
   }
 

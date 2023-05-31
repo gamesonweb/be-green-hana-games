@@ -179,6 +179,7 @@ export class SpaceStation {
     this._updateDoor();
   }
 
+
   private _updateDoor() {
     let nearestDoor = this._getNearestDoor();
     this._doors.forEach((door) => {
