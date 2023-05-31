@@ -33,7 +33,7 @@ export default class CinematicComponent implements ISceneComponent {
         this._cinematicCamera = cinematicCamera;
         this._dialogComponent = scene.getComponent(DialogComponent);
 
-        this._createDebugMenu();
+        // this._createDebugMenu();
     }
 
     update(): void {

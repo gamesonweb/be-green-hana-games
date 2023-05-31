@@ -46,6 +46,7 @@ export class Dialogue {
 
   public update(deltaTime: number) {
     if (this._texts.length > 0) {
+      this.dialoguesElement.style.display = "block";
       this.updateDialogues(this._texts[0]);
       this._textTime[0] -= deltaTime;
       if (this._textTime[0] < 0) {
@@ -114,6 +115,7 @@ export class Dialogue {
 
   clearDialogues() {
     this.dialoguesElement.innerText = "";
+    this.dialoguesElement.style.display = "none";
   }
 
   showOnlyDialogues() {
