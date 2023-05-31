@@ -16,7 +16,10 @@ npm start
 [nakama.hanagames.net](https://assets.atrasis.net/nakama/)
 La video
 https://assets.atrasis.net/nakama/video.mp4
-
+Nom: nakama
+- Meriem Saez
+- Sebastien AGLAE
+- Mike CHIAPPE
 
 
 ## Monde spatial
