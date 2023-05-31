@@ -39,6 +39,7 @@ import {TargetCamera} from "@babylonjs/core/Cameras/targetCamera";
 import DialogComponent from "../management/component/dialog";
 import MeshProvider from "../management/meshprovider";
 import {SkyMaterial} from "@babylonjs/materials";
+import UIComponent from "../management/component/ui";
 
 export default class WorldScene extends Scene {
     private static readonly CAMERA_SPEED: number = 15;
@@ -110,11 +111,12 @@ export default class WorldScene extends Scene {
         }
 
         this.addComponent(new DialogComponent(this, this._level));
+        this.addComponent(new UIComponent(this, this._level))
 
         const character = this._getCharacter();
         if (character !== null) {
             this.addComponent(new PlayerCamera(this, character, this.activeCamera as TargetCamera, WorldScene.CAMERA_OFFSET, WorldScene.CAMERA_SPEED));
-            this.addComponent(new CinematicComponent(this, cinematicCamera, this._level.missionManager));
+            this.addComponent(new CinematicComponent(this, cinematicCamera, this._level));
             this.addComponent(new PlayerInput(this, character));
         } else {
             console.warn("Could not find character");

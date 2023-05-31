@@ -81,9 +81,9 @@ export default class SpaceScene extends Scene {
 
     this.debugLayer.show();
 
-    // setTimeout(() => {
-    //   this._switchToWorldScene();
-    // }, 2500);
+    setTimeout(() => {
+      this._switchToWorldScene();
+    }, 2500);
   }
 
   private _createLight(): void {

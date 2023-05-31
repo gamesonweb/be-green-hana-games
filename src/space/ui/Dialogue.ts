@@ -52,7 +52,7 @@ export class Dialogue {
   }
 
   updateMonsterCount(count: number) {
-    this.monsterCountElement.innerText = `Monstres à tuer : ${count}`;
+    this.monsterCountElement.innerText = `Monstres restants : ${count}`;
   }
 
   updatePlayerInfo(

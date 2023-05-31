@@ -139,6 +139,18 @@ export default class Mission {
         return this._completed;
     }
 
+    public get npc(): Npc {
+        return this._npc;
+    }
+
+    public get progress(): number {
+        return this._progress;
+    }
+
+    public get requiredProgress(): number {
+        return this._requiredProgress;
+    }
+
     public update() {
         if (this._config.type === MissionType.FOLLOW_NPC) {
             const npcPosition = this._npc.position;

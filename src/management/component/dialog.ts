@@ -12,7 +12,10 @@ export default class DialogComponent implements ISceneComponent {
 
     constructor(scene: Scene, level: Level) {
         this._missionManager = level.missionManager;
-        this._manager = new Dialogue();
+        this._manager = Dialogue.getInstance();
+
+        this._manager.clear();
+        this._manager.clearDialogues();
     }
 
     destroy(): void {

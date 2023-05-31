@@ -35,6 +35,10 @@ export default class HitpointComponent extends Component {
         return this._hitpoint;
     }
 
+    public get maxHitpoint(): number {
+        return this._config.max;
+    }
+
     public get team(): number {
         return this._team;
     }

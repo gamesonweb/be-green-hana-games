@@ -526,7 +526,7 @@
             "tpPoint": 5,
 
             "title": "Introduction - Sauver les Nekoma",
-            "description": "A l'atterissage",
+            "description": "",
 
             "cinematic": "Cinematic_1stAttack_Intro",
             "video": "",
@@ -550,7 +550,7 @@
             "tpPoint": 0,
 
             "title": "Introduction - Sauver les Nekoma",
-            "description": "Tuez les loups qui menacent l'homme",
+            "description": "Tuez les loups qui menacent l'homme (%progress% / %total%)",
 
             "cinematic": "",
             "video": "",
@@ -580,7 +580,7 @@
             "tpPoint": 4,
 
             "title": "Introduction - Sauver les Nekoma",
-            "description": "Tuez les loups qui menacent l'homme",
+            "description": "",
 
             "cinematic": "Cinematic_1stAttack_End",
             "video": "",

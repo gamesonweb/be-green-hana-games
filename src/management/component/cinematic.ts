@@ -4,9 +4,12 @@ import MissionManager from "../../logic/mission/manager";
 import {AnimationGroup, FreeCamera} from "@babylonjs/core";
 import PlayerCamera from "./playerCamera";
 import DialogComponent from "./dialog";
+import Level from "../../logic/level/level";
+import RenderComponent from "../../logic/gameobject/component/render";
 
 export default class CinematicComponent implements ISceneComponent {
     private readonly _scene: Scene;
+    private readonly _level: Level;
     private readonly _missionManager: MissionManager;
 
     private _currentCinematic: AnimationGroup | null = null;
@@ -22,9 +25,10 @@ export default class CinematicComponent implements ISceneComponent {
     private _fadeIn: number = 0;
     private _canvasCurrentFadeIn: number = 0;
 
-    constructor(scene: Scene, cinematicCamera: FreeCamera, missionManager: MissionManager) {
+    constructor(scene: Scene, cinematicCamera: FreeCamera, level: Level) {
         this._scene = scene;
-        this._missionManager = missionManager;
+        this._level = level;
+        this._missionManager = level.missionManager;
         this._playerCamera = scene.getComponent(PlayerCamera);
         this._cinematicCamera = cinematicCamera;
         this._dialogComponent = scene.getComponent(DialogComponent);
@@ -66,6 +70,13 @@ export default class CinematicComponent implements ISceneComponent {
             return false;
         }
 
+        if (name == "Cinematic_Intro") {
+            const player = this._level.gameObjectManager.player;
+            if (player) {
+                player.getComponent(RenderComponent).hide();
+            }
+        }
+
         this._playerCamera.camera.setEnabled(false);
         this._cinematicCamera.setEnabled(true);
         this._scene.activeCamera = this._cinematicCamera;
@@ -78,10 +89,7 @@ export default class CinematicComponent implements ISceneComponent {
     private _updatePlayingCinematic(): void {
         if (this._currentCinematic) {
             if (!this._currentCinematic.isPlaying) {
-                this._currentCinematic = null;
-                this._cinematicCamera.setEnabled(false);
-                this._playerCamera.camera.setEnabled(true);
-                this._scene.activeCamera = this._playerCamera.camera;
+                this._stopCinematic();
                 this._missionManager.currentMission?.complete();
             } else {
                 const toFrame = this._currentCinematic.to;
@@ -112,6 +120,13 @@ export default class CinematicComponent implements ISceneComponent {
 
     private _stopCinematic(): void {
         if (this._currentCinematic) {
+            if (this._currentCinematic.name == "Cinematic_Intro") {
+                const player = this._level.gameObjectManager.player;
+                if (player) {
+                    player.getComponent(RenderComponent).show();
+                }
+            }
+
             this._currentCinematic.stop();
             this._currentCinematic = null;
             this._cinematicCamera.setEnabled(false);

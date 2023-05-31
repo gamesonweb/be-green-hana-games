@@ -14,6 +14,8 @@ export default class RenderComponent extends Component {
 
     public onLoaded: EventListT<AbstractMesh> = new EventListT<AbstractMesh>();
 
+    private _hide: boolean = false;
+
     public constructor(parent: GameObject, config: RenderConfig = null) {
         super(parent);
         this._handle = MeshProvider.instance.load(config.model);
@@ -82,6 +84,21 @@ export default class RenderComponent extends Component {
 
             this._mesh.position = Vector3.Lerp(this._mesh.position, obj3D, 0.2);
             this._mesh.rotation = fromRotation.add(deltaRotation.scale(0.2));
+
+            if (this._hide) {
+                obj3D.y = -100;
+                this._mesh.position = obj3D;
+            } else if (this._mesh.position.y < -0.1) {
+                this._mesh.position = obj3D;
+            }
         }
+    }
+
+    public hide() {
+        this._hide = true;
+    }
+
+    public show() {
+        this._hide = false;
     }
 }
