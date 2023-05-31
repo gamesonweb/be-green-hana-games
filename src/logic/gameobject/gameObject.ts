@@ -132,4 +132,5 @@ export enum GameObjectType {
     Projectile = 2,
     Chest = 3,
     Trigger = 4,
+    Npc = 5,
 }

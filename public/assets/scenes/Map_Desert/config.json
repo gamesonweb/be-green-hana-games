@@ -1,17 +1,15 @@
 {
-  "id": 0,
-  "name": "Map_Desert",
-  "width": 1445,
-  "height": 1490,
+  "width": 1685,
+  "height": 1730,
   "precision": 5,
   "useBakedTilemap": true,
   "models": [
     {
       "path": "Terrain_0_0-20230529_-_194720.glb",
       "position": {
-        "x": -31.3000031,
+        "x": -79.3,
         "y": 0.0,
-        "z": -22.3000031
+        "z": -70.3
       },
       "rotation": {
         "x": 0.0,
@@ -46,51 +44,80 @@
   "objects": [
     {
       "id": 1,
-      "name": "Monster.1",
+      "name": "Monster.3",
       "position": {
-        "x": 93.3999939,
-        "y": 73.2999954
+        "x": 91.5499954,
+        "y": 87.67999
       },
-      "direction": 0.0,
+      "direction": 2.56423783,
       "type": 1,
       "params": {
-        "config": 1
+        "config": 1,
+        "freezePatrol": true
       }
     },
     {
       "id": 2,
+      "name": "Monster.2",
+      "position": {
+        "x": 90.92,
+        "y": 77.85
+      },
+      "direction": 3.7778697,
+      "type": 1,
+      "params": {
+        "config": 1,
+        "freezePatrol": true
+      }
+    },
+    {
+      "id": 3,
+      "name": "Monster.1",
+      "position": {
+        "x": 81.1,
+        "y": 75.19
+      },
+      "direction": -1.33786261,
+      "type": 1,
+      "params": {
+        "config": 1,
+        "freezePatrol": true
+      }
+    },
+    {
+      "id": 4,
       "name": "Chest.1",
       "position": {
         "x": 117.28,
         "y": 128.76
       },
-      "direction": 147.162918,
+      "direction": 0.9976811,
       "type": 3,
       "params": {
         "drops": []
       }
     },
     {
-      "id": 3,
+      "id": 5,
       "name": "Character.1",
       "position": {
         "x": 54.6,
         "y": 23.0
       },
-      "direction": 0.0,
+      "direction": -1.57079637,
       "type": 0,
       "params": {
         "config": 1
       }
     },
     {
-      "id": 4,
+      "id": 6,
       "name": "Trigger.Quest_KillMonsterTutorial.1",
       "position": {
         "x": 93.0,
         "y": 54.409996
       },
-      "direction": 0.0,
+      "direction": -1.57079637,
       "type": 4,
       "params": {
         "area": [
@@ -101,5 +128,31 @@
         ]
       }
     }
-  ]
+  ],
+  "points": [
+    {
+      "id": 1,
+      "position": {
+        "x": 84.2,
+        "y": 83.0
+      }
+    },
+    {
+      "id": 1,
+      "position": {
+        "x": 78.9,
+        "y": 154.2
+      }
+    },
+    {
+      "id": 1,
+      "position": {
+        "x": 128.6,
+        "y": 174.6
+      }
+    }
+  ],
+  "id": 0,
+  "name": "Map_Desert",
+  "hideFlags": 0
 }

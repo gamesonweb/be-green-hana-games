@@ -27,39 +27,45 @@
                 "idle": {
                     "clip": "idle",
                     "loop": true,
-                    "speed": 1
+                    "speed": 1,
+                    "alt": []
                 },
                 "walk": {
                     "clip": "walk",
                     "loop": true,
-                    "speed": 1.5
+                    "speed": 1.5,
+                    "alt": []
                 },
                 "attack": {
                     "clip": "attack",
                     "loop": false,
-                    "speed": 1
+                    "speed": 1,
+                    "alt": []
                 },
                 "die": {
                     "clip": "die",
                     "loop": false,
-                    "speed": 1
+                    "speed": 1,
+                    "alt": []
                 },
                 "damage": {
                     "clip": "damage",
                     "loop": false,
-                    "speed": 1
+                    "speed": 1,
+                    "alt": []
                 }
             },
             "render": {
                 "model": "models/characters/shriley.glb",
-                "scale": 2
+                "scale": 3,
+                "rotation": 0
             }
         }
     ],
     "monsters": [
         {
             "id": 1,
-            "name": "Slime Flower",
+            "name": "Wolf_White",
             "hitpoint": {
                 "max": 50,
                 "regenAmount": 20,
@@ -68,16 +74,18 @@
             "combat": {
                 "attackDelay": 1.5,
                 "shootDamage": 40,
-                "shootRadius": 1,
-                "projectileId": 1,
-                "projectileSpeed": 20,
-                "projectileLifetime": 1.5,
-                "alertInRadius": 15,
-                "alertOutRadius": 24,
-                "patrolRadius": 8
+                "shootRadius": 2,
+
+                "projectileId": 0,
+                "projectileSpeed": 0,
+                "projectileLifetime": 0,
+
+                "alertInRadius": 25,
+                "alertOutRadius": 35,
+                "patrolRadius": 12.5
             },
             "movement": {
-                "speed": 5,
+                "speed": 9,
                 "dashSpeed": 45,
                 "acceleration": 15,
                 "deceleration": 10,
@@ -85,34 +93,43 @@
             },
             "animation": {
                 "idle": {
-                    "clip": "idle",
+                    "clip": "Idle",
                     "loop": true,
-                    "speed": 1
+                    "speed": 0.75,
+                    "alt": [
+                        "Look Around",
+                        "Howl"
+                    ]
                 },
                 "walk": {
-                    "clip": "move",
+                    "clip": "Run Forward WO Root",
                     "loop": true,
-                    "speed": 1
+                    "speed": 1,
+                    "alt": []
                 },
                 "attack": {
-                    "clip": "attack",
+                    "clip": "Pound Attack W Root",
                     "loop": false,
-                    "speed": 1
+                    "speed": 1,
+                    "alt": []
                 },
                 "die": {
-                    "clip": "die",
+                    "clip": "Die",
                     "loop": false,
-                    "speed": 1
+                    "speed": 1,
+                    "alt": []
                 },
                 "damage": {
-                    "clip": "damage",
+                    "clip": "Take Damage",
                     "loop": false,
-                    "speed": 1
+                    "speed": 1,
+                    "alt": []
                 }
             },
             "render": {
-                "model": "models/monsters/slime_flower.glb",
-                "scale": 2
+                "model": "models/monsters/wolf_white.glb",
+                "scale": 0.8,
+                "rotation": -90
             }
         }
     ],
@@ -122,25 +139,24 @@
             "name": "Slime Ball",
             "render": {
                 "model": "models/projectiles/fireball.glb",
-                "scale": 0.6
+                "scale": 0.6,
+                "rotation": 0
             }
         }
     ],
     "scenes": [
         {
-            "id": 1,
-            "name": "Map_Desert",
-            "width": 1445,
-            "height": 1490,
+            "width": 1685,
+            "height": 1730,
             "precision": 5,
             "useBakedTilemap": true,
             "models": [
                 {
                     "path": "Terrain_0_0-20230529_-_194720.glb",
                     "position": {
-                        "x": -31.3000031,
+                        "x": -79.3,
                         "y": 0.0,
-                        "z": -22.3000031
+                        "z": -70.3
                     },
                     "rotation": {
                         "x": 0.0,
@@ -175,51 +191,80 @@
             "objects": [
                 {
                     "id": 1,
-                    "name": "Monster.1",
+                    "name": "Monster.3",
                     "position": {
-                        "x": 93.3999939,
-                        "y": 73.2999954
+                        "x": 91.5499954,
+                        "y": 87.67999
                     },
-                    "direction": 0.0,
+                    "direction": 2.56423783,
                     "type": 1,
                     "params": {
-                        "config": 1
+                        "config": 1,
+                        "freezePatrol": true
                     }
                 },
                 {
                     "id": 2,
+                    "name": "Monster.2",
+                    "position": {
+                        "x": 90.92,
+                        "y": 77.85
+                    },
+                    "direction": 3.7778697,
+                    "type": 1,
+                    "params": {
+                        "config": 1,
+                        "freezePatrol": true
+                    }
+                },
+                {
+                    "id": 3,
+                    "name": "Monster.1",
+                    "position": {
+                        "x": 81.1,
+                        "y": 75.19
+                    },
+                    "direction": -1.33786261,
+                    "type": 1,
+                    "params": {
+                        "config": 1,
+                        "freezePatrol": true
+                    }
+                },
+                {
+                    "id": 4,
                     "name": "Chest.1",
                     "position": {
                         "x": 117.28,
                         "y": 128.76
                     },
-                    "direction": 147.162918,
+                    "direction": 0.9976811,
                     "type": 3,
                     "params": {
                         "drops": []
                     }
                 },
                 {
-                    "id": 3,
+                    "id": 5,
                     "name": "Character.1",
                     "position": {
                         "x": 54.6,
                         "y": 23.0
                     },
-                    "direction": 0.0,
+                    "direction": -1.57079637,
                     "type": 0,
                     "params": {
                         "config": 1
                     }
                 },
                 {
-                    "id": 4,
+                    "id": 6,
                     "name": "Trigger.Quest_KillMonsterTutorial.1",
                     "position": {
                         "x": 93.0,
                         "y": 54.409996
                     },
-                    "direction": 0.0,
+                    "direction": -1.57079637,
                     "type": 4,
                     "params": {
                         "area": [
@@ -230,7 +275,221 @@
                         ]
                     }
                 }
-            ]
+            ],
+            "points": [
+                {
+                    "id": 1,
+                    "position": {
+                        "x": 84.2,
+                        "y": 83.0
+                    }
+                },
+                {
+                    "id": 1,
+                    "position": {
+                        "x": 78.9,
+                        "y": 154.2
+                    }
+                },
+                {
+                    "id": 1,
+                    "position": {
+                        "x": 128.6,
+                        "y": 174.6
+                    }
+                }
+            ],
+            "id": 1,
+            "name": "Map_Desert",
+            "hideFlags": 0
         }
-    ]
+    ],
+    "missions": [
+        {
+            "id": 10000,
+            "name": "Intro_Radio",
+            "sceneId": 0,
+            "dependencyIds": [ ],
+            "groupId": 1,
+            "type": 0,
+            "dialogs": [],
+
+            "title": "",
+            "description": "",
+
+            "cinematic": "",
+            "video": "Game_Intro_Radio.mp4",
+
+            "triggerIds": [ 1 ],
+            "monsterIds": [],
+            "monsterCount": 0,
+            "npcId": 0,
+            "npcFirstDialog": "",
+            "npcGenericDialog": "",
+            "npcMovePointIds": []
+        },
+        {
+            "id": 1,
+            "name": "Intro_Landing",
+            "sceneId": 1,
+            "dependencyIds": [ ],
+            "groupId": 1,
+            "type": 0,
+            "dialogs": [],
+
+            "title": "Introduction - Sauver les Nekoma",
+            "description": "A l'atterissage",
+
+            "cinematic": "Cinematic_Intro_Landing",
+            "video": "",
+
+            "triggerIds": [ 1 ],
+            "monsterIds": [],
+            "monsterCount": 0,
+            "npcId": 0,
+            "npcFirstDialog": "",
+            "npcGenericDialog": "",
+            "npcMovePointIds": []
+        },
+        {
+            "id": 2,
+            "name": "Intro_GoTo1stFight",
+            "sceneId": 1,
+            "dependencyIds": [ 1 ],
+            "groupId": 1,
+            "type": 1,
+            "dialogs": [
+                { "text": "Pfiou, ce voyage spatial a été mouvementé. Je crois que le village des Nekoma est proche d'ici.", "delay": 0 },
+                { "text": "Je devrais faire attention au vent, il est assez fort sur cette hémisphère.", "delay": 0 }
+            ],
+
+            "title": "Introduction - Sauver les Nekoma",
+            "description": "Trouvez un moyen de rejoindre le village des Nekoma.",
+
+            "cinematic": "",
+            "video": "",
+
+            "triggerIds": [ 1 ],
+            "monsterIds": [],
+            "monsterCount": 0,
+            "npcId": 0,
+            "npcFirstDialog": "",
+            "npcGenericDialog": "",
+            "npcMovePointIds": []
+        },
+        {
+            "id": 3,
+            "name": "Intro_KillMonster_Intro",
+            "sceneId": 1,
+            "dependencyIds": [ 2 ],
+            "groupId": 1,
+            "type": 0,
+            "dialogs": [
+                { "text": "(Ces chiens ressemblent à des chiens de Astria Corp...)", "delay": 0 },
+                { "text": "(Je devrais les tuer avant qu'ils ne s'en prennent à l'homme.)", "delay": 0 }
+            ],
+
+            "title": "Introduction - Sauver les Nekoma",
+            "description": "A l'atterissage",
+
+            "cinematic": "Cinematic_Intro_KillMonster",
+            "video": "",
+
+            "triggerIds": [ ],
+            "monsterIds": [],
+            "monsterCount": 0,
+            "npcId": 0,
+            "npcFirstDialog": "",
+            "npcGenericDialog": "",
+            "npcMovePointIds": []
+        },
+        {
+            "id": 4,
+            "name": "Intro_KillMonster_Battle",
+            "sceneId": 1,
+            "dependencyIds": [ 3 ],
+            "groupId": 1,
+            "type": 2,
+            "dialogs": [],
+
+            "title": "Introduction - Sauver les Nekoma",
+            "description": "Tuez les loups qui menacent l'homme",
+
+            "cinematic": "Cinematic_Intro_KillMonster",
+            "video": "",
+
+            "triggerIds": [ ],
+            "monsterIds": [ 1, 2, 3 ],
+            "monsterCount": 0,
+            "npcId": 0,
+            "npcFirstDialog": "",
+            "npcGenericDialog": "",
+            "npcMovePointIds": []
+        },
+        {
+            "id": 4,
+            "name": "Intro_KillMonster_End",
+            "sceneId": 1,
+            "dependencyIds": [ 3 ],
+            "groupId": 1,
+            "type": 0,
+            "dialogs": [
+                { "text": "Merci de m'avoir sauvé. Je suis le chef du village des Nekoma.", "delay": 0 },
+                { "text": "D'après votre tenue, j'imagine que vous êtes envoyé par Eco Earth pour nous aider.", "delay": 0 },
+                { "text": "Nous sommes attaqués par des créatures de Astria Corp. Elles veulent nous voler notre eau.", "delay": 0 },
+                { "text": "Nous avons besoin de votre aide pour les repousser.", "delay": 0 },
+                { "text": "Je vous invite à me suivre au village.", "delay": 0 }
+            ],
+
+            "title": "Introduction - Sauver les Nekoma",
+            "description": "Tuez les loups qui menacent l'homme",
+
+            "cinematic": "Cinematic_End_KillMonster",
+            "video": "",
+
+            "triggerIds": [ ],
+            "monsterIds": [],
+            "monsterCount": 0,
+            "npcId": 0,
+            "npcFirstDialog": "",
+            "npcGenericDialog": "",
+            "npcMovePointIds": []
+        },
+        {
+            "id": 5,
+            "name": "Intro_FollowToVillage",
+            "sceneId": 1,
+            "dependencyIds": [ 3 ],
+            "groupId": 1,
+            "type": 2,
+            "dialogs": [
+
+            ],
+
+            "title": "Introduction - Sauver les Nekoma",
+            "description": "Suivez l'homme jusqu'au village",
+
+            "cinematic": "Cinematic_End_KillMonster",
+            "video": "",
+
+            "triggerIds": [ ],
+            "monsterIds": [],
+            "monsterCount": 0,
+            "npcId": 1,
+            "npcFirstDialog": "",
+            "npcGenericDialog": "",
+            "npcMovePointIds": [ 1, 2 ]
+        }
+    ],
+    "globals": {
+        "npcMovement": {
+            "speed": 7.75,
+            "dashSpeed": 30,
+            "acceleration": 10,
+            "deceleration": 10,
+            "dashDeceleration": 6
+        },
+        "npcStartWaitingPlayerDistance": 20,
+        "npcStartChasingPlayerDistance": 5
+    }
 }

@@ -1,28 +1,37 @@
-import { Camera, FlyCamera, FreeCamera, Vector3 } from "@babylonjs/core";
+import {Camera, FlyCamera, FreeCamera, TransformNode, UniversalCamera, Vector3} from "@babylonjs/core";
 import GameObject from "../../logic/gameobject/gameObject";
 import WorldScene from "../../scenes/world";
 import ISceneComponent from "./interface";
 
 export default class PlayerCamera implements ISceneComponent {
     private _scene: WorldScene;
-    private _camera: FreeCamera;
+    private _camera: UniversalCamera;
     private _target: GameObject;
     private _offset: Vector3;
 
     private _speed: number;
 
-    constructor(scene: WorldScene, target: GameObject, camera: FreeCamera, offset: Vector3, speed: number = 10) {
+    private _tracking: boolean;
+
+    constructor(scene: WorldScene, target: GameObject, camera: UniversalCamera, offset: Vector3, speed: number = 10) {
         this._scene = scene;
         this._camera = camera;
         this._camera.mode = Camera.PERSPECTIVE_CAMERA;
+        this._camera.position = offset;
         this._camera.parent = null;
 
         this._target = target;
         this._offset = offset;
         this._speed = speed;
+
+        this.tracking = true;
     }
 
     public update(t: number): void {
+        if (!this._tracking) {
+            return;
+        }
+
         if (this._target) {
             const target3D = new Vector3(this._target.position.x, 0, this._target.position.y);
             const currentPosition = this._camera.position;
@@ -39,6 +48,27 @@ export default class PlayerCamera implements ISceneComponent {
         } else {
             console.warn('No target set for player camera');
         }
+    }
+
+    public get tracking(): boolean {
+        return this._tracking;
+    }
+
+    public set tracking(tracking: boolean) {
+        this._tracking = tracking;
+        this._camera.position = new Vector3(this._target.position.x, 0, this._target.position.y).add(this._offset);
+    }
+
+    public get enabled(): boolean {
+        return this._camera.isEnabled();
+    }
+
+    public set enabled(enabled: boolean) {
+        this._camera.setEnabled(enabled);
+    }
+
+    public get camera(): UniversalCamera {
+        return this._camera;
     }
 
     public destroy(): void {

@@ -109,4 +109,14 @@ export default class GameObjectManager {
                 throw new Error(`Unknown game object type: ${type}`);
         }
     }
+
+    public get player(): Character {
+        const objects = this._objects.values();
+        for (const object of objects) {
+            if (object.type == GameObjectType.Character) {
+                return object as Character;
+            }
+        }
+        return null;
+    }
 }

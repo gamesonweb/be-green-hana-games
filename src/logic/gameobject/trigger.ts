@@ -1,6 +1,7 @@
 import GameObject, { GameObjectType } from "./gameObject";
 import Level from "../level/level";
 import Config from "../config/config";
+import {EventList} from "../util/eventList";
 
 export default class Trigger extends GameObject {
     private _triggered: boolean;
@@ -11,7 +12,7 @@ export default class Trigger extends GameObject {
         yMax: number
     }
 
-    public onTrigger: () => void;
+    public onTrigger: EventList = new EventList();
 
     public constructor(config: Config, level: Level) {
         super(config, level);
@@ -34,7 +35,7 @@ export default class Trigger extends GameObject {
                 if (position.x >= this._area.xMin && position.x <= this._area.xMax && position.y >= this._area.yMin && position.y <= this._area.yMax) {
                     this._triggered = true;
                     if (this.onTrigger !== undefined) {
-                        this.onTrigger();
+                        this.onTrigger.trigger();
                     }
                     break;
                 }
@@ -58,5 +59,9 @@ export default class Trigger extends GameObject {
         data.triggered = this._triggered;
         data.area = [this._area.xMin, this._area.yMin, this._area.xMax, this._area.yMax];
         return data;
+    }
+
+    public get triggered(): boolean {
+        return this._triggered;
     }
 }

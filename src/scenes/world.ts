@@ -1,4 +1,27 @@
-import { AbstractMesh, BloomEffect, DefaultRenderingPipeline, DirectionalLight, FlyCamera, FreeCamera, HardwareScalingOptimization, HemisphericLight, Mesh, MeshBuilder, PBRMaterial, Ray, SceneLoader, SceneOptimization, SceneOptimizer, SceneOptimizerOptions, ShadowGenerator, Space, StandardMaterial, Vector2, Vector3 } from "@babylonjs/core";
+import {
+    AbstractMesh,
+    BloomEffect,
+    DefaultRenderingPipeline,
+    DirectionalLight,
+    FlyCamera,
+    FreeCamera,
+    HardwareScalingOptimization,
+    HemisphericLight,
+    Mesh,
+    MeshBuilder,
+    PBRMaterial,
+    Ray,
+    SceneLoader,
+    SceneOptimization,
+    SceneOptimizer,
+    SceneOptimizerOptions,
+    ShadowGenerator,
+    Space,
+    StandardMaterial,
+    UniversalCamera,
+    Vector2,
+    Vector3
+} from "@babylonjs/core";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import Character from "../logic/gameobject/character";
 import { GameObjectType } from "../logic/gameobject/gameObject";
@@ -11,6 +34,7 @@ import SpaceScene from "./space";
 import { Dialogue } from "../space/ui/Dialogue";
 import SceneConfig from "../logic/config/scene";
 import TilemapLoaderComponent from "../management/component/tilemapLoader";
+import CinematicComponent from "../management/component/cinematic";
 
 export default class WorldScene extends Scene {
     private static readonly CAMERA_SPEED: number = 15;
@@ -29,7 +53,7 @@ export default class WorldScene extends Scene {
 
     constructor(engine: Engine, config: SceneConfig) {
         super(engine);
-        this._level = new Level(new Vector2(Math.floor(config.width / config.precision), Math.floor(config.height / config.precision)), config.precision);
+        this._level = new Level(config.id, new Vector2(Math.floor(config.width / config.precision), Math.floor(config.height / config.precision)), config.precision);
         this._config = config;
         this.onDispose = () => {
             this._level.destroy();
@@ -58,14 +82,16 @@ export default class WorldScene extends Scene {
         }
 
         this._level.load({
-            objects: loadData
+            objects: loadData,
+            points: this._config.points,
         });
 
         this.debugLayer.show();
 
         this._createDialogue();
 
-        this.activeCamera = this.cameras[0];
+        const cinematicCamera = this.cameras[0] as FreeCamera;
+        this.activeCamera = new UniversalCamera("PlayerCamera", Vector3.Up(), this);
         
         this._sun = this.lights[0] as DirectionalLight;
         this._sun.autoCalcShadowZBounds = true;
@@ -85,12 +111,13 @@ export default class WorldScene extends Scene {
         const character = this._getCharacter();
         if (character !== null) {
             this.addComponent(new PlayerInput(this, character));
-            this.addComponent(new PlayerCamera(this, character, this.activeCamera as FreeCamera, WorldScene.CAMERA_OFFSET, WorldScene.CAMERA_SPEED));
+            this.addComponent(new PlayerCamera(this, character, this.activeCamera as UniversalCamera, WorldScene.CAMERA_OFFSET, WorldScene.CAMERA_SPEED));
+            this.addComponent(new CinematicComponent(this, cinematicCamera, this._level.missionManager));
         } else {
             console.warn("Could not find character");
         }
 
-        var defaultPipeline = new DefaultRenderingPipeline("default", true, this, [this.activeCamera]);
+        var defaultPipeline = new DefaultRenderingPipeline("default", true, this, [this.activeCamera, cinematicCamera]);
         defaultPipeline.bloomEnabled = true;
         defaultPipeline.bloomThreshold = 0.05;
         defaultPipeline.bloomWeight = 0.35;

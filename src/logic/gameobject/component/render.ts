@@ -5,12 +5,16 @@ import Character from "../character";
 import GameObject from "../gameObject";
 import AnimationComponent from "./animation";
 import Component, { ComponentType } from "./component";
+import {EventList, EventListT} from "../../util/eventList";
 
 export default class RenderComponent extends Component {
     private _handle: MeshAsyncHandle;
     private _mesh: AbstractMesh;
+    private _rotationOffsetX;
 
-    public constructor(parent: GameObject, config: RenderConfig) {
+    public onLoaded: EventListT<AbstractMesh> = new EventListT<AbstractMesh>();
+
+    public constructor(parent: GameObject, config: RenderConfig = null) {
         super(parent);
         this._handle = MeshProvider.instance.load(config.model);
         this._handle.onLoaded = (result) => {
@@ -25,6 +29,7 @@ export default class RenderComponent extends Component {
 
             // apply scale
             this._mesh.scaling = new Vector3(-config.scale, config.scale, -config.scale);
+            this._rotationOffsetX = config.rotation * (Math.PI / 180);
             
             const animationComponent = this.parent.findComponent(AnimationComponent);
             if (animationComponent) {
@@ -38,6 +43,8 @@ export default class RenderComponent extends Component {
             } else {
                 console.error("No scene found for mesh");
             }
+
+            this.onLoaded.trigger(this._mesh);
         };
     }
 
@@ -64,7 +71,7 @@ export default class RenderComponent extends Component {
         if (this._mesh) {
             const obj3D = new Vector3(this.parent.position.x, 0, this.parent.position.y);
             const fromRotation = this._mesh.rotation;
-            const toRotation = new Vector3(0, -this.parent.direction, 0);
+            const toRotation = new Vector3(this._rotationOffsetX, -this.parent.direction, 0);
             const deltaRotation = toRotation.subtract(fromRotation);
             if (deltaRotation.y > Math.PI) {
                 deltaRotation.y -= Math.PI * 2;

@@ -4,7 +4,8 @@ import GameObject from "../gameObject";
 import CombatComponent from "./combat";
 import Component, { ComponentType } from "./component";
 import Time from "../../time/time";
-import MonsterMovementComponent from "./monsterMovement";
+import AIMovementComponent from "./aiMovement";
+import Monster from "../monster";
 
 export default class MonsterCombatComponent extends CombatComponent {
     private static readonly AlertCheckTimer: number = Time.getTicks(1);
@@ -35,6 +36,15 @@ export default class MonsterCombatComponent extends CombatComponent {
 
     public get type(): ComponentType {
         return ComponentType.MonsterCombat;
+    }
+
+    public freezePatrol() {
+        this._patrolPoints = [new Vector2(this.parent.position.x, this.parent.position.y)];
+        this._patrolPointIndex = 0;
+    }
+
+    public get isFrozenPatrol(): boolean {
+        return this._patrolPoints != null && this._patrolPoints.length == 1;
     }
 
     public update(): void {
@@ -116,7 +126,7 @@ export default class MonsterCombatComponent extends CombatComponent {
         if (this._patrolPointIndex === -1) {
             return;
         }
-        const movementComponent = this.parent.getComponent(MonsterMovementComponent);
+        const movementComponent = this.parent.getComponent(AIMovementComponent);
         movementComponent.moveTo(this._patrolPoints[this._patrolPointIndex]);
     }
 
@@ -127,7 +137,7 @@ export default class MonsterCombatComponent extends CombatComponent {
         this._currentTarget = target;
         this._currentTargetPosition = target?.position.clone();
 
-        const movementComponent = this.parent.getComponent(MonsterMovementComponent);
+        const movementComponent = this.parent.getComponent(AIMovementComponent);
         if (target != null) {
             movementComponent.moveTo(this.findBestAttackPosition());
         } else {

@@ -97,7 +97,7 @@ class MovementComponent extends Component {
         if (velocity.lengthSquared() > 1) {
             velocity = velocity.clone().normalize();
         }
-        if (velocity.lengthSquared() > 0) {
+        if (velocity.lengthSquared() > 0.01) {
             let direction = Math.atan2(velocity.y, velocity.x);
             this.parent.direction = direction + Math.PI / 2;
         }
