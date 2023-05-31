@@ -35,8 +35,8 @@
   "dependencies": {
     "astar-typescript": "^1.2.7",
     "pako": "^2.1.0",
-    "tween.js": "^16.6.0"
+    "tween.js": "^16.6.0",
     "buffer": "^6.0.3",
-    "fast-astar": "^1.0.6",
+    "fast-astar": "^1.0.6"
   }
 }
