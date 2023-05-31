@@ -212,4 +212,8 @@ export class SpaceStation {
     }
     return nearestDoor;
   }
+
+  public getPlayerMesh(): Mesh {
+    return this._player.getPlayerMesh();
+  }
 }

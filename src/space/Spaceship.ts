@@ -106,8 +106,7 @@ export class Spaceship {
       this._scene
     );
     this._spaceship = result.meshes[0];
-    this._spaceship.isVisible = false;
-    result.meshes[1].position = new Vector3(0, 0, 0);
+    result.meshes[0].position = new Vector3(150, 150, 150);
   }
 
   private _setupDashboard() {
