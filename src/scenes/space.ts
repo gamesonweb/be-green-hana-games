@@ -3,7 +3,9 @@ import {
   AmmoJSPlugin,
   Color3,
   CubeTexture,
+  FreeCamera,
   HemisphericLight,
+  KeyboardEventTypes,
   MeshBuilder,
   SceneLoader,
   StandardMaterial,
@@ -19,12 +21,16 @@ import WorldScene from "./world";
 import { Dialogue } from "../space/ui/Dialogue";
 import ConfigTable from "../logic/config/table";
 import { PhysicsImpostor } from "@babylonjs/core/Physics/physicsImpostor";
+import { FirstPersonPlayer } from "../space/Player";
+import { SpaceStation } from "../space/SpaceStation";
+import * as TWEEN from "tween.js";
 
 export default class SpaceScene extends Scene {
-  private _camera: UniversalCamera;
   private _sun: HemisphericLight;
   private _planets: PlanetManager;
   private _dialogue: Dialogue;
+  private _ship: Spaceship;
+  private _station: SpaceStation;
 
   constructor(engine: Engine) {
     super(engine);
@@ -40,66 +46,38 @@ export default class SpaceScene extends Scene {
     let plugin = new AmmoJSPlugin(undefined, Ammo);
     this.enablePhysics(new Vector3(0, -9.81, 0), plugin);
 
-    this._createCamera();
     this._createLight();
-    //load collider.glb, add mesh collider to scene
-    var spaceship = await SceneLoader.ImportMeshAsync(
-      "",
-      "assets/space/obj/",
-      "all.glb",
-      this
-    );
-    // get the second mesh in collider
-    var spaceStation = spaceship.meshes[0];
-    var colliders = spaceStation.getChildren()[0];
-    console.log(colliders);
-    var tmp = spaceStation.getChildren()[1];
-    console.log(tmp);
-    //get the first mesh of tmp (the collider)
-    var door = tmp.getChildren()[tmp.getChildren().length - 1];
-    console.log(door);
-    //foreach mesh in collider, add physicsImpostor
-    colliders.getChildMeshes().forEach((mesh) => {
-      console.log(mesh);
-      mesh.physicsImpostor = new PhysicsImpostor(
-        mesh,
-        PhysicsImpostor.MeshImpostor,
-        { mass: 0, restitution: 0 },
-        this
-      );
+
+    // let space = new SpaceStation(this, new Vector3(0, 0, 0));
+    // await space.init();
+
+    //bind the enter key to switch to world scene
+
+    this._createSkybox();
+    this._createPlanets();
+    this._createDialogue();
+
+    await this._createSpaceship();
+    await this._createSpaceStation();
+
+    this.onKeyboardObservable.add((kbInfo) => {
+      if (kbInfo.type == KeyboardEventTypes.KEYDOWN) {
+        if (kbInfo.event.key == "Enter") {
+          this._station.exitStation();
+          this._ship.enterSpaceship();
+        }
+        if (kbInfo.event.key == "Escape") {
+          this._ship.exitSpaceship();
+          this._station.enterStation();
+        }
+      }
     });
-
-    //spawn a sphere with physics ar 85 10 280
-    var sphere = MeshBuilder.CreateSphere("sphere", { diameter: 2 }, this);
-    sphere.position = new Vector3(85, 10, 280);
-    sphere.physicsImpostor = new PhysicsImpostor(
-      sphere,
-      PhysicsImpostor.SphereImpostor,
-      { mass: 1, restitution: 0 },
-      this
-    );
-
-    // put the camera on top of the sphere and target it
-    this._camera.position = new Vector3(85, 210, 280);
-    this._camera.setTarget(sphere.position);
-
-    // this._createSkybox();
-    // this._createPlanets();
-    // await this._createSpaceship();
-    // this._createDialogue();
 
     // this.debugLayer.show();
 
-    setTimeout(() => {
-      this._switchToWorldScene();
-    }, 2500);
-  }
-
- 
-
-  private _createCamera(): void {
-    this._camera = new UniversalCamera("camera", new Vector3(0, 0, -10), this);
-    this._camera.maxZ = 100000;
+    // setTimeout(() => {
+    //   this._switchToWorldScene();
+    // }, 2500);
   }
 
   private _createLight(): void {
@@ -127,14 +105,21 @@ export default class SpaceScene extends Scene {
   }
 
   private async _createSpaceship() {
-    let ship = new Spaceship(
+    this._ship = new Spaceship(
       "assets/space/obj/",
-      "cockpit.glb",
-      this,
-      this._camera
+      "Luminaris Starship.glb",
+      this
     );
-    await ship.spawnAsync(this._planets);
-    ship.subCollision((ship) => this.onSpaceShipCollision(ship));
+    await this._ship.spawnAsync(this._planets);
+    await this._ship.enterSpaceship();
+    await this._ship.exitSpaceship();
+    await this._ship.enterSpaceship();
+    this._ship.subCollision((ship) => this.onSpaceShipCollision(ship));
+  }
+
+  private async _createSpaceStation() {
+    this._station = new SpaceStation(this);
+    await this._station.init();
   }
 
   private _createDialogue() {
@@ -158,8 +143,9 @@ export default class SpaceScene extends Scene {
   }
 
   public update() {
-    // this._planets.update(this.getEngine().getDeltaTime());
-    // this._dialogue.update(this.getEngine().getDeltaTime());
+    this._planets.update(this.getEngine().getDeltaTime());
+    this._dialogue.update(this.getEngine().getDeltaTime());
+    TWEEN.update();
     super.update();
   }
 
@@ -171,7 +157,6 @@ export default class SpaceScene extends Scene {
   }
 
   private _switchToWorldScene() {
-    // switch to the world scene
     const engine = this.getEngine();
     console.log("switching to world scene using engine", engine);
     new WorldScene(engine, ConfigTable.getScene(1)).init().then(() => {
