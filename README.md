@@ -11,9 +11,26 @@ npm install
 npm start
 ```
 
-## Espace
-Fait par Sébastien Aglaé
+## Informations
+-Le site web
+[nakama.hanagames.net](https://assets.atrasis.net/nakama/)
+La video
+https://assets.atrasis.net/nakama/video.mp4
+Nom: nakama
+- Meriem Saez
+- Sebastien AGLAE
+- Mike CHIAPPE
+
+
+## Monde spatial
 ### Controles
+#### Joueur
+- Z: Avancer
+- S: Reculer
+- Q: Tourner à gauche
+- D: Tourner à droite
+- Clic sur la souris + bouger la souris: Tourner la caméra
+#### Vaisseau
 - Z: Monter
 - S: Descendre
 - Q: Tourner à gauche
@@ -21,41 +38,27 @@ Fait par Sébastien Aglaé
 - Espace: Accélérer
 - Shift: Ralentir
 - E: Orienter le vaisseau vers la planète la plus proche
+- Fleche du haut : Changer de planete
+- Fleche du bas : Changer de planete
+#### General
+- Echap : Entrer dans le vaisseau (Triche)
+- Entrer : Aller dans la base spatiale (Triche)
 
-### Se qui a été fait
-- Ajout d'un vaisseau avec un cockpit
-- Skybox avec des étoiles
-- Intégration d'un vaisseau
-  - Tremblement lors de l'accélération
-  - Effet de lumière devant le vaisseau (violette)
-  - Dashboard
-- Dialogue basique
-- Intégration du systeme solaire (temporaire)
-  - Orbit
-  - Rotation sur lui même
-  - Rotation autour du soleil
-- Transition des planètes
-  - Effet de fumée (GPU Particles)
-  - Effet de lumière (feu lors de l'entrée dans l'atmosphère)
-- Un dashboard avec les informations du vaisseau
-  - Vitesse du vaisseau
-  - Distance a parcourir vers la planète la plus proche
-  - Nom de la planète la plus proche
-  - Regime des 3 moteurs
-  - L'heure réele
-  - Le nombre d'fps
-- Toon shader
+### Description
+Vous êtes un astronaute qui doit explorer l'espace. Vous pouvez vous déplacer dans l'espace et atterir sur les planètes. Vous pouvez aussi entrer dans votre vaisseau et vous déplacer dans l'espace avec celui-ci. Vous pouvez aussi entrer dans la base spatiale pour voir le dashboard.
 
+### Autres
 Le dashboard fait sous figma et exporté en utilisant le plugin figma to babylonjs
 https://www.figma.com/file/VDfB4SOgeenDlYsY7d6GvQ/GOW2023?type=design&node-id=0%3A1&t=iU5WZSCvmMBcvUF2-1
 
-
+## Planete
 ### Contrôles
 Z: Avancer
 S: Reculer
 Q: Tourner à gauche
 D: Tourner à droite
 Clic gauche: Tirer vers l'endroit où le joueur vise
+* : Passe au suivant (Triche)
 
 ### Description
 Vous avez attéri sur une planète inconnue, vous devez trouver un moyen de repartir. Attention aux monstres qui rodent !
