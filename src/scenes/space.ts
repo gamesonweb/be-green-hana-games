@@ -80,7 +80,7 @@ export default class SpaceScene extends Scene {
 
     Dialogue.getInstance().showOnlyDialogues();
 
-    this.debugLayer.show();
+    // this.debugLayer.show();
 
     /*setTimeout(() => {
       this._switchToWorldScene();
@@ -169,7 +169,7 @@ export default class SpaceScene extends Scene {
     this._dialogue.showOnlyDialogues();
     this._dialogue.isLooping = true;
     this._dialogue.addText(
-      "Bienvenue Frero ! Dirige toi vers l'orbe verte pour entrer dans le vaisseau", 
+      "Bienvenue Frero ! Dirige toi vers l'orbe verte pour entrer dans le vaisseau",
       10000
     );
   }
@@ -188,7 +188,7 @@ export default class SpaceScene extends Scene {
         this._station.exitStation();
         this._ship.enterSpaceship();
         Dialogue.getInstance().hideHint();
-        this._dialogue.clear()
+        this._dialogue.clear();
         this._dialogue.addText(
           "Bienvenue dans Nakama ! Nous sommes heureux de vous accueillir dans ce jeu spatial épique (1/5)",
           10000

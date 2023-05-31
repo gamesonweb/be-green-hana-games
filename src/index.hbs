@@ -29,10 +29,24 @@
       </div>
       <div id="dialogues">Dialogues du jeu</div>
     </div>
+    <div id="video-overlay">
+      <video id="video" src="./assets/videos/intro.mp4"></video>
+      <button id="skip-button" class="button">Cliquer pour passer</button>
+      <button id="start-button" class="button">Cliquer pour commencer</button>
+    </div>
     <canvas
       id="view"
       style="width: 100%; height: 100%; color: black; background-color: black"
     ></canvas>
   </body>
-
+  <script>
+    const skipButton = document.getElementById("skip-button"); const
+    startpButton = document.getElementById("start-button"); const video =
+    document.getElementById("video"); const videoOverlay =
+    document.getElementById("video-overlay");
+    skipButton.addEventListener("click", () => { videoOverlay.remove();});
+    startpButton.addEventListener("click", () => { startpButton.remove();
+    video.play(); }); video.addEventListener("ended", () => {
+    videoOverlay.remove(); });
+  </script>
 </html>

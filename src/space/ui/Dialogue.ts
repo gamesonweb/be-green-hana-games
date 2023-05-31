@@ -103,7 +103,9 @@ export class Dialogue {
   }
 
   updateDialogues(dialogues: string) {
-    this.dialoguesElement.style.display = "block";
+    if (this.dialoguesElement.style.display == "none") {
+      this.dialoguesElement.style.display = "block";
+    } 
     this.dialoguesElement.innerText = dialogues;
   }
 
