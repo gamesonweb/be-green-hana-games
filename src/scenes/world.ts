@@ -228,7 +228,7 @@ export default class WorldScene extends Scene {
 
         if (this._getCharacter() === null) {
             this._initialized = false;
-            this.switchToSpace();
+            this._reloadCurrentScene();
         }
     }
 
@@ -240,6 +240,14 @@ export default class WorldScene extends Scene {
     private switchToSpace() {
         const engine = this.getEngine();
         const scene = new SpaceScene(engine);
+        scene.init().then(() => {
+            this.dispose();
+        });
+    }
+
+    private _reloadCurrentScene() {
+        const engine = this.getEngine();
+        const scene = new WorldScene(engine, this._config);
         scene.init().then(() => {
             this.dispose();
         });
