@@ -43,38 +43,23 @@
   ],
   "objects": [
     {
-      "id": 1,
-      "name": "Monster.3",
+      "id": 600001,
+      "name": "NPC.1",
       "position": {
-        "x": 91.5499954,
-        "y": 87.67999
+        "x": 84.22,
+        "y": 82.92999
       },
-      "direction": 2.56423783,
-      "type": 1,
+      "direction": 0.8229945,
+      "type": 5,
       "params": {
-        "config": 1,
-        "freezePatrol": true
+        "config": 1
       }
     },
     {
-      "id": 2,
-      "name": "Monster.2",
-      "position": {
-        "x": 90.92,
-        "y": 77.85
-      },
-      "direction": 3.7778697,
-      "type": 1,
-      "params": {
-        "config": 1,
-        "freezePatrol": true
-      }
-    },
-    {
-      "id": 3,
+      "id": 200001,
       "name": "Monster.1",
       "position": {
-        "x": 81.1,
+        "x": 81.1000061,
         "y": 75.19
       },
       "direction": -1.33786261,
@@ -85,7 +70,7 @@
       }
     },
     {
-      "id": 4,
+      "id": 400001,
       "name": "Chest.1",
       "position": {
         "x": 117.28,
@@ -98,7 +83,35 @@
       }
     },
     {
-      "id": 5,
+      "id": 200002,
+      "name": "Monster.2",
+      "position": {
+        "x": 90.92,
+        "y": 77.8500061
+      },
+      "direction": 3.7778697,
+      "type": 1,
+      "params": {
+        "config": 1,
+        "freezePatrol": true
+      }
+    },
+    {
+      "id": 200003,
+      "name": "Monster.3",
+      "position": {
+        "x": 91.54999,
+        "y": 87.67999
+      },
+      "direction": 2.56423783,
+      "type": 1,
+      "params": {
+        "config": 1,
+        "freezePatrol": true
+      }
+    },
+    {
+      "id": 100001,
       "name": "Character.1",
       "position": {
         "x": 54.6,
@@ -111,7 +124,7 @@
       }
     },
     {
-      "id": 6,
+      "id": 500001,
       "name": "Trigger.Quest_KillMonsterTutorial.1",
       "position": {
         "x": 93.0,
@@ -131,14 +144,28 @@
   ],
   "points": [
     {
-      "id": 1,
+      "id": 5,
       "position": {
-        "x": 84.2,
-        "y": 83.0
+        "x": 94.4,
+        "y": 53.9
       }
     },
     {
-      "id": 1,
+      "id": 4,
+      "position": {
+        "x": 83.98,
+        "y": 70.47
+      }
+    },
+    {
+      "id": 3,
+      "position": {
+        "x": 128.6,
+        "y": 174.6
+      }
+    },
+    {
+      "id": 2,
       "position": {
         "x": 78.9,
         "y": 154.2
@@ -147,8 +174,8 @@
     {
       "id": 1,
       "position": {
-        "x": 128.6,
-        "y": 174.6
+        "x": 84.2,
+        "y": 83.0
       }
     }
   ],

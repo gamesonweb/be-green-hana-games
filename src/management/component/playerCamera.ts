@@ -1,11 +1,12 @@
-import {Camera, FlyCamera, FreeCamera, TransformNode, UniversalCamera, Vector3} from "@babylonjs/core";
+import {Camera, Vector3} from "@babylonjs/core";
 import GameObject from "../../logic/gameobject/gameObject";
 import WorldScene from "../../scenes/world";
 import ISceneComponent from "./interface";
+import {TargetCamera} from "@babylonjs/core/Cameras/targetCamera";
 
 export default class PlayerCamera implements ISceneComponent {
     private _scene: WorldScene;
-    private _camera: UniversalCamera;
+    private _camera: TargetCamera;
     private _target: GameObject;
     private _offset: Vector3;
 
@@ -13,7 +14,7 @@ export default class PlayerCamera implements ISceneComponent {
 
     private _tracking: boolean;
 
-    constructor(scene: WorldScene, target: GameObject, camera: UniversalCamera, offset: Vector3, speed: number = 10) {
+    constructor(scene: WorldScene, target: GameObject, camera: TargetCamera, offset: Vector3, speed: number = 10) {
         this._scene = scene;
         this._camera = camera;
         this._camera.mode = Camera.PERSPECTIVE_CAMERA;
@@ -67,7 +68,7 @@ export default class PlayerCamera implements ISceneComponent {
         this._camera.setEnabled(enabled);
     }
 
-    public get camera(): UniversalCamera {
+    public get camera(): TargetCamera {
         return this._camera;
     }
 

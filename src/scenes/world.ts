@@ -1,6 +1,6 @@
 import {
     AbstractMesh,
-    BloomEffect,
+    BloomEffect, Camera,
     DefaultRenderingPipeline,
     DirectionalLight,
     FlyCamera,
@@ -35,6 +35,8 @@ import { Dialogue } from "../space/ui/Dialogue";
 import SceneConfig from "../logic/config/scene";
 import TilemapLoaderComponent from "../management/component/tilemapLoader";
 import CinematicComponent from "../management/component/cinematic";
+import {TargetCamera} from "@babylonjs/core/Cameras/targetCamera";
+import DialogComponent from "../management/component/dialog";
 
 export default class WorldScene extends Scene {
     private static readonly CAMERA_SPEED: number = 15;
@@ -45,8 +47,6 @@ export default class WorldScene extends Scene {
     private _level: Level;
     private _logicTime: number = 0;
     private _initialized: boolean = false;
-
-    private _dialogue: Dialogue;
 
     private _sun: DirectionalLight;
     private _shadowGenerator: ShadowGenerator;
@@ -88,10 +88,9 @@ export default class WorldScene extends Scene {
 
         this.debugLayer.show();
 
-        this._createDialogue();
-
         const cinematicCamera = this.cameras[0] as FreeCamera;
-        this.activeCamera = new UniversalCamera("PlayerCamera", Vector3.Up(), this);
+        const playerCamera = new TargetCamera("PlayerCamera", Vector3.Up(), this, true);
+        this.activeCamera = playerCamera;
         
         this._sun = this.lights[0] as DirectionalLight;
         this._sun.autoCalcShadowZBounds = true;
@@ -108,11 +107,13 @@ export default class WorldScene extends Scene {
             }
         }
 
+        this.addComponent(new DialogComponent(this, this._level));
+
         const character = this._getCharacter();
         if (character !== null) {
-            this.addComponent(new PlayerInput(this, character));
-            this.addComponent(new PlayerCamera(this, character, this.activeCamera as UniversalCamera, WorldScene.CAMERA_OFFSET, WorldScene.CAMERA_SPEED));
+            this.addComponent(new PlayerCamera(this, character, this.activeCamera as TargetCamera, WorldScene.CAMERA_OFFSET, WorldScene.CAMERA_SPEED));
             this.addComponent(new CinematicComponent(this, cinematicCamera, this._level.missionManager));
+            this.addComponent(new PlayerInput(this, character));
         } else {
             console.warn("Could not find character");
         }
@@ -131,7 +132,7 @@ export default class WorldScene extends Scene {
         defaultPipeline.imageProcessing.vignetteEnabled = true;
         defaultPipeline.imageProcessing.vignetteWeight = 2.5;
         defaultPipeline.imageProcessing.vignetteStretch = 0.5;
-        
+
         this._initialized = true;
 
         console.log('scene initialized');
@@ -220,22 +221,7 @@ export default class WorldScene extends Scene {
 
     public update() {
         this.updateLogic();
-        this._dialogue.update(this.getEngine().getDeltaTime());
         super.update();
-    }
-
-    private _createDialogue() {
-        this._dialogue = new Dialogue();
-        this._dialogue.clear();
-        this._dialogue.addText
-        this._dialogue.addText(
-          "Hmm... Cette planète est étrange. Je devrais aller voir ce qu'il se passe.",
-          5000
-        );
-        this._dialogue.addText(
-          "Avancer: Z | Reculer: S | Gauche: Q | Droite: D | Attaquer : Cliquer sur l'ennemi",
-          30000
-        );
     }
 
     private switchToSpace() {

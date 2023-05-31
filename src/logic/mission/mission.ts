@@ -10,6 +10,7 @@ import AIMovementComponent from "../gameobject/component/aiMovement";
 
 export default class Mission {
     private readonly _config: MissionConfig;
+    private readonly _level: Level;
     private readonly _requiredProgress: number;
     private _progress: number;
 
@@ -20,6 +21,7 @@ export default class Mission {
 
     constructor(config: MissionConfig, level: Level) {
         this._config = config;
+        this._level = level;
         this._requiredProgress = 1;
         this._progress = 0;
         this._npc = null;
@@ -33,12 +35,13 @@ export default class Mission {
                 const gameObjectManager = level.gameObjectManager;
                 for (const triggerId of this._config.triggerIds) {
                     const triggerObject = gameObjectManager.getObject(triggerId) as Trigger;
-                    if (triggerObject.onTrigger) {
+                    if (triggerObject.triggered) {
                         this._progress++;
                         continue;
                     }
 
-                    triggerObject.onTrigger.add(this.completionEvent);
+                    triggerObject.onTrigger.add(this.completionEvent.bind(this));
+                    console.log(`Mission ${this._config.id} is waiting for trigger ${triggerId}`);
                 }
 
                 break;
@@ -52,18 +55,20 @@ export default class Mission {
                 for (const monsterId of this._config.monsterIds) {
                     const monsterObject = gameObjectManager.getObject(monsterId) as Monster;
                     if (!monsterObject) {
-                        this.completionEvent();
+                        this._progress++;
                         continue;
                     }
 
-                    const hitpointComponent = monsterObject.getComponent(HitpointComponent);
+                    const hitpointComponent = monsterObject.findComponent(HitpointComponent);
                     if (hitpointComponent === null || !hitpointComponent.alive) {
-                        this.completionEvent();
+                        this._progress++;
                         continue;
                     }
 
-                    hitpointComponent.onDeath.add(this.completionEvent);
+                    hitpointComponent.onDeath.add(this.completionEvent.bind(this));
                 }
+
+                break;
             }
 
             case MissionType.KILL_ANY_MONSTER:
@@ -79,15 +84,26 @@ export default class Mission {
                 this._npc = level.gameObjectManager.getObject(this._config.npcId) as Npc;
                 if (!this._npc) {
                     console.warn(`Mission ${this._config.id} has no NPC`);
-                    this._progress = this._requiredProgress - 1;
-                    this.completionEvent();
+                    this._progress = this._requiredProgress;
                     break;
                 }
 
                 for (const movePointId of this._config.npcMovePointIds) {
                     this._npcMovePoints.push(level.getPoint(movePointId));
                 }
+
+                break;
             }
+        }
+
+        if (this._config.tpPoint != 0) {
+            const tpPoint = level.getPoint(this._config.tpPoint);
+            const player = level.gameObjectManager.player;
+            player.position = tpPoint.clone();
+        }
+
+        if (this._progress >= this._requiredProgress) {
+            this.complete();
         }
     }
 
@@ -130,10 +146,9 @@ export default class Mission {
             const distance = Vector2.DistanceSquared(npcPosition, npcMovePoint);
             if (distance < 0.1) {
                 this.completionEvent();
-            }
-
-            if (this._progress < this._requiredProgress) {
-                this.moveNpcToNextPoint();
+                if (this._progress < this._requiredProgress) {
+                    this.moveNpcToNextPoint();
+                }
             }
         }
     }
@@ -144,11 +159,11 @@ export default class Mission {
     }
 
     public calculateTotalKillableMonsters(): number {
-        const gameObjectManager = this._npc.level.gameObjectManager;
+        const gameObjectManager = this._level.gameObjectManager;
         let totalKillableMonsters = 0;
         for (const obj of gameObjectManager.objects.values()) {
             if (obj instanceof Monster) {
-                const hitpointComponent = obj.getComponent(HitpointComponent);
+                const hitpointComponent = obj.findComponent(HitpointComponent);
                 if (hitpointComponent === null || !hitpointComponent.alive) {
                     continue;
                 }

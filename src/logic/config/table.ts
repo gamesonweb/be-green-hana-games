@@ -5,6 +5,7 @@ import ProjectileConfig from './gameobject/projectile';
 import Globals from './globals';
 import SceneConfig from './scene';
 import MissionConfig from "./mission";
+import NpcConfig from "./gameobject/npc";
 
 export default class ConfigTable {
     public static get characters(): CharacterConfig[] {
@@ -18,6 +19,10 @@ export default class ConfigTable {
     }
     public static get scenes(): SceneConfig[] {
         return configsJson.scenes;
+    }
+
+    public static get npcs(): NpcConfig[] {
+        return configsJson.npcs;
     }
 
     public static get globals(): Globals {
@@ -34,6 +39,10 @@ export default class ConfigTable {
 
     public static getMonster(id: number): MonsterConfig {
         return configsJson.monsters.find((monster: MonsterConfig) => monster.id === id);
+    }
+
+    public static getNpc(id: number): NpcConfig {
+        return configsJson.npcs.find((npc: NpcConfig) => npc.id === id);
     }
 
     public static getProjectile(id: number): ProjectileConfig {

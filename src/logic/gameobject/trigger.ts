@@ -34,9 +34,7 @@ export default class Trigger extends GameObject {
                 const position = object.position;
                 if (position.x >= this._area.xMin && position.x <= this._area.xMax && position.y >= this._area.yMin && position.y <= this._area.yMax) {
                     this._triggered = true;
-                    if (this.onTrigger !== undefined) {
-                        this.onTrigger.trigger();
-                    }
+                    this.onTrigger.trigger();
                     break;
                 }
             }

@@ -48,7 +48,7 @@ export default class CombatComponent extends Component {
                 const distanceY = position.y - from.y;
                 const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
                 if (distance <= this._config.shootRadius) {
-                    const hitpointComponent = gameObject.getComponent(HitpointComponent);
+                    const hitpointComponent = gameObject.findComponent(HitpointComponent);
                     if (hitpointComponent && hitpointComponent.team != this.team) {
                         hitpointComponent.hit(this._config.shootDamage);
                     }

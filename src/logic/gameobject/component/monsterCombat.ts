@@ -26,6 +26,7 @@ export default class MonsterCombatComponent extends CombatComponent {
     private _currentTarget: Nullable<GameObject>;
     private _currentTargetPosition: Vector2;
 
+    private _freezeTime: number;
 
     public constructor(parent: GameObject, config: MonsterCombatConfig = null) {
         super(parent, config);
@@ -51,6 +52,10 @@ export default class MonsterCombatComponent extends CombatComponent {
         super.update();
 
         if (!this.parent.alive) {
+            return;
+        }
+
+        if (--this._freezeTime > 0) {
             return;
         }
 
@@ -94,12 +99,13 @@ export default class MonsterCombatComponent extends CombatComponent {
         const from = this._parent.position;
         const to = target.position;
         const distanceSquared = Vector2.DistanceSquared(from, to);
-        const attackRange = this.attackRange;
+        const attackRange = this.attackRange * 1.25;
         if (distanceSquared <= attackRange * attackRange) {
             const direction = to.subtract(from);
             const directionAngle = Math.atan2(direction.y, direction.x);
 
             this.attack(directionAngle);
+            this._freezeTime = Time.getTicks(0.5);
         }
     }
 
@@ -177,7 +183,7 @@ export default class MonsterCombatComponent extends CombatComponent {
         let closestEnemy = null;
         let closestDistance = Number.MAX_VALUE;
         for (const enemy of enemies) {
-            if (enemy.alive && enemy.team !== this._parent.team) {
+            if (enemy.alive && enemy.team !== this._parent.team && enemy.team !== -1) {
                 const distance = Vector2.DistanceSquared(enemy.position, this._parent.position);
                 if (distance <= radiusSquared) {
                     if (distance < closestDistance) {

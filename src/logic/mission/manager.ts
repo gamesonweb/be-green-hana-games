@@ -17,7 +17,11 @@ export default class MissionManager {
 
     public update() {
         if (this._currentMission === null || this._currentMission.isCompleted) {
+            if (this._currentMission) {
+                this._completedMissions.push(this._currentMission.config);
+            }
             this._currentMission = this.searchOpenMission();
+            this._currentMission?.start();
         } else {
             this._currentMission.update();
         }
@@ -44,6 +48,7 @@ export default class MissionManager {
             }
             return new Mission(missionConfig, this._level);
         }
+        return null;
     }
 
     public getCompletedMissionsInGroup(group: number): MissionConfig[] {

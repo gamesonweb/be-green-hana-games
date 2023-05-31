@@ -6,6 +6,7 @@ export default interface MissionConfig extends Config {
     sceneId: number;
     type: MissionType;
     dialogs: Dialog[];
+    tpPoint: number;
 
     // UI - HUD
     title: string;

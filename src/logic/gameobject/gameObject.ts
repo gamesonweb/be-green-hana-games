@@ -76,7 +76,7 @@ export default abstract class GameObject {
         if (hitpointComponent) {
             return hitpointComponent.alive;
         }
-        return false;
+        return true;
     }
 
     public getComponent<T extends Component>(s: new (parent: GameObject) => T): T {

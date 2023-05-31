@@ -66,7 +66,13 @@ export default class AnimationComponent extends Component {
         if (group === this._currentGroup) {
             return;
         }
-    
+
+        // enable blending
+        for (const anim of group.targetedAnimations) {
+            anim.animation.enableBlending = true;
+            anim.animation.blendingSpeed = 0.2;
+        }
+
         group.play(clip.loop);
     
         if (stopCurrent) {

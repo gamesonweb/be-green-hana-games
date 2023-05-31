@@ -52,13 +52,17 @@ export default class Npc extends GameObject {
     }
 
     public update(): void {
-        if (this._waitingCheckTimer <= 0) {
+        super.update();
+
+        if (--this._waitingCheckTimer <= 0) {
             this._waitingCheckTimer = Time.getTicks(0.5);
             const player = this.gameObjectManager.player;
-            if (player !== undefined) {
+            if (player) {
                 const movementComponent = this.getComponent(AIMovementComponent);
                 const distanceSquared = Vector2.DistanceSquared(this.position, player.position);
+                console.log(distanceSquared)
                 if (distanceSquared >= this._startWaitingDistance * this._startWaitingDistance) {
+                    console.log("Pause");
                     movementComponent.pause();
                 } else if (distanceSquared <= this._endWaitingDistance * this._endWaitingDistance) {
                     movementComponent.resume();
