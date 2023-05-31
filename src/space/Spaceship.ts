@@ -431,7 +431,7 @@ export class Spaceship {
     this._lockSpeed = this._speed;
     this._lockMove();
     console.log("fake stop on planet " + this._planetData.planet.getName());
-    // this._spaceshipCollisionObservable.notifyObservers(this._planetData.planet);
+    this._spaceshipCollisionObservable.notifyObservers(this._planetData.planet);
   }
 
   private _lockMove() {
