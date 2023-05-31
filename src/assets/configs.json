@@ -131,6 +131,75 @@
                 "scale": 0.8,
                 "rotation": -90
             }
+        },
+        {
+            "id": 2,
+            "name": "Golem",
+            "hitpoint": {
+                "max": 50,
+                "regenAmount": 20,
+                "regenDelay": 60
+            },
+            "combat": {
+                "attackDelay": 1.5,
+                "shootDamage": 40,
+                "shootRadius": 4,
+
+                "projectileId": 0,
+                "projectileSpeed": 0,
+                "projectileLifetime": 0,
+
+                "alertInRadius": 25,
+                "alertOutRadius": 35,
+                "patrolRadius": 12.5
+            },
+            "movement": {
+                "speed": 9,
+                "dashSpeed": 45,
+                "acceleration": 15,
+                "deceleration": 10,
+                "dashDeceleration": 6
+            },
+            "animation": {
+                "idle": {
+                    "clip": "Idle",
+                    "loop": true,
+                    "speed": 0.75,
+                    "alt": [
+                        "Look Around",
+                        "Howl"
+                    ]
+                },
+                "walk": {
+                    "clip": "Run Forward WO Root",
+                    "loop": true,
+                    "speed": 1,
+                    "alt": []
+                },
+                "attack": {
+                    "clip": "Pound Attack W Root",
+                    "loop": false,
+                    "speed": 1,
+                    "alt": []
+                },
+                "die": {
+                    "clip": "Die",
+                    "loop": false,
+                    "speed": 1,
+                    "alt": []
+                },
+                "damage": {
+                    "clip": "Take Damage",
+                    "loop": false,
+                    "speed": 1,
+                    "alt": []
+                }
+            },
+            "render": {
+                "model": "models/monsters/wolf_white.glb",
+                "scale": 0.8,
+                "rotation": -90
+            }
         }
     ],
     "projectiles": [
@@ -146,8 +215,8 @@
     ],
     "scenes": [
         {
-            "width": 1685,
-            "height": 1730,
+            "width": 2165,
+            "height": 2210,
             "precision": 5,
             "useBakedTilemap": true,
             "models": [
@@ -190,16 +259,31 @@
             ],
             "objects": [
                 {
-                    "id": 600001,
-                    "name": "NPC.1",
+                    "id": 200005,
+                    "name": "Monster.5",
                     "position": {
-                        "x": 84.22,
-                        "y": 82.92999
+                        "x": 15.5999985,
+                        "y": 388.3
                     },
-                    "direction": 0.8229945,
-                    "type": 5,
+                    "direction": -1.57079637,
+                    "type": 1,
                     "params": {
-                        "config": 1
+                        "config": 2,
+                        "freezePatrol": false
+                    }
+                },
+                {
+                    "id": 200004,
+                    "name": "Monster.4",
+                    "position": {
+                        "x": 268.4,
+                        "y": 35.1999969
+                    },
+                    "direction": -1.57079637,
+                    "type": 1,
+                    "params": {
+                        "config": 2,
+                        "freezePatrol": false
                     }
                 },
                 {
@@ -217,13 +301,26 @@
                     }
                 },
                 {
+                    "id": 600001,
+                    "name": "NPC.1",
+                    "position": {
+                        "x": 84.22,
+                        "y": 82.92999
+                    },
+                    "direction": 0.8229945,
+                    "type": 5,
+                    "params": {
+                        "config": 1
+                    }
+                },
+                {
                     "id": 400001,
                     "name": "Chest.1",
                     "position": {
-                        "x": 117.28,
-                        "y": 128.76
+                        "x": 103.549995,
+                        "y": 114.289993
                     },
-                    "direction": 0.9976811,
+                    "direction": 0.6876505,
                     "type": 3,
                     "params": {
                         "drops": []
@@ -274,27 +371,34 @@
                     "id": 500001,
                     "name": "Trigger.Quest_KillMonsterTutorial.1",
                     "position": {
-                        "x": 93.0,
+                        "x": 81.3999939,
                         "y": 54.409996
                     },
                     "direction": -1.57079637,
                     "type": 4,
                     "params": {
                         "area": [
-                            43.0,
-                            46.409996,
-                            93.0,
-                            54.409996
+                            56.3999939,
+                            50.409996,
+                            106.399994,
+                            58.409996
                         ]
                     }
                 }
             ],
             "points": [
                 {
-                    "id": 5,
+                    "id": 6,
                     "position": {
-                        "x": 94.4,
-                        "y": 51.9
+                        "x": 205.2,
+                        "y": 250.0
+                    }
+                },
+                {
+                    "id": 3,
+                    "position": {
+                        "x": 177.9,
+                        "y": 172.2
                     }
                 },
                 {
@@ -305,10 +409,10 @@
                     }
                 },
                 {
-                    "id": 3,
+                    "id": 5,
                     "position": {
-                        "x": 128.6,
-                        "y": 174.6
+                        "x": 94.4,
+                        "y": 50.5
                     }
                 },
                 {
@@ -512,7 +616,7 @@
             "npcId": 600001,
             "npcFirstDialog": "",
             "npcGenericDialog": "",
-            "npcMovePointIds": [ 1, 2, 3 ]
+            "npcMovePointIds": [ 1, 2, 3, 6 ]
         }
     ],
     "npcs": [

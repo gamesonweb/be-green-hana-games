@@ -37,6 +37,7 @@ import TilemapLoaderComponent from "../management/component/tilemapLoader";
 import CinematicComponent from "../management/component/cinematic";
 import {TargetCamera} from "@babylonjs/core/Cameras/targetCamera";
 import DialogComponent from "../management/component/dialog";
+import MeshProvider from "../management/meshprovider";
 
 export default class WorldScene extends Scene {
     private static readonly CAMERA_SPEED: number = 15;
@@ -134,6 +135,8 @@ export default class WorldScene extends Scene {
         defaultPipeline.imageProcessing.vignetteStretch = 0.5;
 
         this._initialized = true;
+
+        await MeshProvider.instance.executeAsync();
 
         console.log('scene initialized');
     }
