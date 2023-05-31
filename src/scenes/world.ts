@@ -38,6 +38,7 @@ import CinematicComponent from "../management/component/cinematic";
 import {TargetCamera} from "@babylonjs/core/Cameras/targetCamera";
 import DialogComponent from "../management/component/dialog";
 import MeshProvider from "../management/meshprovider";
+import {SkyMaterial} from "@babylonjs/materials";
 
 export default class WorldScene extends Scene {
     private static readonly CAMERA_SPEED: number = 15;
@@ -119,7 +120,7 @@ export default class WorldScene extends Scene {
             console.warn("Could not find character");
         }
 
-        var defaultPipeline = new DefaultRenderingPipeline("default", true, this, [this.activeCamera, cinematicCamera]);
+        const defaultPipeline = new DefaultRenderingPipeline("default", true, this, [this.activeCamera, cinematicCamera]);
         defaultPipeline.bloomEnabled = true;
         defaultPipeline.bloomThreshold = 0.05;
         defaultPipeline.bloomWeight = 0.35;
@@ -127,12 +128,19 @@ export default class WorldScene extends Scene {
         defaultPipeline.bloomKernel = 32;
 
         defaultPipeline.imageProcessingEnabled = true;
-        defaultPipeline.imageProcessing.contrast = 1.25;
-        defaultPipeline.imageProcessing.exposure = 1.20;
+        defaultPipeline.imageProcessing.contrast = 1.10;
+        defaultPipeline.imageProcessing.exposure = 1.15;
         defaultPipeline.imageProcessing.toneMappingEnabled = false;
         defaultPipeline.imageProcessing.vignetteEnabled = true;
         defaultPipeline.imageProcessing.vignetteWeight = 2.5;
         defaultPipeline.imageProcessing.vignetteStretch = 0.5;
+
+        /*const skyMaterial = new SkyMaterial("skyMaterial", this);
+        skyMaterial.backFaceCulling = false;
+        skyMaterial.turbidity = 10;
+
+        const skybox = MeshBuilder.CreateBox("skyBox", { size: 1000.0 }, this);
+        skybox.material = skyMaterial;*/
 
         this._initialized = true;
 

@@ -13,7 +13,7 @@
                 "shootDamage": 25,
                 "shootRadius": 1,
                 "projectileId": 1,
-                "projectileSpeed": 15,
+                "projectileSpeed": 25,
                 "projectileLifetime": 1
             },
             "movement": {
@@ -136,7 +136,7 @@
             "id": 2,
             "name": "Golem",
             "hitpoint": {
-                "max": 50,
+                "max": 500,
                 "regenAmount": 20,
                 "regenDelay": 60
             },
@@ -154,7 +154,7 @@
                 "patrolRadius": 12.5
             },
             "movement": {
-                "speed": 9,
+                "speed": 4,
                 "dashSpeed": 45,
                 "acceleration": 15,
                 "deceleration": 10,
@@ -166,21 +166,22 @@
                     "loop": true,
                     "speed": 0.75,
                     "alt": [
-                        "Look Around",
-                        "Howl"
+
                     ]
                 },
                 "walk": {
-                    "clip": "Run Forward WO Root",
+                    "clip": "Walk Forward WO Root",
                     "loop": true,
-                    "speed": 1,
+                    "speed": 0.5,
                     "alt": []
                 },
                 "attack": {
-                    "clip": "Pound Attack W Root",
+                    "clip": "Hit Ground Attack",
                     "loop": false,
                     "speed": 1,
-                    "alt": []
+                    "alt": [
+                        "Punch Attack"
+                    ]
                 },
                 "die": {
                     "clip": "Die",
@@ -196,7 +197,7 @@
                 }
             },
             "render": {
-                "model": "models/monsters/wolf_white.glb",
+                "model": "models/monsters/golem.glb",
                 "scale": 0.8,
                 "rotation": -90
             }
