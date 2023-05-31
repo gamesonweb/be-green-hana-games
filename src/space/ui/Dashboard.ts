@@ -43,8 +43,9 @@ export class Dashboard {
     );
     this._screenMesh.parent = this.spaceship;
     this._screenMesh.visibility = 0.75;
-    this._screenMesh.position = new Vector3(0, -0.2, 1.5);
+    this._screenMesh.position = new Vector3(0, 0.75, 0.4);
     this._screenMesh.rotation = new Vector3(0.53, 0, 0);
+    this._screenMesh.scaling = new Vector3(0.6, 0.6, 1);
   }
 
   private _initGUI() {

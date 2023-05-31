@@ -1,7 +1,6 @@
 import {
   AbstractMesh,
   Axis,
-  ISceneLoaderAsyncResult,
   PhysicsImpostor,
   Quaternion,
   Scene,
@@ -12,6 +11,8 @@ import {
   Matrix,
   MeshBuilder,
   Observable,
+  KeyboardInfo,
+  Observer,
 } from "@babylonjs/core";
 import { Utils } from "./utils/Utils";
 import { PlanetManager } from "./PlanetManager";
@@ -52,7 +53,7 @@ export class Spaceship {
   private _rootUrl: string;
   private _sceneFilename: string;
   private _scaleFactor: number = 0.1;
-  private _scaleSpeed: number = 100;
+  private _scaleSpeed: number = 40;
 
   private _r: Vector4;
   private _t: number;
@@ -63,86 +64,55 @@ export class Spaceship {
   private _cloudEffect: CloudEffect;
   private _dashboard: Dashboard;
   private _planetManager: PlanetManager;
+  private _selectedPlanetIndex: number;
   private _planetData: {
     planet: Planet;
     distance: number;
   };
 
+  private _spaceshipEnabled: boolean = false;
+
   private _spaceshipCollisionObservable: Observable<Planet> =
     new Observable<Planet>();
+  private _keyboardObserver: Observer<KeyboardInfo>;
+  private _firstView = true;
 
-  constructor(
-    rootUrl: string,
-    sceneFilename: string,
-    scene: Scene,
-    camera: UniversalCamera
-  ) {
+  constructor(rootUrl: string, sceneFilename: string, scene: Scene) {
     this._rootUrl = rootUrl;
     this._sceneFilename = sceneFilename;
     this._scene = scene;
-    this._camera = camera;
-    this._speed = 0;
-    this._speedKm = 0;
-    this._velocity = new Vector3(0, 0, 0);
+    this._setupCamera();
     this._maxSpeed = 5 * this._scaleFactor;
     this._acceleration = (35 * this._scaleFactor) / this._scaleSpeed;
     this._deceleration = (1 * this._scaleFactor) / this._scaleSpeed;
-    this._rotationSpeedHori = 0;
-    this._rotationSpeedVer = 0;
     this._maxRotationSpeed = 0.05;
-    this._rotationAcceleration = 0.05;
-    this._rotationDeceleration = 0.005;
-    this._isGoingUp = false;
-    this._isGoingDown = false;
-    this._isGoingLeft = false;
-    this._isGoingRight = false;
-    this._isGoingForward = false;
-    this._isGoingBackward = false;
-  }
+    this._rotationAcceleration = 0.025;
+    this._rotationDeceleration = 0.004;
+    this._selectedPlanetIndex = 0;
 
-  public async spawnAsync(planets: PlanetManager) {
-    this._planetManager = planets;
-    await SceneLoader.ImportMeshAsync(
-      "",
-      this._rootUrl,
-      this._sceneFilename,
-      this._scene
-    ).then(this.onSpawnSuccess.bind(this), () => {
-      console.log("error loading spaceship");
-    });
-  }
-
-  onSpawnSuccess(result: ISceneLoaderAsyncResult) {
-    this._spaceship = result.meshes[0];
-    this._setupSpaceship();
-    this._applyShader();
-    this._setupCamera();
-    this._setupKeyboardInput();
     this._setupShake();
-    this._setupEffect();
-    this._setupDashboard();
 
     this._scene.onBeforeRenderObservable.add(() => {
       this._update();
     });
   }
 
-  private _applyShader() {
-    // //apply toon shader keep the material using ToonMaterial class
-    // //for each mesh
-    // for (let mesh of this._spaceship.getChildMeshes()) {
-    //   console.log(mesh.name);
-    //   //get the albedo texture
-    //   let albedoTexture = mesh.material.getActiveTextures()[0];
-    //   if (albedoTexture === undefined) {
-    //     console.log("albedoTexture undefined");
-    //     continue;
-    //   }
-    //   mesh.material = ToonMaterial.createMaterial(albedoTexture);
-    // }
+  public async spawnAsync(planets: PlanetManager) {
+    this._planetManager = planets;
+    let result = await SceneLoader.ImportMeshAsync(
+      "",
+      this._rootUrl,
+      this._sceneFilename,
+      this._scene
+    );
+    this._spaceship = result.meshes[0];
+    result.meshes[1].position = new Vector3(0, 0, 0);
   }
 
   private _setupDashboard() {
+    if (this._dashboard != null) {
+      return;
+    }
     this._dashboard = new Dashboard(this._scene, this._spaceship);
   }
 
@@ -152,7 +122,7 @@ export class Spaceship {
       this._scene,
       this._spaceship,
       0.1,
-      6,
+      4,
       true,
       ColorFactory.yellow()
     );
@@ -164,7 +134,7 @@ export class Spaceship {
       this._scene,
       this._spaceship,
       0.5,
-      20,
+      4,
       true,
       ColorFactory.purple()
     );
@@ -181,17 +151,27 @@ export class Spaceship {
   }
 
   private _setupSpaceship() {
+    if (this._parentMesh != null) {
+      return;
+    }
+
     this._parentMesh = MeshBuilder.CreateBox(
       "parentMesh",
       { size: 1 },
       this._scene
     );
-    this._parentMesh.position = new Vector3(0, 0, 0);
+    this._parentMesh.position = new Vector3(150, 150, 150);
     this._parentMesh.rotationQuaternion = Quaternion.Identity();
-    this._parentMesh.isVisible = false;
+    this._parentMesh.rotationQuaternion = Quaternion.FromEulerAngles(
+      0.8901179,
+      -2.094395,
+      0.1745329
+    );
 
+    this._parentMesh.isVisible = false;
     this._spaceship.parent = this._parentMesh;
     this._spaceship.rotationQuaternion = Quaternion.Identity();
+    this._spaceship.position = new Vector3(0, 0, 0);
     this._parentMesh.physicsImpostor = new PhysicsImpostor(
       this._spaceship,
       PhysicsImpostor.BoxImpostor,
@@ -207,13 +187,18 @@ export class Spaceship {
   }
 
   private _setupCamera() {
-    this._camera.parent = this._spaceship;
-    this._camera.position = new Vector3(0, 0.2, -1);
-    this._camera.fov = 1;
+    this._camera = new UniversalCamera(
+      "camera",
+      new Vector3(0, 1.2, -1.5),
+      this._scene
+    );
+    this._camera.detachControl();
+    this._camera.fov = 1.4;
+    this._camera.maxZ = 100000;
   }
 
   private _setupKeyboardInput() {
-    this._scene.onKeyboardObservable.add((kbInfo) => {
+    this._keyboardObserver = this._scene.onKeyboardObservable.add((kbInfo) => {
       switch (kbInfo.type) {
         case 1:
           switch (kbInfo.event.key) {
@@ -236,7 +221,17 @@ export class Spaceship {
               this._isGoingBackward = true;
               break;
             case "e":
-              this.reorientToPlanet();
+              this._reorientToPlanet();
+              break;
+            case "r":
+              this._toggleCameraView();
+              break;
+            case "ArrowUp":
+              this._selectedPlanetIndex++;
+              break;
+            case "ArrowDown":
+              this._selectedPlanetIndex--;
+              break;
           }
           break;
         case 2:
@@ -258,13 +253,36 @@ export class Spaceship {
               break;
             case "Shift":
               this._isGoingBackward = false;
+              break;
           }
           break;
       }
     });
   }
 
+  private _toggleCameraView() {
+    this._firstView = !this._firstView;
+    if (this._firstView) {
+      this._cameraFirstView();
+    } else {
+      this._cameraSecondView();
+    }
+  }
+
+  private _cameraFirstView() {
+    this._camera.position = new Vector3(0, 1.2, -1.5);
+    this._camera.rotation = new Vector3(0, 0, 0);
+    this._camera.fov = 1.4;
+  }
+
+  private _cameraSecondView() {
+    this._camera.position = new Vector3(0, 2, -5);
+    this._camera.rotation = new Vector3(0, 0, 0);
+    this._camera.fov = 1.4;
+  }
+
   private _update() {
+    if (!this._spaceshipEnabled) return;
     this._updateDashboard();
     this._shakeCamera();
     if (this._lockMovement) return;
@@ -365,11 +383,18 @@ export class Spaceship {
 
     this._computeSpeedKm();
 
-    this._planetData = this._planetManager.getDistanceClosestPlanet(
+    // this._planetData = this._planetManager.getDistanceClosestPlanet(
+    //   this._parentMesh
+    // );
+    this._planetData = this._planetManager.getPlanet(
+      this._selectedPlanetIndex,
       this._parentMesh
     );
+
     this._updateEffects();
-    if (this._planetData.distance <= 20) {
+    if (
+      this._planetData.distance <= this._planetData.planet.getAtmosphereRadius()
+    ) {
       this._fakeStop();
     }
   }
@@ -378,20 +403,41 @@ export class Spaceship {
     this._trailsSpeed.changeEmitRate(
       Utils.clamp(0, this._maxSpeed, -this._speed)
     );
+    let min = this._planetData.planet.getAtmosphereRadius();
+    let max = this._planetData.planet.getRadius() * 5;
     this._cloudEffect.changeEmitRate(
-      1 - Utils.clamp(0, 150, this._planetData.distance)
+      1 -
+        Utils.clamp(
+          this._planetData.planet.getRadius() * 4,
+          max,
+          this._planetData.distance
+        )
     );
     this._trailsEntry.changeEmitRate(
-      1 - Utils.clamp(0, 150, this._planetData.distance)
+      1 -
+        Utils.clamp(
+          this._planetData.planet.getRadius() * 4,
+          max,
+          this._planetData.distance
+        )
     );
   }
-  z;
+
   private _fakeStop() {
+    if (!this._spaceshipEnabled) return;
     this._planetManager.disposeAll();
     this._lockSpeed = this._speed;
-    this._lockMovement = true;
+    this._lockMove();
     console.log("fake stop on planet " + this._planetData.planet.getName());
-    this._spaceshipCollisionObservable.notifyObservers(this._planetData.planet);
+    // this._spaceshipCollisionObservable.notifyObservers(this._planetData.planet);
+  }
+
+  private _lockMove() {
+    this._lockMovement = true;
+  }
+
+  private _unlockMove() {
+    this._lockMovement = false;
   }
 
   private _computeSpeedKm() {
@@ -449,7 +495,7 @@ export class Spaceship {
     this._dashboard.updateFPSText();
   }
 
-  public reorientToPlanet() {
+  public _reorientToPlanet() {
     if (!this._planetData) return;
     if (this._lockMovement) return;
     this._rotationSpeedHori = 0;
@@ -459,5 +505,47 @@ export class Spaceship {
 
   public subCollision(callback: (spaceship: Planet) => void) {
     this._spaceshipCollisionObservable.add(callback);
+  }
+
+  public enterSpaceship() {
+    this._speed = 0;
+    this._speedKm = 0;
+    this._velocity = new Vector3(0, 0, 0);
+    this._rotationSpeedHori = 0;
+    this._rotationSpeedVer = 0;
+    this._isGoingUp = false;
+    this._isGoingDown = false;
+    this._isGoingLeft = false;
+    this._isGoingRight = false;
+    this._isGoingForward = false;
+    this._isGoingBackward = false;
+    this._scene.activeCamera = this._camera;
+    this._camera.parent = this._spaceship;
+    this._unlockMove();
+    this._setupSpaceship();
+    this._setupKeyboardInput();
+    this._setupEffect();
+    this._setupDashboard();
+    this._spaceshipEnabled = true;
+  }
+
+  public exitSpaceship() {
+    this._spaceshipEnabled = false;
+    this._lockMove();
+    this._destroyEffect();
+    this._scene.onKeyboardObservable.remove(this._keyboardObserver);
+  }
+
+  private _destroyEffect() {
+    this._spaceshipEnabled = false;
+    this._trailsEntry.stop();
+    this._trailsEntry.dispose();
+    this._trailsEntry = null;
+    this._trailsSpeed.stop();
+    this._trailsSpeed.dispose();
+    this._trailsSpeed = null;
+    this._cloudEffect.stop();
+    this._cloudEffect.dispose();
+    this._cloudEffect = null;
   }
 }

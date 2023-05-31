@@ -17,6 +17,7 @@ export class TrailsEffect extends ParticleSystem {
   ) {
     super(name, capacity, scene);
     var box = MeshBuilder.CreateBox("box", { size: 0.01 }, scene);
+    box.isVisible = false;
 
     this.particleTexture = new Texture("assets/space/effects/flare.png", scene);
     box.parent = spaceShip;
