@@ -47,6 +47,8 @@ export class FirstPersonPlayer {
     this._camera.parent = this.playerMesh;
     this._camera.position = new Vector3(0, 1.3, 0);
     this._camera.rotationQuaternion = Quaternion.Identity();
+    //rotation 0 100 0
+    this._camera.rotationQuaternion = Quaternion.FromEulerAngles(0, 1.74, 0);
   }
 
   private setupPlayer() {
@@ -163,5 +165,9 @@ export class FirstPersonPlayer {
 
   public get position(): Vector3 {
     return this.playerMesh.position;
+  }
+
+  getCamera() {
+    return this._camera;
   }
 }

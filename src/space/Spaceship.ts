@@ -106,6 +106,7 @@ export class Spaceship {
       this._scene
     );
     this._spaceship = result.meshes[0];
+    this._spaceship.isVisible = false;
     result.meshes[1].position = new Vector3(0, 0, 0);
   }
 
@@ -155,6 +156,7 @@ export class Spaceship {
       return;
     }
 
+    this._spaceship.isVisible = true;
     this._parentMesh = MeshBuilder.CreateBox(
       "parentMesh",
       { size: 1 },
@@ -547,5 +549,9 @@ export class Spaceship {
     this._cloudEffect.stop();
     this._cloudEffect.dispose();
     this._cloudEffect = null;
+  }
+
+  public getCamera() {
+    return this._camera;
   }
 }

@@ -1,0 +1,72 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+#game-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: white;
+  z-index: 100;
+}
+
+#monster-count {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+#player-info {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+#player-info img {
+  width: 50px;
+  height: 50px;
+  max-width: 20vw;
+}
+
+#health-bar {
+  width: 100px;
+  height: 10px;
+  background-color: green;
+  margin-top: 5px;
+}
+
+#quest-title {
+  margin-top: 10px;
+}
+
+#quest-description {
+  margin-top: 5px;
+}
+
+#dialogues {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 100px;
+  background-color: rgba(255, 255, 255, 0.3);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+#game-overlay {
+  pointer-events: none; /* Allow mouse events to pass through the overlay */
+}
+
+#game-overlay > * {
+  pointer-events: none; /* Enable mouse events on overlay elements */
+}

@@ -1,8 +1,10 @@
 import {
   AbstractMesh,
   AmmoJSPlugin,
+  Camera,
   Color3,
   CubeTexture,
+  DefaultRenderingPipeline,
   FreeCamera,
   HemisphericLight,
   KeyboardEventTypes,
@@ -59,6 +61,10 @@ export default class SpaceScene extends Scene {
 
     await this._createSpaceship();
     await this._createSpaceStation();
+    this._addPostProcessing([
+      this._ship.getCamera(),
+      this._station.getCamera(),
+    ]);
 
     this.onKeyboardObservable.add((kbInfo) => {
       if (kbInfo.type == KeyboardEventTypes.KEYDOWN) {
@@ -73,7 +79,7 @@ export default class SpaceScene extends Scene {
       }
     });
 
-    // this.debugLayer.show();
+    this.debugLayer.show();
 
     // setTimeout(() => {
     //   this._switchToWorldScene();
@@ -111,19 +117,40 @@ export default class SpaceScene extends Scene {
       this
     );
     await this._ship.spawnAsync(this._planets);
-    await this._ship.enterSpaceship();
-    await this._ship.exitSpaceship();
-    await this._ship.enterSpaceship();
     this._ship.subCollision((ship) => this.onSpaceShipCollision(ship));
+  }
+
+  private _addPostProcessing(cameras: Camera[]) {
+    var defaultPipeline = new DefaultRenderingPipeline(
+      "default",
+      true,
+      this,
+      cameras
+    );
+    defaultPipeline.bloomEnabled = true;
+    defaultPipeline.bloomThreshold = 0.05;
+    defaultPipeline.bloomWeight = 0.35;
+    defaultPipeline.bloomScale = 1;
+    defaultPipeline.bloomKernel = 32;
+
+    defaultPipeline.imageProcessingEnabled = true;
+    defaultPipeline.imageProcessing.contrast = 1.25;
+    defaultPipeline.imageProcessing.exposure = 1.2;
+    defaultPipeline.imageProcessing.toneMappingEnabled = false;
+    defaultPipeline.imageProcessing.vignetteEnabled = true;
+    defaultPipeline.imageProcessing.vignetteWeight = 2.5;
+    defaultPipeline.imageProcessing.vignetteStretch = 0.5;
   }
 
   private async _createSpaceStation() {
     this._station = new SpaceStation(this);
     await this._station.init();
+    await this._station.enterStation();
   }
 
   private _createDialogue() {
     this._dialogue = new Dialogue();
+    this._dialogue.showOnlyDialogues();
     this._dialogue.addText(
       "Bienvenue dans Nakama ! Nous sommes heureux de vous accueillir dans ce jeu spatial épique (1/4)",
       10000

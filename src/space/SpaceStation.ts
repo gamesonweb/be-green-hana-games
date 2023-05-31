@@ -67,7 +67,7 @@ export class SpaceStation {
   }
 
   private async _setupPlayer() {
-    this._player = new FirstPersonPlayer(this._scene, new Vector3(65, 5, 51));
+    this._player = new FirstPersonPlayer(this._scene, new Vector3(-124.8, 0.55, 179.6));
   }
 
   private async _setupDoor() {
@@ -188,6 +188,10 @@ export class SpaceStation {
         door.close();
       }
     });
+  }
+
+  public getCamera() {
+    return this._player.getCamera();
   }
 
   private _getNearestDoor(): Door {
