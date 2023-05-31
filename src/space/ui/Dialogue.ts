@@ -36,17 +36,16 @@ export class Dialogue {
     this._textTime.push(time);
   }
 
-  private index = 0;
-
   public update(deltaTime: number) {
     if (this._texts.length > 0) {
-      this._textBlock.text = this._texts[this.index];
-      this._textTime[this.index] -= deltaTime;
-      if (this._textTime[this.index] < 0) {
-        this._texts.splice(this.index, 1);
-        this._textTime.splice(this.index, 1);
-        this.index = this.index % this._texts.length;
+      this._textBlock.text = this._texts[0];
+      this._textTime[0] -= deltaTime;
+      if (this._textTime[0] < 0) {
+        this._texts.shift();
+        this._textTime.shift();
       }
+    } else {
+        this._textBlock.text = "";
     }
   }
 
@@ -54,4 +53,8 @@ export class Dialogue {
     this._texts = [];
     this._textTime = [];
   }
+
+    public get isCompleted(): boolean {
+        return this._texts.length == 0;
+    }
 }

@@ -1,6 +1,5 @@
 import SceneConfig from "../../logic/config/scene";
 import Level from "../../logic/level/level";
-import Scene from "../../scenes/scene";
 import ISceneComponent from "./interface";
 
 // use pako instead of zlib

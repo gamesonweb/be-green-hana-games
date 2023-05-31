@@ -1,17 +1,15 @@
 {
-  "id": 0,
-  "name": "Map_Desert",
-  "width": 1445,
-  "height": 1490,
+  "width": 2165,
+  "height": 2210,
   "precision": 5,
   "useBakedTilemap": true,
   "models": [
     {
       "path": "Terrain_0_0-20230529_-_194720.glb",
       "position": {
-        "x": -31.3000031,
+        "x": -79.3,
         "y": 0.0,
-        "z": -22.3000031
+        "z": -70.3
       },
       "rotation": {
         "x": 0.0,
@@ -45,61 +43,178 @@
   ],
   "objects": [
     {
-      "id": 1,
+      "id": 200005,
+      "name": "Monster.5",
+      "position": {
+        "x": 15.5999985,
+        "y": 388.3
+      },
+      "direction": -1.57079637,
+      "type": 1,
+      "params": {
+        "config": 2,
+        "freezePatrol": false
+      }
+    },
+    {
+      "id": 200004,
+      "name": "Monster.4",
+      "position": {
+        "x": 268.4,
+        "y": 35.1999969
+      },
+      "direction": -1.57079637,
+      "type": 1,
+      "params": {
+        "config": 2,
+        "freezePatrol": false
+      }
+    },
+    {
+      "id": 200001,
       "name": "Monster.1",
       "position": {
-        "x": 93.3999939,
-        "y": 73.2999954
+        "x": 81.1000061,
+        "y": 75.19
       },
-      "direction": 0.0,
+      "direction": -1.33786261,
       "type": 1,
+      "params": {
+        "config": 1,
+        "freezePatrol": true
+      }
+    },
+    {
+      "id": 600001,
+      "name": "NPC.1",
+      "position": {
+        "x": 84.22,
+        "y": 82.92999
+      },
+      "direction": 0.8229945,
+      "type": 5,
       "params": {
         "config": 1
       }
     },
     {
-      "id": 2,
+      "id": 400001,
       "name": "Chest.1",
       "position": {
-        "x": 117.28,
-        "y": 128.76
+        "x": 103.549995,
+        "y": 114.289993
       },
-      "direction": 147.162918,
+      "direction": 0.6876505,
       "type": 3,
       "params": {
         "drops": []
       }
     },
     {
-      "id": 3,
+      "id": 200002,
+      "name": "Monster.2",
+      "position": {
+        "x": 90.92,
+        "y": 77.8500061
+      },
+      "direction": 3.7778697,
+      "type": 1,
+      "params": {
+        "config": 1,
+        "freezePatrol": true
+      }
+    },
+    {
+      "id": 200003,
+      "name": "Monster.3",
+      "position": {
+        "x": 91.54999,
+        "y": 87.67999
+      },
+      "direction": 2.56423783,
+      "type": 1,
+      "params": {
+        "config": 1,
+        "freezePatrol": true
+      }
+    },
+    {
+      "id": 100001,
       "name": "Character.1",
       "position": {
         "x": 54.6,
         "y": 23.0
       },
-      "direction": 0.0,
+      "direction": -1.57079637,
       "type": 0,
       "params": {
         "config": 1
       }
     },
     {
-      "id": 4,
+      "id": 500001,
       "name": "Trigger.Quest_KillMonsterTutorial.1",
       "position": {
-        "x": 93.0,
+        "x": 81.3999939,
         "y": 54.409996
       },
-      "direction": 0.0,
+      "direction": -1.57079637,
       "type": 4,
       "params": {
         "area": [
-          43.0,
-          46.409996,
-          93.0,
-          54.409996
+          56.3999939,
+          50.409996,
+          106.399994,
+          58.409996
         ]
       }
     }
-  ]
+  ],
+  "points": [
+    {
+      "id": 6,
+      "position": {
+        "x": 205.2,
+        "y": 250.0
+      }
+    },
+    {
+      "id": 3,
+      "position": {
+        "x": 177.9,
+        "y": 172.2
+      }
+    },
+    {
+      "id": 4,
+      "position": {
+        "x": 83.98,
+        "y": 70.47
+      }
+    },
+    {
+      "id": 5,
+      "position": {
+        "x": 94.4,
+        "y": 50.5
+      }
+    },
+    {
+      "id": 2,
+      "position": {
+        "x": 78.9,
+        "y": 154.2
+      }
+    },
+    {
+      "id": 1,
+      "position": {
+        "x": 84.2,
+        "y": 83.0
+      }
+    }
+  ],
+  "id": 0,
+  "name": "Map_Desert",
+  "hideFlags": 0
 }

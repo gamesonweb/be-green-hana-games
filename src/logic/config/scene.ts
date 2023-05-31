@@ -8,6 +8,7 @@ export default interface SceneConfig extends Config {
     useBakedTilemap: boolean;
     models: SceneModel[];
     objects: SceneObject[];
+    points: ScenePoint[];
 }
 
 export interface SceneModel {
@@ -39,4 +40,12 @@ export interface SceneObject {
     direction: number;
     type: GameObjectType;
     params: any;
+}
+
+export interface ScenePoint {
+    id: number;
+    position: {
+        x: number;
+        y: number;
+    }
 }

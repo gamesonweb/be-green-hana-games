@@ -1,10 +1,11 @@
-import { Scene } from "@babylonjs/core/scene";
 import Character from "../../logic/gameobject/character";
 import CombatComponent from "../../logic/gameobject/component/combat";
 import MovementComponent from "../../logic/gameobject/component/movement";
 import InputManager from "../inputmanager";
 import ISceneComponent from "./interface";
 import { Nullable } from "@babylonjs/core";
+import CinematicComponent from "./cinematic";
+import Scene from "../../scenes/scene";
 
 export default class PlayerInput implements ISceneComponent {
     private static readonly KEY_FORWARD: string = "z";
@@ -14,6 +15,8 @@ export default class PlayerInput implements ISceneComponent {
 
     private _character: Character;
     private _attackDirection: Nullable<number> = null;
+
+    private _cinematicComponent: CinematicComponent;
 
     constructor(scene: Scene, character: Character) {
         this._character = character;
@@ -27,6 +30,8 @@ export default class PlayerInput implements ISceneComponent {
                 console.log(direction);
             }
         }
+
+        this._cinematicComponent = scene.getComponent(CinematicComponent);
     }
     
     public destroy(): void {
@@ -38,6 +43,11 @@ export default class PlayerInput implements ISceneComponent {
     }
 
     public update(): void {
+        if (this._cinematicComponent.playingCinematic) {
+            // set all inputs to 0
+            InputManager.clear();
+        }
+
         const movementComponent = this._character.findComponent(MovementComponent);
         if (movementComponent) {
             const axisX = this.getKeyAxis(PlayerInput.KEY_RIGHT) - this.getKeyAxis(PlayerInput.KEY_LEFT);

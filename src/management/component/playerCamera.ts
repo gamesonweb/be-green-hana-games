@@ -1,27 +1,38 @@
-import { Camera, FlyCamera, Vector3 } from "@babylonjs/core";
+import {Camera, Vector3} from "@babylonjs/core";
 import GameObject from "../../logic/gameobject/gameObject";
 import WorldScene from "../../scenes/world";
 import ISceneComponent from "./interface";
+import {TargetCamera} from "@babylonjs/core/Cameras/targetCamera";
 
 export default class PlayerCamera implements ISceneComponent {
     private _scene: WorldScene;
-    private _camera: FlyCamera;
+    private _camera: TargetCamera;
     private _target: GameObject;
     private _offset: Vector3;
 
     private _speed: number;
 
-    constructor(scene: WorldScene, target: GameObject, offset: Vector3, speed: number = 10) {
+    private _tracking: boolean;
+
+    constructor(scene: WorldScene, target: GameObject, camera: TargetCamera, offset: Vector3, speed: number = 10) {
         this._scene = scene;
-        this._camera = new FlyCamera("camera", Vector3.Zero(), scene);
+        this._camera = camera;
         this._camera.mode = Camera.PERSPECTIVE_CAMERA;
+        this._camera.position = offset;
+        this._camera.parent = null;
 
         this._target = target;
         this._offset = offset;
         this._speed = speed;
+
+        this.tracking = true;
     }
 
     public update(t: number): void {
+        if (!this._tracking) {
+            return;
+        }
+
         if (this._target) {
             const target3D = new Vector3(this._target.position.x, 0, this._target.position.y);
             const currentPosition = this._camera.position;
@@ -29,13 +40,36 @@ export default class PlayerCamera implements ISceneComponent {
             const newPosition = Vector3.Lerp(currentPosition, targetPosition, this._speed * t);
 
             this._camera.position = newPosition;
-            this._camera.setTarget(target3D);
 
-            const rotation = this._camera.rotation;
-            rotation.y = 0;
-            rotation.z = 0;
-            this._camera.rotation = rotation;
+            // calculate the new x direction
+            const direction = target3D.subtract(newPosition);
+            direction.normalize();
+            const angle = Math.atan2(direction.y, direction.z);
+            this._camera.rotation = new Vector3(-angle, 0, 0);
+        } else {
+            console.warn('No target set for player camera');
         }
+    }
+
+    public get tracking(): boolean {
+        return this._tracking;
+    }
+
+    public set tracking(tracking: boolean) {
+        this._tracking = tracking;
+        this._camera.position = new Vector3(this._target.position.x, 0, this._target.position.y).add(this._offset);
+    }
+
+    public get enabled(): boolean {
+        return this._camera.isEnabled();
+    }
+
+    public set enabled(enabled: boolean) {
+        this._camera.setEnabled(enabled);
+    }
+
+    public get camera(): TargetCamera {
+        return this._camera;
     }
 
     public destroy(): void {
