@@ -53,7 +53,7 @@ export class Spaceship {
   private _rootUrl: string;
   private _sceneFilename: string;
   private _scaleFactor: number = 0.1;
-  private _scaleSpeed: number = 100;
+  private _scaleSpeed: number = 40;
 
   private _r: Vector4;
   private _t: number;
@@ -64,6 +64,7 @@ export class Spaceship {
   private _cloudEffect: CloudEffect;
   private _dashboard: Dashboard;
   private _planetManager: PlanetManager;
+  private _selectedPlanetIndex: number;
   private _planetData: {
     planet: Planet;
     distance: number;
@@ -74,6 +75,7 @@ export class Spaceship {
   private _spaceshipCollisionObservable: Observable<Planet> =
     new Observable<Planet>();
   private _keyboardObserver: Observer<KeyboardInfo>;
+  private _firstView = true;
 
   constructor(rootUrl: string, sceneFilename: string, scene: Scene) {
     this._rootUrl = rootUrl;
@@ -84,8 +86,9 @@ export class Spaceship {
     this._acceleration = (35 * this._scaleFactor) / this._scaleSpeed;
     this._deceleration = (1 * this._scaleFactor) / this._scaleSpeed;
     this._maxRotationSpeed = 0.05;
-    this._rotationAcceleration = 0.05;
-    this._rotationDeceleration = 0.005;
+    this._rotationAcceleration = 0.025;
+    this._rotationDeceleration = 0.004;
+    this._selectedPlanetIndex = 0;
 
     this._setupShake();
 
@@ -96,7 +99,6 @@ export class Spaceship {
 
   public async spawnAsync(planets: PlanetManager) {
     this._planetManager = planets;
-    console.log("spawn");
     let result = await SceneLoader.ImportMeshAsync(
       "",
       this._rootUrl,
@@ -104,6 +106,7 @@ export class Spaceship {
       this._scene
     );
     this._spaceship = result.meshes[0];
+    result.meshes[1].position = new Vector3(0, 0, 0);
   }
 
   private _setupDashboard() {
@@ -119,7 +122,7 @@ export class Spaceship {
       this._scene,
       this._spaceship,
       0.1,
-      6,
+      4,
       true,
       ColorFactory.yellow()
     );
@@ -131,7 +134,7 @@ export class Spaceship {
       this._scene,
       this._spaceship,
       0.5,
-      20,
+      4,
       true,
       ColorFactory.purple()
     );
@@ -157,12 +160,18 @@ export class Spaceship {
       { size: 1 },
       this._scene
     );
-    this._parentMesh.position = new Vector3(0, 0, 0);
+    this._parentMesh.position = new Vector3(150, 150, 150);
     this._parentMesh.rotationQuaternion = Quaternion.Identity();
+    this._parentMesh.rotationQuaternion = Quaternion.FromEulerAngles(
+      0.8901179,
+      -2.094395,
+      0.1745329
+    );
+
     this._parentMesh.isVisible = false;
-    console.log(this._spaceship);
     this._spaceship.parent = this._parentMesh;
     this._spaceship.rotationQuaternion = Quaternion.Identity();
+    this._spaceship.position = new Vector3(0, 0, 0);
     this._parentMesh.physicsImpostor = new PhysicsImpostor(
       this._spaceship,
       PhysicsImpostor.BoxImpostor,
@@ -180,12 +189,11 @@ export class Spaceship {
   private _setupCamera() {
     this._camera = new UniversalCamera(
       "camera",
-      new Vector3(0, 0, 0),
+      new Vector3(0, 1.2, -1.5),
       this._scene
     );
     this._camera.detachControl();
-    this._camera.position = new Vector3(0, 0.2, -1);
-    this._camera.fov = 1;
+    this._camera.fov = 1.4;
     this._camera.maxZ = 100000;
   }
 
@@ -213,7 +221,17 @@ export class Spaceship {
               this._isGoingBackward = true;
               break;
             case "e":
-              this.reorientToPlanet();
+              this._reorientToPlanet();
+              break;
+            case "r":
+              this._toggleCameraView();
+              break;
+            case "ArrowUp":
+              this._selectedPlanetIndex++;
+              break;
+            case "ArrowDown":
+              this._selectedPlanetIndex--;
+              break;
           }
           break;
         case 2:
@@ -235,10 +253,32 @@ export class Spaceship {
               break;
             case "Shift":
               this._isGoingBackward = false;
+              break;
           }
           break;
       }
     });
+  }
+
+  private _toggleCameraView() {
+    this._firstView = !this._firstView;
+    if (this._firstView) {
+      this._cameraFirstView();
+    } else {
+      this._cameraSecondView();
+    }
+  }
+
+  private _cameraFirstView() {
+    this._camera.position = new Vector3(0, 1.2, -1.5);
+    this._camera.rotation = new Vector3(0, 0, 0);
+    this._camera.fov = 1.4;
+  }
+
+  private _cameraSecondView() {
+    this._camera.position = new Vector3(0, 2, -5);
+    this._camera.rotation = new Vector3(0, 0, 0);
+    this._camera.fov = 1.4;
   }
 
   private _update() {
@@ -343,11 +383,18 @@ export class Spaceship {
 
     this._computeSpeedKm();
 
-    this._planetData = this._planetManager.getDistanceClosestPlanet(
+    // this._planetData = this._planetManager.getDistanceClosestPlanet(
+    //   this._parentMesh
+    // );
+    this._planetData = this._planetManager.getPlanet(
+      this._selectedPlanetIndex,
       this._parentMesh
     );
+
     this._updateEffects();
-    if (this._planetData.distance <= 20) {
+    if (
+      this._planetData.distance <= this._planetData.planet.getAtmosphereRadius()
+    ) {
       this._fakeStop();
     }
   }
@@ -356,11 +403,23 @@ export class Spaceship {
     this._trailsSpeed.changeEmitRate(
       Utils.clamp(0, this._maxSpeed, -this._speed)
     );
+    let min = this._planetData.planet.getAtmosphereRadius();
+    let max = this._planetData.planet.getRadius() * 5;
     this._cloudEffect.changeEmitRate(
-      1 - Utils.clamp(0, 150, this._planetData.distance)
+      1 -
+        Utils.clamp(
+          this._planetData.planet.getRadius() * 4,
+          max,
+          this._planetData.distance
+        )
     );
     this._trailsEntry.changeEmitRate(
-      1 - Utils.clamp(0, 150, this._planetData.distance)
+      1 -
+        Utils.clamp(
+          this._planetData.planet.getRadius() * 4,
+          max,
+          this._planetData.distance
+        )
     );
   }
 
@@ -370,7 +429,7 @@ export class Spaceship {
     this._lockSpeed = this._speed;
     this._lockMove();
     console.log("fake stop on planet " + this._planetData.planet.getName());
-    this._spaceshipCollisionObservable.notifyObservers(this._planetData.planet);
+    // this._spaceshipCollisionObservable.notifyObservers(this._planetData.planet);
   }
 
   private _lockMove() {
@@ -436,7 +495,7 @@ export class Spaceship {
     this._dashboard.updateFPSText();
   }
 
-  public reorientToPlanet() {
+  public _reorientToPlanet() {
     if (!this._planetData) return;
     if (this._lockMovement) return;
     this._rotationSpeedHori = 0;

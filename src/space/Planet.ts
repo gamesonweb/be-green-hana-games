@@ -81,4 +81,8 @@ export class Planet {
   public getName() {
     return this._name;
   }
+
+  public getAtmosphereRadius() {
+    return this._diameter / 2 + this._diameter * 0.1;
+  }
 }

@@ -105,7 +105,11 @@ export default class SpaceScene extends Scene {
   }
 
   private async _createSpaceship() {
-    this._ship = new Spaceship("assets/space/obj/", "cockpit.glb", this);
+    this._ship = new Spaceship(
+      "assets/space/obj/",
+      "Luminaris Starship.glb",
+      this
+    );
     await this._ship.spawnAsync(this._planets);
     await this._ship.enterSpaceship();
     await this._ship.exitSpaceship();

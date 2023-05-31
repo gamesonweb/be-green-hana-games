@@ -45,7 +45,7 @@ export class FirstPersonPlayer {
     this._camera.attachControl();
     this._camera.inputs.removeByType("FreeCameraKeyboardMoveInput");
     this._camera.parent = this.playerMesh;
-    this._camera.position = new Vector3(0, 2, 0);
+    this._camera.position = new Vector3(0, 1.3, 0);
     this._camera.rotationQuaternion = Quaternion.Identity();
   }
 
