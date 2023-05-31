@@ -71,7 +71,7 @@ export default class WorldScene extends Scene {
         await super.init();
         await this.createTerrain();
 
-        this.debugLayer.show();
+        // this.debugLayer.show();
 
         const cinematicCamera = this.cameras[0] as FreeCamera;
         const playerCamera = new TargetCamera("PlayerCamera", Vector3.Up(), this, true);
