@@ -170,4 +170,8 @@ export class FirstPersonPlayer {
   getCamera() {
     return this._camera;
   }
+
+  getPlayerMesh() {
+    return this.playerMesh;
+  }
 }

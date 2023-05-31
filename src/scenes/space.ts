@@ -5,14 +5,11 @@ import {
   Color3,
   CubeTexture,
   DefaultRenderingPipeline,
-  FreeCamera,
   HemisphericLight,
   KeyboardEventTypes,
   MeshBuilder,
-  SceneLoader,
   StandardMaterial,
   Texture,
-  UniversalCamera,
   Vector3,
 } from "@babylonjs/core";
 import { Engine } from "@babylonjs/core/Engines/engine";
@@ -22,8 +19,6 @@ import { Spaceship } from "../space/Spaceship";
 import WorldScene from "./world";
 import { Dialogue } from "../space/ui/Dialogue";
 import ConfigTable from "../logic/config/table";
-import { PhysicsImpostor } from "@babylonjs/core/Physics/physicsImpostor";
-import { FirstPersonPlayer } from "../space/Player";
 import { SpaceStation } from "../space/SpaceStation";
 import * as TWEEN from "tween.js";
 
@@ -33,6 +28,8 @@ export default class SpaceScene extends Scene {
   private _dialogue: Dialogue;
   private _ship: Spaceship;
   private _station: SpaceStation;
+  private _triggerCube: AbstractMesh;
+  private _inputF = false;
 
   constructor(engine: Engine) {
     super(engine);
@@ -50,21 +47,20 @@ export default class SpaceScene extends Scene {
 
     this._createLight();
 
-    // let space = new SpaceStation(this, new Vector3(0, 0, 0));
-    // await space.init();
-
-    //bind the enter key to switch to world scene
-
     this._createSkybox();
     this._createPlanets();
     this._createDialogue();
+    this._createHint();
 
     await this._createSpaceship();
     await this._createSpaceStation();
-    this._addPostProcessing([
-      this._ship.getCamera(),
-      this._station.getCamera(),
-    ]);
+    await this._ship.enterSpaceship();
+    await this._ship.exitSpaceship();
+    await this._station.enterStation();
+    // this._addPostProcessing([
+    //   this._ship.getCamera(),
+    //   this._station.getCamera(),
+    // ]);
 
     this.onKeyboardObservable.add((kbInfo) => {
       if (kbInfo.type == KeyboardEventTypes.KEYDOWN) {
@@ -76,14 +72,37 @@ export default class SpaceScene extends Scene {
           this._ship.exitSpaceship();
           this._station.enterStation();
         }
+        if (kbInfo.event.key == "f") {
+          this._inputF = true;
+        } else {
+          this._inputF = false;
+        }
       }
     });
 
-    this.debugLayer.show();
+    Dialogue.getInstance().showOnlyDialogues();
+
+    // this.debugLayer.show();
 
     setTimeout(() => {
       this._switchToWorldScene();
     }, 2500);
+  }
+
+  private _createHint() {
+    let sphere = MeshBuilder.CreateSphere("sphere", { diameter: 1 }, this);
+    sphere.position = new Vector3(17, 7, 54);
+    let material = new StandardMaterial("material", this);
+    material.alpha = 0.5;
+    sphere.material = material;
+    sphere.isPickable = false;
+    sphere.renderOutline = true;
+    sphere.outlineWidth = 0.4;
+    sphere.outlineColor = new Color3(0, 255, 0);
+    sphere.renderingGroupId = 1;
+    this._triggerCube = MeshBuilder.CreateBox("trigger", { size: 8 }, this);
+    this._triggerCube.position = new Vector3(17, 7, 54);
+    this._triggerCube.isVisible = false;
   }
 
   private _createLight(): void {
@@ -145,11 +164,10 @@ export default class SpaceScene extends Scene {
   private async _createSpaceStation() {
     this._station = new SpaceStation(this);
     await this._station.init();
-    await this._station.enterStation();
   }
 
   private _createDialogue() {
-    this._dialogue = new Dialogue();
+    this._dialogue = Dialogue.getInstance();
     this._dialogue.showOnlyDialogues();
     this._dialogue.addText(
       "Bienvenue dans Nakama ! Nous sommes heureux de vous accueillir dans ce jeu spatial épique (1/4)",
@@ -172,6 +190,20 @@ export default class SpaceScene extends Scene {
   public update() {
     this._planets.update(this.getEngine().getDeltaTime());
     this._dialogue.update(this.getEngine().getDeltaTime());
+
+    if (
+      this._station.getPlayerMesh().intersectsMesh(this._triggerCube, false)
+    ) {
+      Dialogue.getInstance().updateHint(
+        "Appuyez sur F pour entrer dans le vaisseau"
+      );
+      if (this._inputF) {
+        this._station.exitStation();
+        this._ship.enterSpaceship();
+      }
+    } else {
+      Dialogue.getInstance().hideHint();
+    }
     TWEEN.update();
     super.update();
   }

@@ -8,6 +8,8 @@ export class Dialogue {
   private monsterCountElement: HTMLDivElement;
   private playerInfo: PlayerInfo;
   private dialoguesElement: HTMLDivElement;
+  private hintElement: HTMLDivElement;
+  private overlayElement: HTMLDivElement;
 
   constructor() {
     this.monsterCountElement = document.getElementById(
@@ -23,6 +25,10 @@ export class Dialogue {
     };
     this.dialoguesElement = document.getElementById(
       "dialogues"
+    ) as HTMLDivElement;
+    this.hintElement = document.getElementById("hint-text") as HTMLDivElement;
+    this.overlayElement = document.getElementById(
+      "game-overlay"
     ) as HTMLDivElement;
   }
 
@@ -83,6 +89,7 @@ export class Dialogue {
   }
 
   updateDialogues(dialogues: string) {
+    this.dialoguesElement.style.display = "block";
     this.dialoguesElement.innerText = dialogues;
   }
 
@@ -97,15 +104,12 @@ export class Dialogue {
     this.playerInfo.questDescription.style.display = "block";
     this.dialoguesElement.style.display = "block";
     this.playerInfo.playerImage.style.display = "block";
+    this.hintElement.style.display = "block";
+    this.overlayElement.style.display = "block";
   }
 
   hide() {
-    this.monsterCountElement.style.display = "none";
-    this.playerInfo.healthBar.style.display = "none";
-    this.playerInfo.questTitle.style.display = "none";
-    this.playerInfo.questDescription.style.display = "none";
-    this.dialoguesElement.style.display = "none";
-    this.playerInfo.playerImage.style.display = "none";
+    this.overlayElement.style.display = "none";
   }
 
   clearDialogues() {
@@ -118,6 +122,18 @@ export class Dialogue {
     this.playerInfo.questTitle.style.display = "none";
     this.playerInfo.questDescription.style.display = "none";
     this.dialoguesElement.style.display = "block";
+    this.playerInfo.playerImage.style.display = "none";
+    this.hintElement.style.display = "block";
+    this.overlayElement.style.display = "block";
+  }
+
+  updateHint(hint: string) {
+    this.hintElement.style.display = "block";
+    this.hintElement.innerText = hint;
+  }
+
+  hideHint() {
+    this.hintElement.style.display = "none";
   }
 
   public clear() {

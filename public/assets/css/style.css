@@ -70,3 +70,14 @@ body {
 #game-overlay > * {
   pointer-events: none; /* Enable mouse events on overlay elements */
 }
+
+#hint-text {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+  text-align: center;
+  z-index: 9999;
+}
