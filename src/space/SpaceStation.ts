@@ -67,12 +67,18 @@ export class SpaceStation {
 
     this._spaceStation = spaceStation.meshes[0];
     this._spaceStation.getChildMeshes().forEach((mesh) => {
-      mesh.freezeWorldMatrix();
+      if (mesh.name.includes("SpaceBase (1)")) {
+        mesh.freezeWorldMatrix();
+        mesh.material.freeze();
+      }
     });
   }
 
   private async _setupPlayer() {
-    this._player = new FirstPersonPlayer(this._scene, new Vector3(-124.8, 0.55, 179.6));
+    this._player = new FirstPersonPlayer(
+      this._scene,
+      new Vector3(-124.8, 0.55, 179.6)
+    );
   }
 
   private async _setupDoor() {
@@ -183,7 +189,6 @@ export class SpaceStation {
     if (!this._spaceStationEnabled) return;
     this._updateDoor();
   }
-
 
   private _updateDoor() {
     let nearestDoor = this._getNearestDoor();
