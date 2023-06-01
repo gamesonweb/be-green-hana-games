@@ -12,14 +12,28 @@ npm start
 ```
 
 ## Informations
--Le site web
-[nakama.hanagames.net](https://assets.atrasis.net/nakama/)
-La video
-https://assets.atrasis.net/nakama/video.mp4
-Nom: nakama
-- Meriem Saez
-- Sebastien AGLAE
-- Mike CHIAPPE
+Site web
+[assets.atrasis.net/nakama/](https://assets.atrasis.net/nakama/index.html)  
+La video de démonstration
+https://assets.atrasis.net/nakama/video.mp4 / https://youtu.be/RS4b-6q4NmY  
+Nom: Hana Games
+- AGLAE Sebastien
+- CHIAPPE Mike
+- SAEZ Meriem
+
+## Histoire
+
+Dans le jeu Nakama, le joueur incarne Akane, une sergente de l'espace au courage inébranlable. Sa mission principale est de protéger les formes de vie extraterrestres des attaques et de préserver l'équilibre écologique des planètes.
+
+Un jour, alors qu'Akane patrouille dans les confins de l'espace, elle reçoit un message radio urgent provenant de l'ECO Earth, sa planète d'origine. Le message fait état d'une série d'attaques menées par Astra Corp, une puissante civilisation intergalactique qui pille les ressources naturelles des planètes pour son propre bénéfice.
+
+Informée que les planètes de la galaxie Eriko sont les cibles principales d'Astra Corp, Akane se lance immédiatement dans une course contre la montre pour empêcher le pillage de la planète Nakama, réputée pour abriter une biodiversité extraordinaire et des espèces extraterrestres uniques.
+
+À son arrivée sur Nakama, Akane découvre une situation désespérée. Les forces d'Astra Corp ont déjà commencé à ravager la planète, capturant les créatures vivantes et détruisant impitoyablement l'environnement. Akane réalise que la survie de Nakama et de ses espèces dépend de sa capacité à coordonner une résistance et à mettre un terme à l'invasion.
+
+Déterminée, Akane explore les différentes régions de Nakama, combattant les soldats d'Astra Corp et libérant les espèces emprisonnées. Elle se lie d'amitié avec certains des extraterrestres, appelés 'Nekoma', qui possèdent des capacités spéciales et se joignent à elle dans sa quête.
+
+Au fur et à mesure de sa progression, Akane découvre les plans maléfiques d'Astra Corp. Ils projettent de détruire Nakama en utilisant une arme puissante, ce qui entraînerait la perte de cette planète unique et de toutes ses formes de vie. Akane se rend compte que la bataille pour Nakama est bien plus importante que la simple protection d'une seule planète. C'est un combat pour la préservation de la diversité et de la vie elle-même.
 
 ## Monde spatial
 ### Controles
@@ -44,7 +58,8 @@ Nom: nakama
 - Entrer : Aller dans la base spatiale (Triche)
 
 ### Description
-Vous êtes un astronaute qui doit explorer l'espace. Vous pouvez vous déplacer dans l'espace et atterir sur les planètes. Vous pouvez aussi entrer dans votre vaisseau et vous déplacer dans l'espace avec celui-ci. Vous pouvez aussi entrer dans la base spatiale pour voir le dashboard.
+Akane vient de recevoir le message radio. Elle doit se rendre d'urgence sur la planète Nakama via son vaisseau.  
+Vous, le joueur, va devoir trouver et piloter le vaisseau pour se rendre sur la planète Nakama.
 
 ### Autres
 Le dashboard fait sous figma et exporté en utilisant le plugin figma to babylonjs
@@ -57,21 +72,18 @@ S: Reculer
 Q: Tourner à gauche
 D: Tourner à droite
 Clic gauche: Tirer vers l'endroit où le joueur vise
-* : Passe au suivant (Triche)
 
 ### Description
-Vous avez attéri sur une planète inconnue, vous devez trouver un moyen de repartir. Attention aux monstres qui rodent !
-Pas de HUD pour le moment, lorsque vous mourrez vous revenez à votre vaisseau de départ.
+Akane vient d'arriver sur la planète Nakama. Elle doit maintenant explorer la planète et trouver les créatures qui y vivent.
 
-### Se qui a été fait
-- Ajout de modèles 3Ds pour le personnage, les monstres et le niveau (la map)
-- Dialogue basique
-- Ajout de collision calculé via les informations sur le niveau (meshes du terrains, des objets, etc)
-- IA basique qui attaque le joueur si il est à proximité des monstres
-- Pathfinding pour les monstres permettant de les faire se déplacer vers le joueur
-- Système de vie pour le joueur et les monstres
-- Detection de collision pour le personnage principal, les monstres et les projectiles
-- Système de tir pour le joueur
-- Système de dégats pour les monstres et le joueur
-- Système de mort pour les monstres et le joueur
-- Système de respawn pour le joueur
+### Autres
+Le niveau a été entièrement fait sur Unity. Nous avons réalisé des packs d'assets et fait notre propre map avec.  
+Nous avons développé notre propre système d'exportation permettant d'avoir approximativement le même rendu sur Unity et BabylonJS.  
+Le jeu était prévu pour être un jeu de type RPG avec des crafts, des quêtes et des combats mais nous n'avons pas eu le temps de le finir complètement.
+
+## Phase de développement
+Le développement du jeu a été fait sur une semaine de notre temps libre + le temps alloué à la mineure de programmation de jeux 3D sur le Web.  
+Nous avons rencontré plusieurs difficultés durant le développement du jeu ce qui nous a empêché de faire tout ce que nous voulions faire.  
+Initialement, nous souhaitions faire un jeu de type RPG avec un système de combat et de quêtes. Le joueur aurait pu voyager entre 3 planètes différentes et aurait pu se battre contre des ennemis très variés sur le plan gameplay mais aussi sur le plan visuel. Même si le travail rendu n'est pas à la hauteur de nos attentes, nous sommes assez satisfait du résultat final et nous avons appris beaucoup de choses durant le développement du jeu.
+Contrairement au jeu rendu lors du concours 2021, nous avons essayé de faire un jeu avec une durée de vie plus longue et plus de contenu. Nous avons aussi essayé de faire un jeu plus agréable à jouer et plus beau visuellement.
+
