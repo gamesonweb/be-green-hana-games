@@ -52,7 +52,9 @@ export class SpaceStation {
       );
       mesh.checkCollisions = true;
       mesh.isVisible = false;
+      mesh.freezeWorldMatrix();
     });
+    this._collider.freezeWorldMatrix();
   }
 
   private async _setupSpaceStation() {
@@ -64,6 +66,9 @@ export class SpaceStation {
     );
 
     this._spaceStation = spaceStation.meshes[0];
+    this._spaceStation.getChildMeshes().forEach((mesh) => {
+      mesh.freezeWorldMatrix();
+    });
   }
 
   private async _setupPlayer() {
