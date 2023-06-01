@@ -30,7 +30,7 @@ export class CloudEffect extends GPUParticleSystem {
    this._box.position = new Vector3(0, 0, 5);
 
     this.particleTexture = new Texture(
-      "/assets/space/effects/smoke_15.png",
+      "assets/space/effects/smoke_15.png",
       scene
     );
 

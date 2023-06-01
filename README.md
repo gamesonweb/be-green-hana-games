@@ -17,9 +17,9 @@ Site web
 La video de démonstration
 https://assets.atrasis.net/nakama/video.mp4 / https://youtu.be/RS4b-6q4NmY  
 Nom: Hana Games
-- AGLAE Sebastien
-- CHIAPPE Mike
-- SAEZ Meriem
+- AGLAE Sebastien : Développement de la partie spatiale
+- CHIAPPE Mike : Développement de la partie planète
+- SAEZ Meriem : Aide sur les assets 2D/3D
 
 ## Histoire
 
@@ -87,3 +87,16 @@ Nous avons rencontré plusieurs difficultés durant le développement du jeu ce 
 Initialement, nous souhaitions faire un jeu de type RPG avec un système de combat et de quêtes. Le joueur aurait pu voyager entre 3 planètes différentes et aurait pu se battre contre des ennemis très variés sur le plan gameplay mais aussi sur le plan visuel. Même si le travail rendu n'est pas à la hauteur de nos attentes, nous sommes assez satisfait du résultat final et nous avons appris beaucoup de choses durant le développement du jeu.
 Contrairement au jeu rendu lors du concours 2021, nous avons essayé de faire un jeu avec une durée de vie plus longue et plus de contenu. Nous avons aussi essayé de faire un jeu plus agréable à jouer et plus beau visuellement.
 
+
+## Image de développement
+![image](docs/unity-editor.png)
+*Level editor de la map sur Unity*
+
+![image](docs/unity-render.png)
+*Vue de la map sur Unity*
+
+![image](docs/babylon-render.png)
+*Vue de la map sur BabylonJS*
+
+![image](docs/tilemap.png)
+*Vue des collisions générées en fonction des éléments de la map*
