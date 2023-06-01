@@ -35,7 +35,7 @@ export class TrailsEffect extends ParticleSystem {
     this.maxSize = 0.5;
     this.minLifeTime = 0.3;
     this.maxLifeTime = 1.5;
-    this.emitRate = 200;
+    this.emitRate = 0;
     this.blendMode = ParticleSystem.BLENDMODE_ONEONE;
     this.gravity = new Vector3(0, 0, -10);
     this.direction1 = new Vector3(-1, 4, 1);

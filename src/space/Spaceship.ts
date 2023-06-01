@@ -91,7 +91,6 @@ export class Spaceship {
     this._rotationDeceleration = 0.004;
     this._selectedPlanetIndex = 0;
 
-    this._setupEffect();
     this._setupShake();
 
     this._scene.onBeforeRenderObservable.add(() => {
@@ -119,6 +118,9 @@ export class Spaceship {
   }
 
   private _setupEffect() {
+    if (this._trailsEntry != null) {
+      return;
+    }
     this._trailsEntry = new TrailsManager(
       50,
       this._scene,
@@ -526,6 +528,7 @@ export class Spaceship {
     this._camera.parent = this._spaceship;
     this._unlockMove();
     this._setupSpaceship();
+    this._setupEffect();
     this._setupKeyboardInput();
     this._setupDashboard();
     this._spaceshipEnabled = true;
@@ -540,9 +543,6 @@ export class Spaceship {
 
   private _destroyEffect() {
     this._spaceshipEnabled = false;
-    this._trailsEntry.stop();
-    this._trailsSpeed.stop();
-    this._cloudEffect.stop();
   }
 
   public getCamera() {

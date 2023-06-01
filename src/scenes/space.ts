@@ -54,6 +54,8 @@ export default class SpaceScene extends Scene {
 
     await this._createSpaceship();
     await this._createSpaceStation();
+    await this._ship.enterSpaceship();
+    await this._ship.exitSpaceship();
     await this._station.enterStation();
     // this._addPostProcessing([
     //   this._ship.getCamera(),
@@ -80,7 +82,7 @@ export default class SpaceScene extends Scene {
 
     Dialogue.getInstance().showOnlyDialogues();
 
-    // this.debugLayer.show();
+    this.debugLayer.show();
 
     /*setTimeout(() => {
       this._switchToWorldScene();
