@@ -77,6 +77,7 @@ export class Spaceship {
     new Observable<Planet>();
   private _keyboardObserver: Observer<KeyboardInfo>;
   private _firstView = true;
+  private _uiUpdateTime = 0;
 
   constructor(rootUrl: string, sceneFilename: string, scene: Scene) {
     this._rootUrl = rootUrl;
@@ -289,13 +290,18 @@ export class Spaceship {
 
   private _update() {
     if (!this._spaceshipEnabled) return;
-    this._updateDashboard();
+    if (this._uiUpdateTime > 0) {
+      this._uiUpdateTime -= this._scene.getEngine().getDeltaTime();
+    } else {
+      this._uiUpdateTime = 250;
+      this._updateDashboard();
+    }
+      
+
     this._shakeCamera();
     if (this._lockMovement) return;
     var deltaTime = this._scene.getEngine().getDeltaTime() / 1000.0;
-
     let isPressed = false;
-    // Forward and backward not based on fps
     if (this._isGoingBackward) {
       this._speed += this._acceleration * deltaTime;
       if (this._speed >= 0) {
@@ -385,12 +391,9 @@ export class Spaceship {
 
     this._velocity = this._parentMesh.forward.scale(-this._speed);
     this._parentMesh.moveWithCollisions(this._velocity);
-
+    
     this._computeSpeedKm();
 
-    // this._planetData = this._planetManager.getDistanceClosestPlanet(
-    //   this._parentMesh
-    // );
     this._planetData = this._planetManager.getPlanet(
       this._selectedPlanetIndex,
       this._parentMesh
