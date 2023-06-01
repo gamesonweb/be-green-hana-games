@@ -20,7 +20,7 @@ Nom: Hana Games
 - AGLAE Sebastien : Développement de la partie spatiale
 - CHIAPPE Mike : Développement de la partie planète
 - SAEZ Meriem : Aide sur les assets 2D/3D
-
+Nous vous recommendons d'utiliser Google Chrome pour jouer au jeu car il supporte officiellement WebGPU ! Sinon, vous serez redirigé vers WebGl :(.
 ## Histoire
 
 Dans le jeu Nakama, le joueur incarne Akane, une sergente de l'espace au courage inébranlable. Sa mission principale est de protéger les formes de vie extraterrestres des attaques et de préserver l'équilibre écologique des planètes.
