@@ -827,7 +827,7 @@
             "tpPoint": 0,
 
             "title": "Introduction - Sauver les Nekoma",
-            "description": "Tuez les loups qui menacent l'homme (%progress% / %total%)",
+            "description": "Tuez les loups qui menacent l'homme (%progress% / %total%)<br/>Cliquez sur eux pour les attaquer.",
 
             "cinematic": "",
             "video": "",

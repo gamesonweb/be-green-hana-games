@@ -84,9 +84,9 @@ export default class SpaceScene extends Scene {
 
     // this.debugLayer.show();
 
-    setTimeout(() => {
+    /*setTimeout(() => {
       this._switchToWorldScene();
-    }, 2500);
+    }, 2500);*/
   }
 
   private _createHint() {
