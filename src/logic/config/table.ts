@@ -6,6 +6,7 @@ import Globals from './globals';
 import SceneConfig from './scene';
 import MissionConfig from "./mission";
 import NpcConfig from "./gameobject/npc";
+import AudioConfig from "./audio";
 
 export default class ConfigTable {
     public static get characters(): CharacterConfig[] {
@@ -20,9 +21,11 @@ export default class ConfigTable {
     public static get scenes(): SceneConfig[] {
         return configsJson.scenes;
     }
-
     public static get npcs(): NpcConfig[] {
         return configsJson.npcs;
+    }
+    public static get audios(): AudioConfig[] {
+        return configsJson.audios;
     }
 
     public static get globals(): Globals {

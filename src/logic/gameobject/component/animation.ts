@@ -6,6 +6,7 @@ import AIMovementComponent from "./aiMovement";
 import AnimationConfig, { AnimationClipConfig } from "../../config/component/animation";
 import HitpointComponent from "./hitpoint";
 import RenderComponent from "./render";
+import CombatComponent from "./combat";
 
 export default class AnimationComponent extends Component {
     private _groups: { [name: string]: AnimationGroup } = {};
@@ -17,15 +18,30 @@ export default class AnimationComponent extends Component {
         super(parent);
         this._config = config;
 
+        let idleCondition = false;
         const movementComponent = this.parent.findComponent(MovementComponent) ?? this.parent.findComponent(AIMovementComponent);
         if (movementComponent) {
             movementComponent.onMove = (rate) => {
-                if (rate < 0.1) {
-                    this.play("idle");
+                if (rate < 0.25) {
+                    if (!idleCondition) {
+                        idleCondition = true;
+                        this.play("idle");
+                    }
                 } else {
+                    idleCondition = false;
                     this.play("walk", rate);
                 }
             };
+        }
+
+        const combatComponent = this.parent.findComponent(CombatComponent);
+        if (combatComponent) {
+            combatComponent.onAttack.add(() => {
+                this.play("attack");
+                this._currentGroup.onAnimationEndObservable.addOnce(() => {
+                    idleCondition = false;
+                });
+            });
         }
 
         const hitpointComponent = this.parent.findComponent(HitpointComponent);
@@ -65,12 +81,6 @@ export default class AnimationComponent extends Component {
 
         if (group === this._currentGroup) {
             return;
-        }
-
-        // enable blending
-        for (const anim of group.targetedAnimations) {
-            anim.animation.enableBlending = true;
-            anim.animation.blendingSpeed = 0.2;
         }
 
         group.play(clip.loop);

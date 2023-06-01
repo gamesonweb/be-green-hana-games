@@ -23,7 +23,7 @@ export default class CinematicComponent implements ISceneComponent {
     private _animationRemainingSeconds: number = 0;
 
     private _fadeIn: number = 0;
-    private _canvasCurrentFadeIn: number = 0;
+    private _canvasCurrentFadeIn: number = 1;
 
     constructor(scene: Scene, cinematicCamera: FreeCamera, level: Level) {
         this._scene = scene;

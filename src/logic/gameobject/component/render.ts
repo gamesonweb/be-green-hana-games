@@ -25,7 +25,7 @@ export default class RenderComponent extends Component {
             result.animationGroups.forEach((animationGroup) => {
                 animationGroup.targetedAnimations.forEach((animation) => {
                 animation.animation.enableBlending = true;
-                animation.animation.blendingSpeed = 0.2;
+                animation.animation.blendingSpeed = 0.25;
                 });
             });
 

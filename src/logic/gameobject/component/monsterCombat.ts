@@ -48,6 +48,10 @@ export default class MonsterCombatComponent extends CombatComponent {
         return this._patrolPoints != null && this._patrolPoints.length == 1;
     }
 
+    public get isAlerted(): boolean {
+        return this._alerted;
+    }
+
     public update(): void {
         super.update();
 
@@ -105,12 +109,17 @@ export default class MonsterCombatComponent extends CombatComponent {
             const directionAngle = Math.atan2(direction.y, direction.x);
 
             this.attack(directionAngle);
-            this._freezeTime = Time.getTicks(0.5);
+            this._freezeTime = Time.getTicks(1);
         }
     }
 
     private checkPatrol(): void {
         if (this._alerted) {
+            return;
+        }
+
+        const enemy = this.findEnemyInRadius(25);
+        if (enemy == null) {
             return;
         }
 

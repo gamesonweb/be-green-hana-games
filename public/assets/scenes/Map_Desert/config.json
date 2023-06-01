@@ -43,34 +43,6 @@
   ],
   "objects": [
     {
-      "id": 200005,
-      "name": "Monster.5",
-      "position": {
-        "x": 15.5999985,
-        "y": 388.3
-      },
-      "direction": -1.57079637,
-      "type": 1,
-      "params": {
-        "config": 2,
-        "freezePatrol": false
-      }
-    },
-    {
-      "id": 200004,
-      "name": "Monster.4",
-      "position": {
-        "x": 268.4,
-        "y": 35.1999969
-      },
-      "direction": -1.57079637,
-      "type": 1,
-      "params": {
-        "config": 2,
-        "freezePatrol": false
-      }
-    },
-    {
       "id": 200001,
       "name": "Monster.1",
       "position": {
@@ -98,6 +70,25 @@
       }
     },
     {
+      "id": 500003,
+      "name": "Trigger.InCity_2",
+      "position": {
+        "x": 180.7,
+        "y": 305.7
+      },
+      "direction": -1.57079637,
+      "type": 4,
+      "params": {
+        "area": [
+          105.7,
+          263.2,
+          255.7,
+          348.2
+        ],
+        "autoReset": true
+      }
+    },
+    {
       "id": 400001,
       "name": "Chest.1",
       "position": {
@@ -108,6 +99,38 @@
       "type": 3,
       "params": {
         "drops": []
+      }
+    },
+    {
+      "id": 600002,
+      "name": "NPC.2",
+      "position": {
+        "x": 70.7999954,
+        "y": 246.64
+      },
+      "direction": 0.7516404,
+      "type": 5,
+      "params": {
+        "config": 2
+      }
+    },
+    {
+      "id": 500002,
+      "name": "Trigger.InCity_1",
+      "position": {
+        "x": 155.099991,
+        "y": 249.1
+      },
+      "direction": -1.57079637,
+      "type": 4,
+      "params": {
+        "area": [
+          60.09999,
+          206.6,
+          250.099991,
+          291.6
+        ],
+        "autoReset": true
       }
     },
     {
@@ -125,6 +148,48 @@
       }
     },
     {
+      "id": 200013,
+      "name": "Monster.13",
+      "position": {
+        "x": 172.4,
+        "y": 15.1999969
+      },
+      "direction": -1.57079637,
+      "type": 1,
+      "params": {
+        "config": 2,
+        "freezePatrol": false
+      }
+    },
+    {
+      "id": 200007,
+      "name": "Monster.7",
+      "position": {
+        "x": 139.8,
+        "y": 388.3
+      },
+      "direction": -1.57079637,
+      "type": 1,
+      "params": {
+        "config": 1,
+        "freezePatrol": false
+      }
+    },
+    {
+      "id": 200006,
+      "name": "Monster.6",
+      "position": {
+        "x": 123.899994,
+        "y": 388.3
+      },
+      "direction": -1.57079637,
+      "type": 1,
+      "params": {
+        "config": 1,
+        "freezePatrol": false
+      }
+    },
+    {
       "id": 200003,
       "name": "Monster.3",
       "position": {
@@ -136,6 +201,75 @@
       "params": {
         "config": 1,
         "freezePatrol": true
+      }
+    },
+    {
+      "id": 200008,
+      "name": "Monster.8",
+      "position": {
+        "x": 283.8,
+        "y": 385.099976
+      },
+      "direction": -1.57079637,
+      "type": 1,
+      "params": {
+        "config": 1,
+        "freezePatrol": false
+      }
+    },
+    {
+      "id": 200009,
+      "name": "Monster.9",
+      "position": {
+        "x": 225.799988,
+        "y": 103.899994
+      },
+      "direction": -1.57079637,
+      "type": 1,
+      "params": {
+        "config": 3,
+        "freezePatrol": false
+      }
+    },
+    {
+      "id": 200010,
+      "name": "Monster.10",
+      "position": {
+        "x": 14.6999969,
+        "y": 213.7
+      },
+      "direction": -1.57079637,
+      "type": 1,
+      "params": {
+        "config": 3,
+        "freezePatrol": false
+      }
+    },
+    {
+      "id": 200004,
+      "name": "Monster.4",
+      "position": {
+        "x": 268.4,
+        "y": 35.1999969
+      },
+      "direction": -1.57079637,
+      "type": 1,
+      "params": {
+        "config": 2,
+        "freezePatrol": false
+      }
+    },
+    {
+      "id": 600003,
+      "name": "NPC.3",
+      "position": {
+        "x": 159.3,
+        "y": 260.0
+      },
+      "direction": 1.57079625,
+      "type": 5,
+      "params": {
+        "config": 2
       }
     },
     {
@@ -152,37 +286,93 @@
       }
     },
     {
+      "id": 200011,
+      "name": "Monster.11",
+      "position": {
+        "x": 273.599976,
+        "y": 175.9
+      },
+      "direction": -1.57079637,
+      "type": 1,
+      "params": {
+        "config": 3,
+        "freezePatrol": false
+      }
+    },
+    {
+      "id": 200005,
+      "name": "Monster.5",
+      "position": {
+        "x": 15.5999985,
+        "y": 388.3
+      },
+      "direction": -1.57079637,
+      "type": 1,
+      "params": {
+        "config": 2,
+        "freezePatrol": false
+      }
+    },
+    {
       "id": 500001,
       "name": "Trigger.Quest_KillMonsterTutorial.1",
       "position": {
-        "x": 81.3999939,
-        "y": 54.409996
+        "x": 79.3999939,
+        "y": 82.0
       },
       "direction": -1.57079637,
       "type": 4,
       "params": {
         "area": [
-          56.3999939,
-          50.409996,
-          106.399994,
-          58.409996
-        ]
+          44.3999939,
+          47.0,
+          114.399994,
+          117.0
+        ],
+        "autoReset": false
+      }
+    },
+    {
+      "id": 200012,
+      "name": "Monster.12",
+      "position": {
+        "x": 7.699997,
+        "y": 290.4
+      },
+      "direction": -1.57079637,
+      "type": 1,
+      "params": {
+        "config": 1,
+        "freezePatrol": false
+      }
+    },
+    {
+      "id": 600004,
+      "name": "NPC.3 (1)",
+      "position": {
+        "x": 159.3,
+        "y": 294.0
+      },
+      "direction": 1.57079625,
+      "type": 5,
+      "params": {
+        "config": 2
       }
     }
   ],
   "points": [
     {
-      "id": 6,
-      "position": {
-        "x": 205.2,
-        "y": 250.0
-      }
-    },
-    {
       "id": 3,
       "position": {
         "x": 177.9,
         "y": 172.2
+      }
+    },
+    {
+      "id": 6,
+      "position": {
+        "x": 205.2,
+        "y": 254.21
       }
     },
     {
@@ -193,10 +383,24 @@
       }
     },
     {
+      "id": 7,
+      "position": {
+        "x": 205.2,
+        "y": 248.29
+      }
+    },
+    {
       "id": 5,
       "position": {
         "x": 94.4,
         "y": 50.5
+      }
+    },
+    {
+      "id": 5,
+      "position": {
+        "x": 205.01,
+        "y": 241.22
       }
     },
     {

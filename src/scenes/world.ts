@@ -1,45 +1,30 @@
 import {
     AbstractMesh,
-    BloomEffect, Camera,
     DefaultRenderingPipeline,
     DirectionalLight,
-    FlyCamera,
     FreeCamera,
-    HardwareScalingOptimization,
-    HemisphericLight,
-    Mesh,
-    MeshBuilder,
     PBRMaterial,
-    Ray,
-    SceneLoader,
-    SceneOptimization,
-    SceneOptimizer,
-    SceneOptimizerOptions,
+    SceneLoader, SceneOptimizer, SceneOptimizerOptions,
+    ScenePerformancePriority,
     ShadowGenerator,
-    Space,
-    StandardMaterial,
-    UniversalCamera,
     Vector2,
     Vector3
 } from "@babylonjs/core";
-import { Engine } from "@babylonjs/core/Engines/engine";
-import Character from "../logic/gameobject/character";
-import { GameObjectType } from "../logic/gameobject/gameObject";
+import {Engine} from "@babylonjs/core/Engines/engine";
 import Level from "../logic/level/level";
 import Time from "../logic/time/time";
 import PlayerCamera from "../management/component/playerCamera";
 import PlayerInput from "../management/component/playerInput";
 import Scene from "./scene";
 import SpaceScene from "./space";
-import { Dialogue } from "../space/ui/Dialogue";
 import SceneConfig from "../logic/config/scene";
 import TilemapLoaderComponent from "../management/component/tilemapLoader";
 import CinematicComponent from "../management/component/cinematic";
 import {TargetCamera} from "@babylonjs/core/Cameras/targetCamera";
 import DialogComponent from "../management/component/dialog";
 import MeshProvider from "../management/meshprovider";
-import {SkyMaterial} from "@babylonjs/materials";
 import UIComponent from "../management/component/ui";
+import AudioComponent from "../management/component/audio";
 
 export default class WorldScene extends Scene {
     private static readonly CAMERA_SPEED: number = 15;
@@ -53,6 +38,7 @@ export default class WorldScene extends Scene {
 
     private _sun: DirectionalLight;
     private _shadowGenerator: ShadowGenerator;
+    private _optimizer: SceneOptimizer;
 
     constructor(engine: Engine, config: SceneConfig) {
         super(engine);
@@ -61,6 +47,9 @@ export default class WorldScene extends Scene {
         this.onDispose = () => {
             this._level.destroy();
         };
+
+        const options = SceneOptimizerOptions.ModerateDegradationAllowed(60);
+        this._optimizer = new SceneOptimizer(this, options, true, true);
     }
 
     public get level(): Level {
@@ -71,7 +60,9 @@ export default class WorldScene extends Scene {
         await super.init();
         await this.createTerrain();
 
-        // this.debugLayer.show();
+        // await this.debugLayer.show();
+
+        this.blockMaterialDirtyMechanism = true;
 
         const cinematicCamera = this.cameras[0] as FreeCamera;
         const playerCamera = new TargetCamera("PlayerCamera", Vector3.Up(), this, true);
@@ -82,13 +73,14 @@ export default class WorldScene extends Scene {
         this.addComponent(new UIComponent(this, this._level))
         this.addComponent(new CinematicComponent(this, cinematicCamera, this._level));
         this.addComponent(new PlayerInput(this));
+        this.addComponent(new AudioComponent(this, this._level));
 
         this.loadLevel();
 
         this._sun = this.lights[0] as DirectionalLight;
         this._sun.autoCalcShadowZBounds = true;
 
-        this._shadowGenerator = new ShadowGenerator(8192, this._sun, null, this.activeCamera);
+        this._shadowGenerator = new ShadowGenerator(4096, this._sun, null, this.activeCamera);
         this._shadowGenerator.useCloseExponentialShadowMap = true;
         this._shadowGenerator.bias = 0.0001;
         this._shadowGenerator.setDarkness(0.1);
@@ -98,6 +90,15 @@ export default class WorldScene extends Scene {
                 this._shadowGenerator.addShadowCaster(mesh);
                 console.log('added shadow caster', mesh.name);
             }
+        }
+
+        const cinematicNode = this.transformNodes.find(t => t.name === 'Cinematic');
+        if (cinematicNode) {
+            for (const subNode of cinematicNode.getChildTransformNodes()) {
+                subNode.unfreezeWorldMatrix();
+            }
+        } else {
+            throw new Error('cinematic node not found');
         }
 
         const defaultPipeline = new DefaultRenderingPipeline("default", true, this, [this.activeCamera, cinematicCamera]);
@@ -115,14 +116,18 @@ export default class WorldScene extends Scene {
         defaultPipeline.imageProcessing.vignetteWeight = 2.5;
         defaultPipeline.imageProcessing.vignetteStretch = 0.5;
 
-        /*const skyMaterial = new SkyMaterial("skyMaterial", this);
-        skyMaterial.backFaceCulling = false;
-        skyMaterial.turbidity = 10;
-
-        const skybox = MeshBuilder.CreateBox("skyBox", { size: 1000.0 }, this);
-        skybox.material = skyMaterial;*/
+        /*const skybox = Mesh.CreateBox("skyBox", 5000.0, this);
+        const skyboxMaterial = new StandardMaterial("skyBox", this);
+        skyboxMaterial.backFaceCulling = false;
+        skyboxMaterial.reflectionTexture = new CubeTexture("https://assets.babylonjs.com/textures/TropicalSunnyDay", this);
+        skyboxMaterial.reflectionTexture.coordinatesMode = Texture.SKYBOX_MODE;
+        skyboxMaterial.diffuseColor = new Color3(0, 0, 0);
+        skyboxMaterial.specularColor = new Color3(0, 0, 0);
+        skyboxMaterial.disableLighting = true;
+        skybox.material = skyboxMaterial;*/
 
         this._initialized = true;
+        this._optimizer.start();
 
         await MeshProvider.instance.executeAsync();
 
@@ -197,20 +202,45 @@ export default class WorldScene extends Scene {
         root.rotation = rotation;
         root.scaling = scaling;
 
-        for (const mesh of root.getChildMeshes()) {
-            mesh.receiveShadows = true;
-            // set roughness to 0.25
-            if (mesh.material instanceof PBRMaterial) {
-                mesh.material.roughness = 0.25;
-            }
+        for (const child of model.meshes) {
+            this._optimizeMesh(child);
         }
 
-        for (const child of root.getChildren()) {
-            child.computeWorldMatrix(true);
-            if (child instanceof Mesh) {
-                child.freezeWorldMatrix();
+        const excludeShadowMeshNames = [
+            "_rock_",
+            "_rocks_",
+            "_grass_",
+        ]
+        for (const mesh of model.meshes) {
+            let exclude = false;
+            const lowerName = mesh.name.toLowerCase();
+            for (const excludeName of excludeShadowMeshNames) {
+                if (lowerName.indexOf(excludeName) !== -1) {
+                    exclude = true;
+                    break;
+                }
+            }
+            if (!exclude) {
+                mesh.receiveShadows = true;
+                // set roughness to 0.25
+                if (mesh.material instanceof PBRMaterial) {
+                    mesh.material.roughness = 0.25;
+                }
             }
         }
+    }
+
+    private _optimizeMesh(mesh: AbstractMesh) {
+        mesh.computeWorldMatrix(true);
+        mesh.freezeWorldMatrix();
+        mesh.checkCollisions = false;
+        // mesh.isPickable = false;
+
+        if (mesh.material) {
+            mesh.material.freeze();
+        }
+
+        mesh.cullingStrategy = AbstractMesh.CULLINGSTRATEGY_BOUNDINGSPHERE_ONLY;
     }
 
     private updateLogic() {
@@ -219,7 +249,7 @@ export default class WorldScene extends Scene {
         }
 
         const delta = this.getEngine().getDeltaTime() / 1000;
-        this._logicTime += delta;
+        this._logicTime = Math.min(this._logicTime + delta, 10000);
         while (this._logicTime > Time.TICK_DELTA_TIME) {
             this._level.update();
             this._logicTime -= Time.TICK_DELTA_TIME;
@@ -227,7 +257,6 @@ export default class WorldScene extends Scene {
 
         const character = this._level.gameObjectManager.player;
         if (character === null) {
-            this._initialized = false;
             this.loadLevel();
         }
     }

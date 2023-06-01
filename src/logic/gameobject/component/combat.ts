@@ -5,8 +5,11 @@ import GameObject from "../gameObject";
 import Projectile from "../projectile";
 import Component, { ComponentType } from "./component";
 import HitpointComponent from "./hitpoint";
+import {EventList} from "../../util/eventList";
 
 export default class CombatComponent extends Component {
+    public onAttack: EventList = new EventList();
+
     protected _config: CombatConfig;
     private _attackCooldown: number = 0;
 
@@ -55,6 +58,8 @@ export default class CombatComponent extends Component {
                 }
             }             
         }
+
+        this.onAttack.trigger();
     }
 
     public update(): void {
