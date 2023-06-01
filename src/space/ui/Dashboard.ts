@@ -59,16 +59,12 @@ export class Dashboard {
     this._uiTexture
       .parseFromURLAsync("assets/space/ui/FullDashboard.json")
       .then(() => {
-        // let material = ToonMaterial.createMaterial(this._uiTexture);
-
-        // this._screenMesh.material = material;
-        //Standard mat
         let material = new StandardMaterial("mat", this._scene);
         material.diffuseTexture = this._uiTexture;
-        material.backFaceCulling = false;
         this._grabElement();
       });
   }
+
   private _grabElement() {
     this._speedText = this._uiTexture.getControlByName(
       "SPEED"

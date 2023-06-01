@@ -49,8 +49,8 @@ export class CloudEffect extends GPUParticleSystem {
     this.direction2 = new Vector3(0, 0, 0);
     this.minAngularSpeed = -2;
     this.maxAngularSpeed = 2;
-    this.minEmitBox = new Vector3(-12, -8, -0.5);
-    this.maxEmitBox = new Vector3(12, 8, 0.5);
+    this.minEmitBox = new Vector3(-15, -10, -0.5);
+    this.maxEmitBox = new Vector3(15, 10, 0.5);
     this.minEmitPower = 0.5;
     this.maxEmitPower = 1;
     this.updateSpeed = 0.005;

@@ -57,10 +57,10 @@ export default class SpaceScene extends Scene {
     await this._ship.enterSpaceship();
     await this._ship.exitSpaceship();
     await this._station.enterStation();
-    // this._addPostProcessing([
-    //   this._ship.getCamera(),
-    //   this._station.getCamera(),
-    // ]);
+    this._addPostProcessing([
+      this._ship.getCamera(),
+      this._station.getCamera(),
+    ]);
 
     this.onKeyboardObservable.add((kbInfo) => {
       if (kbInfo.type == KeyboardEventTypes.KEYDOWN) {
@@ -82,7 +82,7 @@ export default class SpaceScene extends Scene {
 
     Dialogue.getInstance().showOnlyDialogues();
 
-    this.debugLayer.show();
+    // this.debugLayer.show();
 
     setTimeout(() => {
       this._switchToWorldScene();
@@ -90,17 +90,18 @@ export default class SpaceScene extends Scene {
   }
 
   private _createHint() {
-    let sphere = MeshBuilder.CreateSphere("sphere", { diameter: 1 }, this);
+    let sphere = MeshBuilder.CreateSphere("sphere", { diameter: 2 }, this);
     sphere.position = new Vector3(17, 7, 54);
     let material = new StandardMaterial("material", this);
     material.alpha = 0.5;
+    material.diffuseColor = new Color3(0, 1, 0);
     sphere.material = material;
     sphere.isPickable = false;
     sphere.renderOutline = true;
-    sphere.outlineWidth = 0.4;
+    sphere.outlineWidth = 5;
     sphere.outlineColor = new Color3(0, 255, 0);
     sphere.renderingGroupId = 1;
-    this._triggerCube = MeshBuilder.CreateBox("trigger", { size: 8 }, this);
+    this._triggerCube = MeshBuilder.CreateBox("trigger", { size: 10 }, this);
     this._triggerCube.position = new Vector3(17, 7, 54);
     this._triggerCube.isVisible = false;
   }
