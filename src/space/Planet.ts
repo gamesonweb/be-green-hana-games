@@ -47,6 +47,8 @@ export class Planet {
       scene
     );
     planet.material = ToonMaterial.createMaterial(this._texture);
+    planet.material.freeze();
+
 
     this._planetMesh = planet;
   }

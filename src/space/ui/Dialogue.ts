@@ -4,12 +4,15 @@ export class Dialogue {
   private static instance: Dialogue;
   private _uiTexture: AdvancedDynamicTexture;
   private _texts: string[] = [];
+  private _cloneTexts: string[] = [];
   private _textTime: number[] = [];
+  private _textTimeClone: number[] = [];
   private monsterCountElement: HTMLDivElement;
   private playerInfo: PlayerInfo;
   private dialoguesElement: HTMLDivElement;
   private hintElement: HTMLDivElement;
   private overlayElement: HTMLDivElement;
+  private _isLooping: boolean = false;
 
   constructor() {
     this.monsterCountElement = document.getElementById(
@@ -39,9 +42,15 @@ export class Dialogue {
     return Dialogue.instance;
   }
 
+  public set isLooping(value: boolean) {
+    this._isLooping = value;
+  }
+
   public addText(text: string, time: number) {
     this._texts.push(text);
     this._textTime.push(time);
+    this._cloneTexts = [...this._texts];
+    this._textTimeClone = [...this._textTime];
   }
 
   public update(deltaTime: number) {
@@ -55,6 +64,10 @@ export class Dialogue {
       }
     } else {
       this.clearDialogues();
+      if (this._isLooping) {
+        this._texts = [...this._cloneTexts];
+        this._textTime = [...this._textTimeClone];
+      }
     }
   }
 
@@ -90,7 +103,9 @@ export class Dialogue {
   }
 
   updateDialogues(dialogues: string) {
-    this.dialoguesElement.style.display = "block";
+    if (this.dialoguesElement.style.display == "none") {
+      this.dialoguesElement.style.display = "block";
+    } 
     this.dialoguesElement.innerText = dialogues;
   }
 
@@ -141,6 +156,8 @@ export class Dialogue {
   public clear() {
     this._texts = [];
     this._textTime = [];
+    this._cloneTexts = [];
+    this._textTimeClone = [];
   }
 
   public get isCompleted(): boolean {

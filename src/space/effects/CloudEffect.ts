@@ -11,6 +11,7 @@ import {
 export class CloudEffect extends GPUParticleSystem {
   private _meshSpace: AbstractMesh;
   private _maxEmitRate: number;
+  private _box: AbstractMesh;
 
   constructor(scene: Scene, meshSpace: AbstractMesh) {
     super("cloud", { capacity: 1500 }, scene);
@@ -19,14 +20,14 @@ export class CloudEffect extends GPUParticleSystem {
     }
     this._meshSpace = meshSpace;
 
-    let emitter = MeshBuilder.CreateBox("cloud", {
+    this._box = MeshBuilder.CreateBox("cloud", {
       size: 1,
     });
-    emitter.visibility = 0;
-    emitter.parent = meshSpace;
-    this.emitter = emitter;
+    this._box.visibility = 0;
+    this._box.parent = meshSpace;
+    this.emitter = this._box;
     this.isLocal = true;
-    this.emitter.position = new Vector3(0, 0, 5);
+   this._box.position = new Vector3(0, 0, 5);
 
     this.particleTexture = new Texture(
       "/assets/space/effects/smoke_15.png",

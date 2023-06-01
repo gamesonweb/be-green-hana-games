@@ -25,6 +25,7 @@ import { Dashboard } from "./ui/Dashboard";
 export class Spaceship {
   private _parentMesh: AbstractMesh;
   private _spaceship: AbstractMesh;
+  private _spaceship1: AbstractMesh;
   private _scene: Scene;
   private _camera: UniversalCamera;
   private _speed: number;
@@ -106,7 +107,7 @@ export class Spaceship {
       this._scene
     );
     this._spaceship = result.meshes[0];
-    result.meshes[0].position = new Vector3(150, 150, 150);
+    this._spaceship1 = result.meshes[1];
   }
 
   private _setupDashboard() {
@@ -117,6 +118,9 @@ export class Spaceship {
   }
 
   private _setupEffect() {
+    if (this._trailsEntry != null) {
+      return;
+    }
     this._trailsEntry = new TrailsManager(
       50,
       this._scene,
@@ -173,6 +177,7 @@ export class Spaceship {
     this._spaceship.parent = this._parentMesh;
     this._spaceship.rotationQuaternion = Quaternion.Identity();
     this._spaceship.position = new Vector3(0, 0, 0);
+    this._spaceship1.position = new Vector3(0, 0, 0);
     this._parentMesh.physicsImpostor = new PhysicsImpostor(
       this._spaceship,
       PhysicsImpostor.BoxImpostor,
@@ -335,7 +340,6 @@ export class Spaceship {
         this._rotationSpeedVer = -this._maxRotationSpeed;
       }
     }
-
     if (!isPressed) {
       // Horizontal deceleration (left and right)
       if (this._rotationSpeedHori > 0) {
@@ -524,8 +528,8 @@ export class Spaceship {
     this._camera.parent = this._spaceship;
     this._unlockMove();
     this._setupSpaceship();
-    this._setupKeyboardInput();
     this._setupEffect();
+    this._setupKeyboardInput();
     this._setupDashboard();
     this._spaceshipEnabled = true;
   }
@@ -539,15 +543,6 @@ export class Spaceship {
 
   private _destroyEffect() {
     this._spaceshipEnabled = false;
-    this._trailsEntry.stop();
-    this._trailsEntry.dispose();
-    this._trailsEntry = null;
-    this._trailsSpeed.stop();
-    this._trailsSpeed.dispose();
-    this._trailsSpeed = null;
-    this._cloudEffect.stop();
-    this._cloudEffect.dispose();
-    this._cloudEffect = null;
   }
 
   public getCamera() {

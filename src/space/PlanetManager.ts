@@ -64,22 +64,22 @@ export class PlanetManager {
       50724 * this._scale,
       new Texture("assets/space/img/planets/2k_uranus.jpg", scene)
     );
-    let neptune = new Planet(
-      "neptune",
-      17500 / 4,
-      0.0005,
-      0.00001,
-      49244 * this._scale,
-      new Texture("assets/space/img/planets/2k_neptune.jpg", scene)
-    );
-    let pluto = new Planet(
-      "pluto",
-      20000 / 4,
-      0.0004,
-      0.00001,
-      2376 * this._scale,
-      new Texture("assets/space/img/planets/2k_haumea_fictional.jpg", scene)
-    );
+    // let neptune = new Planet(
+    //   "neptune",
+    //   17500 / 4,
+    //   0.0005,
+    //   0.00001,
+    //   49244 * this._scale,
+    //   new Texture("assets/space/img/planets/2k_neptune.jpg", scene)
+    // );
+    // let pluto = new Planet(
+    //   "pluto",
+    //   20000 / 4,
+    //   0.0004,
+    //   0.00001,
+    //   2376 * this._scale,
+    //   new Texture("assets/space/img/planets/2k_haumea_fictional.jpg", scene)
+    // );
 
     this._planets.push(
       mercury,
@@ -89,8 +89,8 @@ export class PlanetManager {
       jupiter,
       saturn,
       uranus,
-      neptune,
-      pluto
+      // neptune,
+      // pluto
     );
   }
 

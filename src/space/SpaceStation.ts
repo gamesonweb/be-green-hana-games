@@ -52,7 +52,9 @@ export class SpaceStation {
       );
       mesh.checkCollisions = true;
       mesh.isVisible = false;
+      mesh.freezeWorldMatrix();
     });
+    this._collider.freezeWorldMatrix();
   }
 
   private async _setupSpaceStation() {
@@ -64,10 +66,19 @@ export class SpaceStation {
     );
 
     this._spaceStation = spaceStation.meshes[0];
+    this._spaceStation.getChildMeshes().forEach((mesh) => {
+      if (mesh.name.includes("SpaceBase (1)")) {
+        mesh.freezeWorldMatrix();
+        mesh.material.freeze();
+      }
+    });
   }
 
   private async _setupPlayer() {
-    this._player = new FirstPersonPlayer(this._scene, new Vector3(-124.8, 0.55, 179.6));
+    this._player = new FirstPersonPlayer(
+      this._scene,
+      new Vector3(-124.8, 0.55, 179.6)
+    );
   }
 
   private async _setupDoor() {

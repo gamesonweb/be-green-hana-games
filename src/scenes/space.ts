@@ -82,7 +82,7 @@ export default class SpaceScene extends Scene {
 
     Dialogue.getInstance().showOnlyDialogues();
 
-    // this.debugLayer.show();
+    this.debugLayer.show();
 
     /*setTimeout(() => {
       this._switchToWorldScene();
@@ -169,20 +169,9 @@ export default class SpaceScene extends Scene {
   private _createDialogue() {
     this._dialogue = Dialogue.getInstance();
     this._dialogue.showOnlyDialogues();
+    this._dialogue.isLooping = true;
     this._dialogue.addText(
-      "Bienvenue dans Nakama ! Nous sommes heureux de vous accueillir dans ce jeu spatial épique (1/4)",
-      10000
-    );
-    this._dialogue.addText(
-      "Avant de commencer, voici les commandes de votre vaisseau spatial : Z pour monter, S pour descendre, Q pour tourner à gauche et D pour tourner à droite (2/4)",
-      10000
-    );
-    this._dialogue.addText(
-      "Espace pour accélérer, et Shift pour ralentir. Assurez-vous de les maîtriser avant de partir à l'aventure. (3/4)",
-      10000
-    );
-    this._dialogue.addText(
-      "Votre mission est de naviguer dans l'espace et de trouver la planète la plus proche. Utilisez la touche E pour orienter votre vaisseau vers elle. Une fois que vous l'avez trouvée, atterrissez sur sa surface pour explorer ses merveilles. (4/4)",
+      "Bienvenue Frero ! Dirige toi vers l'orbe verte pour entrer dans le vaisseau",
       10000
     );
   }
@@ -200,6 +189,28 @@ export default class SpaceScene extends Scene {
       if (this._inputF) {
         this._station.exitStation();
         this._ship.enterSpaceship();
+        Dialogue.getInstance().hideHint();
+        this._dialogue.clear();
+        this._dialogue.addText(
+          "Bienvenue dans Nakama ! Nous sommes heureux de vous accueillir dans ce jeu spatial épique (1/5)",
+          10000
+        );
+        this._dialogue.addText(
+          "Avant de commencer, voici les commandes de votre vaisseau spatial : Z pour monter, S pour descendre, Q pour tourner à gauche et D pour tourner à droite (2/5)",
+          10000
+        );
+        this._dialogue.addText(
+          "Espace pour accélérer, et Shift pour ralentir. Assurez-vous de les maîtriser avant de partir à l'aventure. (3/5)",
+          10000
+        );
+        this._dialogue.addText(
+          "Votre mission est de naviguer dans l'espace et de choisir la planète que vous voulez (La plus proche, sinon c loin). Utilisez la touche E pour orienter votre vaisseau vers elle. Une fois que vous l'avez trouvée, atterrissez sur sa surface pour explorer ses merveilles. (4/5)",
+          10000
+        );
+        this._dialogue.addText(
+          "Pour changer de planete, utilisez la touche fleche du haut pour aller vers la planete suivante, et la touche fleche du bas pour aller vers la planete precedente. (5/5)",
+          10000
+        );
       }
     } else {
       Dialogue.getInstance().hideHint();
