@@ -11,7 +11,7 @@ export default class PathFinder {
 
     constructor(tileMap: TileMap) {
         this._tileMap = tileMap;
-        this._downscaleFactor = 2;
+        this._downscaleFactor = 1;
         this.updateGrid();
     }
 

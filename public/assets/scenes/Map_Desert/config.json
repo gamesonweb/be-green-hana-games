@@ -1,7 +1,7 @@
 {
-  "width": 2165,
-  "height": 2210,
-  "precision": 5,
+  "width": 1732,
+  "height": 1768,
+  "precision": 4,
   "useBakedTilemap": true,
   "models": [
     {
@@ -364,8 +364,8 @@
     {
       "id": 3,
       "position": {
-        "x": 177.9,
-        "y": 172.2
+        "x": 202.9,
+        "y": 189.8
       }
     },
     {
@@ -397,7 +397,7 @@
       }
     },
     {
-      "id": 5,
+      "id": 8,
       "position": {
         "x": 205.01,
         "y": 241.22

@@ -17,6 +17,8 @@ export default class UIComponent implements ISceneComponent {
     private _currentMissionPathTime: number = 0;
     private _currentPath: Mesh | null = null;
 
+    private _enemyLifeBars: Map<number, Mesh> = new Map<number, Mesh>();
+
     constructor(scene: Scene, level: Level) {
         this._scene = scene;
         this._level = level;
@@ -60,6 +62,32 @@ export default class UIComponent implements ISceneComponent {
             const hitpointComponent = player.getComponent(HitpointComponent);
             if (hitpointComponent) {
                 this._ui.updateHealthBar(hitpointComponent.hitpoint / hitpointComponent.maxHitpoint * 100);
+            }
+        }
+
+        const gameObjects = this._level.gameObjectManager.objects.values();
+        for (const gameObject of gameObjects) {
+            const hitpointComponent = gameObject.findComponent(HitpointComponent);
+            if (hitpointComponent !== null && hitpointComponent.team !== -1 && hitpointComponent.team !== player.team) {
+                let mesh = this._enemyLifeBars.get(gameObject.id);
+                if (!mesh) {
+                    mesh = MeshBuilder.CreatePlane("enemyLifeBar", {width: 4, height: 0.5}, this._scene);
+                    this._enemyLifeBars.set(gameObject.id, mesh);
+                    hitpointComponent.onDeath.add(() => {
+                        mesh?.dispose();
+                        this._enemyLifeBars.delete(gameObject.id);
+                    });
+                }
+                mesh.position = new Vector3(gameObject.position.x, 5, gameObject.position.y);
+                mesh.scaling = new Vector3(hitpointComponent.hitpoint / hitpointComponent.maxHitpoint, 1, 1);
+                mesh.billboardMode = Mesh.BILLBOARDMODE_ALL;
+
+                // always face the camera
+                const camera = this._scene.activeCamera;
+                if (camera) {
+                    mesh.lookAt(camera.position);
+                    mesh.rotate(new Vector3(0, 1, 0), Math.PI);
+                }
             }
         }
     }

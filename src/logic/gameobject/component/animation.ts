@@ -7,6 +7,7 @@ import AnimationConfig, { AnimationClipConfig } from "../../config/component/ani
 import HitpointComponent from "./hitpoint";
 import RenderComponent from "./render";
 import CombatComponent from "./combat";
+import MonsterCombatComponent from "./monsterCombat";
 
 export default class AnimationComponent extends Component {
     private _groups: { [name: string]: AnimationGroup } = {};
@@ -19,28 +20,29 @@ export default class AnimationComponent extends Component {
         this._config = config;
 
         let idleCondition = false;
+        let isAttacking = false;
         const movementComponent = this.parent.findComponent(MovementComponent) ?? this.parent.findComponent(AIMovementComponent);
         if (movementComponent) {
             movementComponent.onMove = (rate) => {
                 if (rate < 0.25) {
-                    if (!idleCondition) {
+                    if (!idleCondition && (!isAttacking || !this._currentGroup.isPlaying)) {
                         idleCondition = true;
+                        isAttacking = false;
                         this.play("idle");
                     }
                 } else {
                     idleCondition = false;
+                    isAttacking = false;
                     this.play("walk", rate);
                 }
             };
         }
 
-        const combatComponent = this.parent.findComponent(CombatComponent);
+        const combatComponent = this.parent.findComponent(CombatComponent) ?? this.parent.findComponent(MonsterCombatComponent);
         if (combatComponent) {
             combatComponent.onAttack.add(() => {
                 this.play("attack");
-                this._currentGroup.onAnimationEndObservable.addOnce(() => {
-                    idleCondition = false;
-                });
+                isAttacking = true;
             });
         }
 
@@ -48,9 +50,11 @@ export default class AnimationComponent extends Component {
         if (hitpointComponent) {
             hitpointComponent.onDeath.add(() => {
                 this.play("die");
+                isAttacking = false;
             });
             hitpointComponent.onDamage.add(() => {
                 this.play("damage");
+                isAttacking = false;
             });
         }
 

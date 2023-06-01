@@ -11,7 +11,7 @@
             "combat": {
                 "attackDelay": 1.5,
                 "shootDamage": 25,
-                "shootRadius": 1,
+                "shootRadius": 3,
                 "projectileId": 1,
                 "projectileSpeed": 25,
                 "projectileLifetime": 1
@@ -80,8 +80,8 @@
                 "projectileSpeed": 0,
                 "projectileLifetime": 0,
 
-                "alertInRadius": 25,
-                "alertOutRadius": 35,
+                "alertInRadius": 20,
+                "alertOutRadius": 30,
                 "patrolRadius": 12.5
             },
             "movement": {
@@ -289,9 +289,9 @@
     ],
     "scenes": [
         {
-            "width": 2165,
-            "height": 2210,
-            "precision": 5,
+            "width": 1732,
+            "height": 1768,
+            "precision": 4,
             "useBakedTilemap": true,
             "models": [
                 {
@@ -333,6 +333,33 @@
             ],
             "objects": [
                 {
+                    "id": 200001,
+                    "name": "Monster.1",
+                    "position": {
+                        "x": 81.1000061,
+                        "y": 75.19
+                    },
+                    "direction": -1.33786261,
+                    "type": 1,
+                    "params": {
+                        "config": 1,
+                        "freezePatrol": true
+                    }
+                },
+                {
+                    "id": 600001,
+                    "name": "NPC.1",
+                    "position": {
+                        "x": 84.22,
+                        "y": 82.92999
+                    },
+                    "direction": 0.8229945,
+                    "type": 5,
+                    "params": {
+                        "config": 1
+                    }
+                },
+                {
                     "id": 500003,
                     "name": "Trigger.InCity_2",
                     "position": {
@@ -349,6 +376,32 @@
                             348.2
                         ],
                         "autoReset": true
+                    }
+                },
+                {
+                    "id": 400001,
+                    "name": "Chest.1",
+                    "position": {
+                        "x": 103.549995,
+                        "y": 114.289993
+                    },
+                    "direction": 0.6876505,
+                    "type": 3,
+                    "params": {
+                        "drops": []
+                    }
+                },
+                {
+                    "id": 600002,
+                    "name": "NPC.2",
+                    "position": {
+                        "x": 70.7999954,
+                        "y": 246.64
+                    },
+                    "direction": 0.7516404,
+                    "type": 5,
+                    "params": {
+                        "config": 2
                     }
                 },
                 {
@@ -371,6 +424,20 @@
                     }
                 },
                 {
+                    "id": 200002,
+                    "name": "Monster.2",
+                    "position": {
+                        "x": 90.92,
+                        "y": 77.8500061
+                    },
+                    "direction": 3.7778697,
+                    "type": 1,
+                    "params": {
+                        "config": 1,
+                        "freezePatrol": true
+                    }
+                },
+                {
                     "id": 200013,
                     "name": "Monster.13",
                     "position": {
@@ -381,115 +448,6 @@
                     "type": 1,
                     "params": {
                         "config": 2,
-                        "freezePatrol": false
-                    }
-                },
-                {
-                    "id": 200012,
-                    "name": "Monster.12",
-                    "position": {
-                        "x": 7.699997,
-                        "y": 290.4
-                    },
-                    "direction": -1.57079637,
-                    "type": 1,
-                    "params": {
-                        "config": 1,
-                        "freezePatrol": false
-                    }
-                },
-                {
-                    "id": 200011,
-                    "name": "Monster.11",
-                    "position": {
-                        "x": 273.599976,
-                        "y": 175.9
-                    },
-                    "direction": -1.57079637,
-                    "type": 1,
-                    "params": {
-                        "config": 3,
-                        "freezePatrol": false
-                    }
-                },
-                {
-                    "id": 200010,
-                    "name": "Monster.10",
-                    "position": {
-                        "x": 14.6999969,
-                        "y": 213.7
-                    },
-                    "direction": -1.57079637,
-                    "type": 1,
-                    "params": {
-                        "config": 3,
-                        "freezePatrol": false
-                    }
-                },
-                {
-                    "id": 200009,
-                    "name": "Monster.9",
-                    "position": {
-                        "x": 225.799988,
-                        "y": 103.899994
-                    },
-                    "direction": -1.57079637,
-                    "type": 1,
-                    "params": {
-                        "config": 3,
-                        "freezePatrol": false
-                    }
-                },
-                {
-                    "id": 600004,
-                    "name": "NPC.3 (1)",
-                    "position": {
-                        "x": 159.3,
-                        "y": 294.0
-                    },
-                    "direction": 1.57079625,
-                    "type": 5,
-                    "params": {
-                        "config": 2
-                    }
-                },
-                {
-                    "id": 600003,
-                    "name": "NPC.3",
-                    "position": {
-                        "x": 159.3,
-                        "y": 260.0
-                    },
-                    "direction": 1.57079625,
-                    "type": 5,
-                    "params": {
-                        "config": 2
-                    }
-                },
-                {
-                    "id": 600002,
-                    "name": "NPC.2",
-                    "position": {
-                        "x": 70.7999954,
-                        "y": 246.64
-                    },
-                    "direction": 0.7516404,
-                    "type": 5,
-                    "params": {
-                        "config": 2
-                    }
-                },
-                {
-                    "id": 200008,
-                    "name": "Monster.8",
-                    "position": {
-                        "x": 283.8,
-                        "y": 385.099976
-                    },
-                    "direction": -1.57079637,
-                    "type": 1,
-                    "params": {
-                        "config": 1,
                         "freezePatrol": false
                     }
                 },
@@ -522,16 +480,58 @@
                     }
                 },
                 {
-                    "id": 200005,
-                    "name": "Monster.5",
+                    "id": 200003,
+                    "name": "Monster.3",
                     "position": {
-                        "x": 15.5999985,
-                        "y": 388.3
+                        "x": 91.54999,
+                        "y": 87.67999
+                    },
+                    "direction": 2.56423783,
+                    "type": 1,
+                    "params": {
+                        "config": 1,
+                        "freezePatrol": true
+                    }
+                },
+                {
+                    "id": 200008,
+                    "name": "Monster.8",
+                    "position": {
+                        "x": 283.8,
+                        "y": 385.099976
                     },
                     "direction": -1.57079637,
                     "type": 1,
                     "params": {
-                        "config": 2,
+                        "config": 1,
+                        "freezePatrol": false
+                    }
+                },
+                {
+                    "id": 200009,
+                    "name": "Monster.9",
+                    "position": {
+                        "x": 225.799988,
+                        "y": 103.899994
+                    },
+                    "direction": -1.57079637,
+                    "type": 1,
+                    "params": {
+                        "config": 3,
+                        "freezePatrol": false
+                    }
+                },
+                {
+                    "id": 200010,
+                    "name": "Monster.10",
+                    "position": {
+                        "x": 14.6999969,
+                        "y": 213.7
+                    },
+                    "direction": -1.57079637,
+                    "type": 1,
+                    "params": {
+                        "config": 3,
                         "freezePatrol": false
                     }
                 },
@@ -550,71 +550,16 @@
                     }
                 },
                 {
-                    "id": 200001,
-                    "name": "Monster.1",
+                    "id": 600003,
+                    "name": "NPC.3",
                     "position": {
-                        "x": 81.1000061,
-                        "y": 75.19
+                        "x": 159.3,
+                        "y": 260.0
                     },
-                    "direction": -1.33786261,
-                    "type": 1,
-                    "params": {
-                        "config": 1,
-                        "freezePatrol": true
-                    }
-                },
-                {
-                    "id": 600001,
-                    "name": "NPC.1",
-                    "position": {
-                        "x": 84.22,
-                        "y": 82.92999
-                    },
-                    "direction": 0.8229945,
+                    "direction": 1.57079625,
                     "type": 5,
                     "params": {
-                        "config": 1
-                    }
-                },
-                {
-                    "id": 400001,
-                    "name": "Chest.1",
-                    "position": {
-                        "x": 103.549995,
-                        "y": 114.289993
-                    },
-                    "direction": 0.6876505,
-                    "type": 3,
-                    "params": {
-                        "drops": []
-                    }
-                },
-                {
-                    "id": 200002,
-                    "name": "Monster.2",
-                    "position": {
-                        "x": 90.92,
-                        "y": 77.8500061
-                    },
-                    "direction": 3.7778697,
-                    "type": 1,
-                    "params": {
-                        "config": 1,
-                        "freezePatrol": true
-                    }
-                },
-                {
-                    "id": 200003,
-                    "name": "Monster.3",
-                    "position": {
-                        "x": 91.54999,
-                        "y": 87.67999
-                    },
-                    "direction": 2.56423783,
-                    "type": 1,
-                    "params": {
-                        "config": 1,
-                        "freezePatrol": true
+                        "config": 2
                     }
                 },
                 {
@@ -628,6 +573,34 @@
                     "type": 0,
                     "params": {
                         "config": 1
+                    }
+                },
+                {
+                    "id": 200011,
+                    "name": "Monster.11",
+                    "position": {
+                        "x": 273.599976,
+                        "y": 175.9
+                    },
+                    "direction": -1.57079637,
+                    "type": 1,
+                    "params": {
+                        "config": 3,
+                        "freezePatrol": false
+                    }
+                },
+                {
+                    "id": 200005,
+                    "name": "Monster.5",
+                    "position": {
+                        "x": 15.5999985,
+                        "y": 388.3
+                    },
+                    "direction": -1.57079637,
+                    "type": 1,
+                    "params": {
+                        "config": 2,
+                        "freezePatrol": false
                     }
                 },
                 {
@@ -648,21 +621,41 @@
                         ],
                         "autoReset": false
                     }
+                },
+                {
+                    "id": 200012,
+                    "name": "Monster.12",
+                    "position": {
+                        "x": 7.699997,
+                        "y": 290.4
+                    },
+                    "direction": -1.57079637,
+                    "type": 1,
+                    "params": {
+                        "config": 1,
+                        "freezePatrol": false
+                    }
+                },
+                {
+                    "id": 600004,
+                    "name": "NPC.3 (1)",
+                    "position": {
+                        "x": 159.3,
+                        "y": 294.0
+                    },
+                    "direction": 1.57079625,
+                    "type": 5,
+                    "params": {
+                        "config": 2
+                    }
                 }
             ],
             "points": [
                 {
-                    "id": 5,
+                    "id": 3,
                     "position": {
-                        "x": 205.01,
-                        "y": 241.22
-                    }
-                },
-                {
-                    "id": 7,
-                    "position": {
-                        "x": 205.2,
-                        "y": 248.29
+                        "x": 202.9,
+                        "y": 189.8
                     }
                 },
                 {
@@ -673,13 +666,6 @@
                     }
                 },
                 {
-                    "id": 3,
-                    "position": {
-                        "x": 177.9,
-                        "y": 172.2
-                    }
-                },
-                {
                     "id": 4,
                     "position": {
                         "x": 83.98,
@@ -687,10 +673,24 @@
                     }
                 },
                 {
+                    "id": 7,
+                    "position": {
+                        "x": 205.2,
+                        "y": 248.29
+                    }
+                },
+                {
                     "id": 5,
                     "position": {
                         "x": 94.4,
                         "y": 50.5
+                    }
+                },
+                {
+                    "id": 8,
+                    "position": {
+                        "x": 205.01,
+                        "y": 241.22
                     }
                 },
                 {
@@ -909,7 +909,7 @@
                 { "text": "Vous: Rassemblez les habitants dans un endroit sûr, je m'occupe des créatures.", "delay": 0 },
                 { "text": "Chef: Bien, merci à vous.", "delay": 0 }
             ],
-            "tpPoint": 0,
+            "tpPoint": 8,
 
             "title": "Introduction - Sauver les Nekoma",
             "description": "",
@@ -924,6 +924,30 @@
             "npcFirstDialog": "",
             "npcGenericDialog": "",
             "npcMovePointIds": [ 1, 2, 3, 6, 7 ]
+        },
+        {
+            "id": 8,
+            "name": "Intro_KillMonster_Battle",
+            "sceneId": 1,
+            "dependencyIds": [ 7 ],
+            "groupId": 1,
+            "type": 3,
+            "dialogs": [],
+            "tpPoint": 0,
+
+            "title": "Introduction - Sauver les Nekoma",
+            "description": "Tuez les monstres autours de la ville (%progress% / %total%)",
+
+            "cinematic": "",
+            "video": "",
+
+            "triggerIds": [ ],
+            "monsterIds": [ ],
+            "monsterCount": 10,
+            "npcId": 0,
+            "npcFirstDialog": "",
+            "npcGenericDialog": "",
+            "npcMovePointIds": []
         }
     ],
     "npcs": [

@@ -84,9 +84,9 @@ export default class SpaceScene extends Scene {
 
     this.debugLayer.show();
 
-    /*setTimeout(() => {
+    setTimeout(() => {
       this._switchToWorldScene();
-    }, 2500);*/
+    }, 2500);
   }
 
   private _createHint() {
@@ -171,8 +171,12 @@ export default class SpaceScene extends Scene {
     this._dialogue.showOnlyDialogues();
     this._dialogue.isLooping = true;
     this._dialogue.addText(
-      "Bienvenue Frero ! Dirige toi vers l'orbe verte pour entrer dans le vaisseau",
-      10000
+      "(Je dois me diriger vers mon vaisseau)",
+      4500
+    );
+    this._dialogue.addText(
+        "(Il me semble qu'il est au fond de l'aile droite de la station)",
+        5000
     );
   }
 

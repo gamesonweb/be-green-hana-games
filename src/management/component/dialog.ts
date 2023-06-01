@@ -16,6 +16,7 @@ export default class DialogComponent implements ISceneComponent {
 
         this._manager.clear();
         this._manager.clearDialogues();
+        this._manager.isLooping = false;
     }
 
     destroy(): void {
