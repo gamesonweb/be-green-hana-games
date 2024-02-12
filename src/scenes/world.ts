@@ -25,6 +25,7 @@ import DialogComponent from "../management/component/dialog";
 import MeshProvider from "../management/meshprovider";
 import UIComponent from "../management/component/ui";
 import AudioComponent from "../management/component/audio";
+import PlatfomUtil from "../util/PlatformUtil";
 
 export default class WorldScene extends Scene {
     private static readonly CAMERA_SPEED: number = 15;

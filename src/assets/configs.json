@@ -1059,7 +1059,7 @@
         },
         {
             "id": 2,
-            "name": "Ambiant_2",
+            "name": "Ambiant_City",
             "type": 0,
             "location": 1,
             "volume": 0.5,
@@ -1080,13 +1080,55 @@
             "area": []
         },
         {
-            "id": 3,
+            "id": 4,
             "name": "Battle_boss",
+            "type": 2,
+            "location": 0,
+            "volume": 0.5,
+            "loop": true,
+            "audio": "audios/battle_boss.mp3",
+            "area": []
+        },
+        {
+            "id": 5,
+            "name": "Ambiant_2",
+            "type": 0,
+            "location": 0,
+            "volume": 0.5,
+            "loop": true,
+            "audio": "audios/ambiant2.mp3",
+            "area": []
+        },
+        {
+            "id": 6,
+            "name": "Ambiant_City2",
+            "type": 0,
+            "location": 0,
+            "volume": 0.5,
+            "loop": true,
+            "audio": "audios/ambiant_city2.mp3",
+            "area": [
+                500002, 500003
+            ]
+        },
+        {
+            "id": 7,
+            "name": "Battle_2",
             "type": 1,
             "location": 0,
             "volume": 0.5,
             "loop": true,
-            "audio": "audios/battle.mp3",
+            "audio": "audios/battle2.mp3",
+            "area": []
+        },
+        {
+            "id": 8,
+            "name": "Battle_boss2",
+            "type": 1,
+            "location": 0,
+            "volume": 0.5,
+            "loop": true,
+            "audio": "audios/battle_boss2.mp3",
             "area": []
         }
     ],
